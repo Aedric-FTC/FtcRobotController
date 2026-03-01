@@ -23,12 +23,25 @@ public class motorDrive
         brMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void drive(double forward, double strafe, double rotate, boolean isReversed)
+    public boolean isReversed = false;
+
+    public void drive(double forward, double strafe, double rotate, boolean reverse)
     {
+
+
         double flPower = forward + strafe + rotate;
         double frPower = forward - strafe - rotate;
         double blPower = forward - strafe + rotate;
         double brPower = forward + strafe - rotate;
+
+        if (reverse && !isReversed)
+        {
+            isReversed = true;
+        }
+        else if (reverse)
+        {
+            isReversed = false;
+        }
 
         if (isReversed)
         {
