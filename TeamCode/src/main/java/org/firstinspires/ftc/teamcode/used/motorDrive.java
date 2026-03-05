@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.used;
 
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -74,10 +73,10 @@ public class motorDrive
         maxPower = Math.max(maxPower, Math.abs(blPower));
         maxPower = Math.max(maxPower, Math.abs(brPower));
 
-        flMotor.setPower((maxSpeed * (flPower / maxPower)) / powMod);
-        frMotor.setPower((maxSpeed * (frPower / maxPower)) / powMod);
-        blMotor.setPower((maxSpeed * (blPower / maxPower)) / powMod);
-        brMotor.setPower((maxSpeed * (brPower / maxPower)) / powMod);
+        flMotor.setPower((maxSpeed * (flPower / maxPower)) * powMod);
+        frMotor.setPower((maxSpeed * (frPower / maxPower)) * powMod);
+        blMotor.setPower((maxSpeed * (blPower / maxPower)) * powMod);
+        brMotor.setPower((maxSpeed * (brPower / maxPower)) * powMod);
 
         boolean wasReversed = reverse;
     }
