@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.used;
 
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class motorDrive
@@ -15,33 +16,58 @@ public class motorDrive
     {
         flMotor = hwMap.get(DcMotor.class, "flMotor");
         flMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         frMotor = hwMap.get(DcMotor.class, "frMotor");
         frMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         blMotor = hwMap.get(DcMotor.class, "blMotor");
         blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        blMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         brMotor = hwMap.get(DcMotor.class, "brMotor");
         brMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        brMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        brMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
+
+    double flPower;
+    double frPower;
+    double blPower;
+    double brPower;
 
     public boolean isReversed = false;
 
+    public void stop()
+    {
+        flMotor.setPower(0);
+        frMotor.setPower(0);
+        blMotor.setPower(0);
+        brMotor.setPower(0);
+    }
+
     public void drive(double forward, double strafe, double rotate, boolean reverse)
     {
-
-
-        double flPower = forward + strafe + rotate;
-        double frPower = forward - strafe - rotate;
-        double blPower = forward - strafe + rotate;
-        double brPower = forward + strafe - rotate;
-
         if (reverse && !isReversed)
         {
             isReversed = true;
         }
-        else if (reverse)
+        else if (reverse && isReversed)
         {
             isReversed = false;
         }
+
+        if (isReversed)
+        {
+            rotate *= -1;
+        }
+
+        flPower = forward - strafe - rotate;
+        frPower = forward + strafe + rotate;
+        blPower = forward + strafe - rotate;
+        brPower = forward - strafe + rotate;
 
         if (isReversed)
         {
@@ -60,7 +86,7 @@ public class motorDrive
         maxPower = Math.max(maxPower, Math.abs(brPower));
 
         flMotor.setPower(maxSpeed * (flPower / maxPower));
-        frMotor.setPower(maxSpeed * (flPower / maxPower));
+        frMotor.setPower(maxSpeed * (frPower / maxPower));
         blMotor.setPower(maxSpeed * (blPower / maxPower));
         brMotor.setPower(maxSpeed * (brPower / maxPower));
     }
