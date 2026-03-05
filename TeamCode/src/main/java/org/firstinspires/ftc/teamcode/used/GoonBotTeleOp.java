@@ -46,6 +46,7 @@ public class GoonBotTeleOp extends OpMode
     public void loop()
     {
         telemetry.addData("reversed?", motors.isReversed);
+        telemetry.addData("Drive Speed", driveSpeed);
 
         motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                      gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
