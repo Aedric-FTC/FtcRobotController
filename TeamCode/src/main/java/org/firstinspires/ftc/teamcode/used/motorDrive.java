@@ -38,7 +38,8 @@ public class motorDrive
     double blPower;
     double brPower;
 
-    public boolean isReversed = false;
+    public boolean wasReversed;
+    public boolean isReversed;
 
     public void stop()
     {
@@ -48,15 +49,11 @@ public class motorDrive
         brMotor.setPower(0);
     }
 
-    public void drive(double forward, double strafe, double rotate, boolean reverse)
+    public void drive(double forward, double strafe, double rotate, boolean reverse, double powMod)
     {
-        if (reverse && !isReversed)
+        if (reverse && !wasReversed)
         {
             isReversed = true;
-        }
-        else if (reverse && isReversed)
-        {
-            isReversed = false;
         }
 
         if (isReversed)
@@ -85,10 +82,12 @@ public class motorDrive
         maxPower = Math.max(maxPower, Math.abs(blPower));
         maxPower = Math.max(maxPower, Math.abs(brPower));
 
-        flMotor.setPower(maxSpeed * (flPower / maxPower));
-        frMotor.setPower(maxSpeed * (frPower / maxPower));
-        blMotor.setPower(maxSpeed * (blPower / maxPower));
-        brMotor.setPower(maxSpeed * (brPower / maxPower));
+        flMotor.setPower((maxSpeed * (flPower / maxPower)) / powMod);
+        frMotor.setPower((maxSpeed * (frPower / maxPower)) / powMod);
+        blMotor.setPower((maxSpeed * (blPower / maxPower)) / powMod);
+        brMotor.setPower((maxSpeed * (brPower / maxPower)) / powMod);
+
+        boolean wasReversed = reverse;
     }
 
 

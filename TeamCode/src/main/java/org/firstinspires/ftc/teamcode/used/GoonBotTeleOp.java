@@ -6,11 +6,40 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class GoonBotTeleOp extends OpMode
 {
+    double driveSpeed;
     motorDrive motors = new motorDrive();
     @Override
     public void init()
     {
         motors.init(hardwareMap);
+
+        // Set drive speed in percentage
+        driveSpeed = 100;
+    }
+
+    boolean dpadRightPressedLastCycle;
+    boolean dpadLeftPressedLastCycle;
+    @Override
+    public void init_loop()
+    {
+        if (gamepad1.dpad_right && driveSpeed <= 95 && !dpadRightPressedLastCycle)
+        {
+            driveSpeed += 5;
+        }
+
+        if (gamepad1.dpad_left && driveSpeed >= 5 && !dpadLeftPressedLastCycle)
+        {
+            driveSpeed -= 5;
+        }
+
+        dpadRightPressedLastCycle = gamepad1.dpad_right;
+        dpadLeftPressedLastCycle = gamepad1.dpad_left;
+    }
+
+    @Override
+    public void start()
+    {
+        driveSpeed /= 100;
     }
 
     @Override
@@ -18,11 +47,7 @@ public class GoonBotTeleOp extends OpMode
     {
         telemetry.addData("reversed?", motors.isReversed);
 
-            motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
-                         gamepad1.right_stick_x, gamepad1.b);
-
-
-
-
+        motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
+                     gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
     }
 }
