@@ -38,16 +38,8 @@ public class motorDrive
     double blPower;
     double brPower;
 
-    public boolean wasReversed;
+    public boolean wasReversed = false;
     public boolean isReversed;
-
-    public void stop()
-    {
-        flMotor.setPower(0);
-        frMotor.setPower(0);
-        blMotor.setPower(0);
-        brMotor.setPower(0);
-    }
 
     public void drive(double forward, double strafe, double rotate, boolean reverse, double powMod)
     {
