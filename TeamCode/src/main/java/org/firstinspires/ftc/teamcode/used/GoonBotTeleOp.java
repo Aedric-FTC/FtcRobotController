@@ -43,45 +43,28 @@ public class GoonBotTeleOp extends OpMode
         return output;
     }
 
-    boolean lastInput = false;
-    boolean willIncrease;
-    boolean willDecrease;
+    int counterYellow;
+    int counterOff;
     @Override
     public void init_loop()
     {
         telemetry.addData("Drive Speed", driveSpeed);
 
-        willIncrease = false;
+        counterOff = 0;
+        counterYellow = 0;
 
-        if (gamepad1.dpad_right && !lastInput)
+        light.lightYellow();
+        while (counterYellow <= 1000)
         {
-            willIncrease = true;
+            counterYellow += 1;
         }
-
-        lastInput = gamepad1.dpad_right;
-
-        telemetry.addData("Increase?", willIncrease);
-
-        if (willIncrease && driveSpeed <=95)
+        //light.lightOff();
+        while (counterOff <= 1000)
         {
-            driveSpeed += 5;
+            counterOff += 1;
         }
-// -------------------------------------------------------------------------------------------------
-        willDecrease = false;
+        light.lightOff();
 
-        if (gamepad1.dpad_left && !lastInput)
-        {
-            willDecrease = true;
-        }
-
-        lastInput = gamepad1.dpad_left;
-
-        telemetry.addData("Decrease?", willDecrease);
-
-        if (willDecrease && driveSpeed >= 10)
-        {
-            driveSpeed -= 5;
-        }
     }
 
     @Override
