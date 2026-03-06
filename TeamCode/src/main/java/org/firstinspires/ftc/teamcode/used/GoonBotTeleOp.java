@@ -16,7 +16,7 @@ public class GoonBotTeleOp extends OpMode
         motors.init(hardwareMap);
         light.init(hardwareMap);
 
-        driveSpeed = 10;
+        driveSpeed = 50;
     }
 
     @Override
