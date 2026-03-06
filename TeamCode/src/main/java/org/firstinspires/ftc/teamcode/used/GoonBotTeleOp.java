@@ -43,28 +43,44 @@ public class GoonBotTeleOp extends OpMode
         return output;
     }
 
-
-
-    public boolean lastDPADRIGHT;
-    public boolean rightWasPressed;
-    public boolean lastDPADLEFT;
-    public boolean leftWasPressed;
-    boolean a;
-    boolean b;
+    boolean lastInput = false;
     boolean willIncrease;
+    boolean willDecrease;
     @Override
     public void init_loop()
     {
         telemetry.addData("Drive Speed", driveSpeed);
 
+        willIncrease = false;
 
-        boolean output = buttonToggle(gamepad1.dpad_right, a, b, willIncrease);
-        telemetry.addData("output", output);
-
-
-        if (output && driveSpeed <=95)
+        if (gamepad1.dpad_right && !lastInput)
         {
-            driveSpeed +=5;
+            willIncrease = true;
+        }
+
+        lastInput = gamepad1.dpad_right;
+
+        telemetry.addData("Increase?", willIncrease);
+
+        if (willIncrease && driveSpeed <=95)
+        {
+            driveSpeed += 5;
+        }
+// -------------------------------------------------------------------------------------------------
+        willDecrease = false;
+
+        if (gamepad1.dpad_left && !lastInput)
+        {
+            willDecrease = true;
+        }
+
+        lastInput = gamepad1.dpad_left;
+
+        telemetry.addData("Decrease?", willDecrease);
+
+        if (willDecrease && driveSpeed >= 10)
+        {
+            driveSpeed -= 5;
         }
     }
 
