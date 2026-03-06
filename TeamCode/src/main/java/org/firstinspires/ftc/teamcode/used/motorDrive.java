@@ -60,7 +60,7 @@ public class motorDrive
         {
             rotate *= -1;
         }
-        else
+        else if (reverse)
         {
             rotate *=-1;
         }

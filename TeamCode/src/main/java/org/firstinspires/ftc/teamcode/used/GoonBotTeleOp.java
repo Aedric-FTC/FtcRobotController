@@ -16,27 +16,7 @@ public class GoonBotTeleOp extends OpMode
         motors.init(hardwareMap);
         light.init(hardwareMap);
 
-        // Set drive speed in percentage
-        driveSpeed = 100;
-    }
-
-    boolean dpadRightPressedLastCycle;
-    boolean dpadLeftPressedLastCycle;
-    @Override
-    public void init_loop()
-    {
-        if (gamepad1.dpad_right && driveSpeed <= 95 && !dpadRightPressedLastCycle)
-        {
-            driveSpeed += 5;
-        }
-
-        if (gamepad1.dpad_left && driveSpeed >= 5 && !dpadLeftPressedLastCycle)
-        {
-            driveSpeed -= 5;
-        }
-
-        dpadRightPressedLastCycle = gamepad1.dpad_right;
-        dpadLeftPressedLastCycle = gamepad1.dpad_left;
+        driveSpeed = 10;
     }
 
     @Override
@@ -45,8 +25,48 @@ public class GoonBotTeleOp extends OpMode
         driveSpeed /= 100;
     }
 
-    boolean lastA = false;
-    boolean intakeOn = false;
+    private boolean buttonToggle(boolean input, boolean lastInput, boolean outputToggle, boolean output)
+    {
+        if (input && !lastInput)
+        {
+            outputToggle = !outputToggle;
+        }
+
+        lastInput = input;
+
+        if (outputToggle)
+        {
+            output = true;
+        } else {
+            output = false;
+        }
+        return output;
+    }
+
+
+
+    public boolean lastDPADRIGHT;
+    public boolean rightWasPressed;
+    public boolean lastDPADLEFT;
+    public boolean leftWasPressed;
+    boolean a;
+    boolean b;
+    boolean willIncrease;
+    @Override
+    public void init_loop()
+    {
+        telemetry.addData("Drive Speed", driveSpeed);
+
+
+        boolean output = buttonToggle(gamepad1.dpad_right, a, b, willIncrease);
+        telemetry.addData("output", output);
+
+
+        if (output && driveSpeed <=95)
+        {
+            driveSpeed +=5;
+        }
+    }
 
     @Override
     public void loop()
