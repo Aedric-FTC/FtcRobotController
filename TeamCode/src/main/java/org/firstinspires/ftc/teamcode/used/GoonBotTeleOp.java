@@ -8,10 +8,13 @@ public class GoonBotTeleOp extends OpMode
 {
     double driveSpeed;
     motorDrive motors = new motorDrive();
+    light light = new light();
+
     @Override
     public void init()
     {
         motors.init(hardwareMap);
+        light.init(hardwareMap);
 
         // Set drive speed in percentage
         driveSpeed = 100;
@@ -42,13 +45,27 @@ public class GoonBotTeleOp extends OpMode
         driveSpeed /= 100;
     }
 
+    boolean lastA = false;
+    boolean intakeOn = false;
+
     @Override
     public void loop()
     {
-        telemetry.addData("reversed?", motors.isReversed);
+        if (motors.isReversed)
+        {
+            telemetry.addData("Direction", "Reversed");
+            light.lightYellow();
+        }
+        else
+        {
+            telemetry.addData("Direction", "Forward");
+            light.lightGreen();
+        }
+
         telemetry.addData("Drive Speed", driveSpeed);
 
         motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                      gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
+
     }
 }
