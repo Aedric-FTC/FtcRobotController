@@ -43,7 +43,7 @@ public class GoonBotTeleOp extends OpMode
         return output;
     }
 
-   public boolean wasRight;
+    public boolean wasRight;
     public boolean wasLeft;
     public int addRight;
     public int addLeft;
@@ -62,7 +62,7 @@ public class GoonBotTeleOp extends OpMode
         }
         wasRight = gamepad1.dpad_right;
         driveSpeed += addRight;
-
+//------------------------------------------------------------
         if (gamepad1.dpad_left && !wasLeft)
         {
             addLeft = 1;
