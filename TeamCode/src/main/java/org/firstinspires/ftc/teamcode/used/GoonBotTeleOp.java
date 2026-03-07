@@ -43,28 +43,36 @@ public class GoonBotTeleOp extends OpMode
         return output;
     }
 
-    int counterYellow;
-    int counterOff;
+   public boolean wasRight;
+    public boolean wasLeft;
+    public int addRight;
+    public int addLeft;
     @Override
     public void init_loop()
     {
         telemetry.addData("Drive Speed", driveSpeed);
 
-        counterOff = 0;
-        counterYellow = 0;
-
-        light.lightYellow();
-        while (counterYellow <= 1000)
+        if (gamepad1.dpad_right && !wasRight)
         {
-            counterYellow += 1;
+            addRight = 1;
         }
-        //light.lightOff();
-        while (counterOff <= 1000)
+        else
         {
-            counterOff += 1;
+            addRight = 0;
         }
-        light.lightOff();
+        wasRight = gamepad1.dpad_right;
+        driveSpeed += addRight;
 
+        if (gamepad1.dpad_left && !wasLeft)
+        {
+            addLeft = 1;
+        }
+        else
+        {
+            addLeft = 0;
+        }
+        wasLeft = gamepad1.dpad_left;
+        driveSpeed -= addLeft;
     }
 
     @Override
@@ -85,6 +93,5 @@ public class GoonBotTeleOp extends OpMode
 
         motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                      gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
-
     }
 }
