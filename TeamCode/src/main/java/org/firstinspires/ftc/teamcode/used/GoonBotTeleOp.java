@@ -116,15 +116,76 @@ public class GoonBotTeleOp extends OpMode
     }
 //endregion
 
+//region Menu Test
+// Menu Test ------------------------------------------------------------------------------------------- Menu Test
+    public int menuScroller(boolean inputKey, int inputValue, int incrementValue, int max)
+    {
+        int increment;
+        if (inputKey && !wasIncInput)
+        {
+            increment = incrementValue;
+        }
+        else
+        {
+            increment = 0;
+        }
+        wasIncInput = inputKey;
+        if (inputValue + increment <= max)
+        {
+            inputValue += increment;
+        }
+        else
+        {
+            inputValue = 1;
+        }
+        return inputValue;
+    }
+    public int menuCounter;
+    public double intakeSpeedTest;
+    public double shooterSpeedTest;
+//endregion
+
 //region Loop
 // Loop ------------------------------------------------------------------------------------------------ Loop
     @Override
     public void loop()
     {
-        // Drive Speed Mods
-        driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
-        driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
-        telemetry.addData("Drive Speed", driveSpeed);
+        menuScroller(gamepad1.dpad_up, menuCounter, 1, 3);
+        if (menuCounter == 1)
+        {
+            // Drive Speed Mods
+            driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
+            driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
+            telemetry.addData(">Drive Speed", driveSpeed);
+        }
+        else
+        {
+            telemetry.addData("Drive Speed", driveSpeed);
+        }
+
+        if (menuCounter == 2)
+        {
+            intakeSpeedTest = increment(gamepad1.dpad_right, intakeSpeedTest, 1, 100);
+            intakeSpeedTest = decrement(gamepad1.dpad_left, intakeSpeedTest, 1, 0);
+            telemetry.addData(">Intake Speed", intakeSpeedTest);
+        }
+        else
+        {
+            telemetry.addData("Intake Speed", intakeSpeedTest);
+        }
+
+        if (menuCounter == 3)
+        {
+            shooterSpeedTest = increment(gamepad1.dpad_right, shooterSpeedTest, 1, 100);
+            shooterSpeedTest = decrement(gamepad1.dpad_left, shooterSpeedTest, 1, 0);
+            telemetry.addData(">Shooter Speed", shooterSpeedTest);
+        }
+        else
+        {
+            telemetry.addData("Shooter Speed", shooterSpeedTest);
+        }
+
+        telemetry.addLine();
 
         // Direction Indicators
         if (motors.isReversed)
