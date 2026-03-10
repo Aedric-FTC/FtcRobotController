@@ -42,6 +42,7 @@ public class motorDrive
     boolean intakeOn = false;
     public void drive(double forward, double strafe, double rotate, boolean reverse, double powMod)
     {
+        powMod /= 100;
         if (reverse && !lastA)
         {
             intakeOn = !intakeOn;
@@ -90,6 +91,7 @@ public class motorDrive
         frMotor.setPower((maxSpeed * (frPower / maxPower)) * powMod);
         blMotor.setPower((maxSpeed * (blPower / maxPower)) * powMod);
         brMotor.setPower((maxSpeed * (brPower / maxPower)) * powMod);
+        powMod *= 100;
     }
 
 

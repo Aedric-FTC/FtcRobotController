@@ -6,25 +6,22 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class GoonBotTeleOp extends OpMode
 {
-    double driveSpeed;
+
+// ------------------------------------------------------------------------------------------------------------------------|
+// Class Declarations ---------------------------------------------------------------------------------- Class Declarations
+// ------------------------------------------------------------------------------------------------------------------------|
+
+//region Class Calls
     motorDrive motors = new motorDrive();
     light light = new light();
+//endregion
 
-    @Override
-    public void init()
-    {
-        motors.init(hardwareMap);
-        light.init(hardwareMap);
+// ------------------------------------------------------------------------------------------------------------|
+// Methods ---------------------------------------------------------------------------------------------Methods
+//-------------------------------------------------------------------------------------------------------------|
 
-        driveSpeed = 50;
-    }
-
-    @Override
-    public void start()
-    {
-        driveSpeed /= 100;
-    }
-
+//region Toggler Method
+// Toggler Method -------------------------------------------------------------------------------------- Toggler Method
     private boolean buttonToggle(boolean input, boolean lastInput, boolean outputToggle, boolean output)
     {
         if (input && !lastInput)
@@ -42,42 +39,94 @@ public class GoonBotTeleOp extends OpMode
         }
         return output;
     }
+//endregion
 
-    public boolean wasRight;
-    public boolean wasLeft;
-    public int addRight;
-    public int addLeft;
+//region Increment
+// Increment ------------------------------------------------------------------------------------------- Increment Method
+    public boolean wasIncInput;
+    public double increment(boolean inputKey, double inputValue, int incrementValue, int max)
+    {
+        int increment;
+        if (inputKey && !wasIncInput)
+        {
+            increment = incrementValue;
+        }
+        else
+        {
+            increment = 0;
+        }
+        wasIncInput = inputKey;
+        if (inputValue + increment <= max)
+        {
+            inputValue += increment;
+        }
+        return inputValue;
+    }
+//endregion
+
+//region Decrement
+// Decrement ------------------------------------------------------------------------------------------- Decrement Method
+    public boolean wasDecInput;
+    public double decrement(boolean inputKey, double inputValue, int decrementValue, int min)
+    {
+        int decrement;
+        if (inputKey && !wasDecInput)
+        {
+            decrement = decrementValue;
+        }
+        else
+        {
+            decrement = 0;
+        }
+        wasDecInput = inputKey;
+        if (inputValue - decrement >= min)
+        {
+            inputValue -= decrement;
+        }
+        return inputValue;
+    }
+//endregion
+
+// -----------------------------------------------------------------------------------------------------------------|
+// OpMode Code ----------------------------------------------------------------------------------------- OpMode Code
+// -----------------------------------------------------------------------------------------------------------------|
+
+//region Init
+// Init ------------------------------------------------------------------------------------------------ Init
+    double driveSpeed;
+    @Override
+    public void init()
+    {
+        motors.init(hardwareMap);
+        light.init(hardwareMap);
+
+        driveSpeed = 50;
+    }
+//endregion
+
+//region Init Loop
+// Init Loop ------------------------------------------------------------------------------------------- Init Loop
     @Override
     public void init_loop()
     {
         telemetry.addData("Drive Speed", driveSpeed);
 
-        if (gamepad1.dpad_right && !wasRight)
-        {
-            addRight = 1;
-        }
-        else
-        {
-            addRight = 0;
-        }
-        wasRight = gamepad1.dpad_right;
-        driveSpeed += addRight;
-//------------------------------------------------------------
-        if (gamepad1.dpad_left && !wasLeft)
-        {
-            addLeft = 1;
-        }
-        else
-        {
-            addLeft = 0;
-        }
-        wasLeft = gamepad1.dpad_left;
-        driveSpeed -= addLeft;
+        driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
+        driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
     }
+//endregion
 
+//region Loop
+// Loop ------------------------------------------------------------------------------------------------ Loop
     @Override
     public void loop()
     {
+        // Drive Speed Mods
+        driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
+        driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
+        telemetry.addData("Drive Speed", driveSpeed);
+
+        // Direction Indicators
         if (motors.isReversed)
         {
             telemetry.addData("Direction", "Reversed");
@@ -89,9 +138,9 @@ public class GoonBotTeleOp extends OpMode
             light.lightGreen();
         }
 
-        telemetry.addData("Drive Speed", driveSpeed);
-
+        // Drivetrain Code Execution
         motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                      gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
     }
+//endregion
 }
