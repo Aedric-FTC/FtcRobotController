@@ -14,6 +14,9 @@ public class GoonBotTeleOp extends OpMode
 //region Class Calls
     motorDrive motors = new motorDrive();
     light light = new light();
+    Intake intake = new Intake();
+    Launcher launcher = new Launcher();
+    Transfer transfer = new Transfer();
 //endregion
 
 // ------------------------------------------------------------------------------------------------------------|
@@ -142,9 +145,9 @@ public class GoonBotTeleOp extends OpMode
     }
 
     public int menuCounter = 1;
-    public double intakeSpeedTest = 100;
-    public double transferSpeedTest = 100;
-    public double shooterSpeedTest = 50;
+    public double intakeSpeed = 100;
+    public double transferSpeed = 100;
+    public double launcherSpeed = 50;
 //endregion
 
 // -----------------------------------------------------------------------------------------------------------------|
@@ -205,33 +208,33 @@ public class GoonBotTeleOp extends OpMode
 
             if (menuCounter == 2)
             {
-                intakeSpeedTest = increment(gamepad1.dpad_right, intakeSpeedTest, 1, 100);
-                intakeSpeedTest = decrement(gamepad1.dpad_left, intakeSpeedTest, 1, 0);
-                telemetry.addData(">  Intake Speed", intakeSpeedTest);
+                intakeSpeed = increment(gamepad1.dpad_right, intakeSpeed, 1, 100);
+                intakeSpeed = decrement(gamepad1.dpad_left, intakeSpeed, 1, 0);
+                telemetry.addData(">  Intake Speed", intakeSpeed);
             } else
             {
-                telemetry.addData("Intake Speed", intakeSpeedTest);
+                telemetry.addData("Intake Speed", intakeSpeed);
             }
 
             if (menuCounter == 3)
             {
-                transferSpeedTest = increment(gamepad1.dpad_right, shooterSpeedTest, 1, 100);
-                transferSpeedTest = decrement(gamepad1.dpad_left, shooterSpeedTest, 1, 0);
-                telemetry.addData(">  Transfer Speed", transferSpeedTest);
+                transferSpeed = increment(gamepad1.dpad_right, launcherSpeed, 1, 100);
+                transferSpeed = decrement(gamepad1.dpad_left, launcherSpeed, 1, 0);
+                telemetry.addData(">  Transfer Speed", transferSpeed);
             }
             else
             {
-                telemetry.addData("Transfer Speed", transferSpeedTest);
+                telemetry.addData("Transfer Speed", transferSpeed);
             }
 
             if (menuCounter == 4)
             {
-                shooterSpeedTest = increment(gamepad1.dpad_right, shooterSpeedTest, 1, 100);
-                shooterSpeedTest = decrement(gamepad1.dpad_left, shooterSpeedTest, 1, 0);
-                telemetry.addData(">  Shooter Speed", shooterSpeedTest);
+                launcherSpeed = increment(gamepad1.dpad_right, launcherSpeed, 1, 100);
+                launcherSpeed = decrement(gamepad1.dpad_left, launcherSpeed, 1, 0);
+                telemetry.addData(">  Launcher Speed", launcherSpeed);
             } else
             {
-                telemetry.addData("Shooter Speed", shooterSpeedTest);
+                telemetry.addData("Launcher Speed", launcherSpeed);
             }
         }
         else
@@ -250,6 +253,18 @@ public class GoonBotTeleOp extends OpMode
             // Drivetrain Code Execution
             motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                     gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
+
+            // Intake
+            intake.suck(gamepad1.left_bumper, intakeSpeed);
+            intake.reverseSuck(gamepad1.right_bumper, intakeSpeed);
+
+            // Transfer
+            transfer.spinTransfer(gamepad1.left_bumper, transferSpeed);
+            transfer.reverseTransfer(gamepad1.right_bumper, transferSpeed);
+
+            // Launcher
+            launcher.Launch(gamepad1.right_trigger, launcherSpeed);
+            launcher.reverseLaunch(gamepad1.left_trigger, launcherSpeed);
         }
     }
 //endregion
