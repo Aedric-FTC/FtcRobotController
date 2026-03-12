@@ -162,8 +162,11 @@ public class GoonBotTeleOp extends OpMode
     {
         motors.init(hardwareMap);
         light.init(hardwareMap);
+        intake.init(hardwareMap);
+        transfer.init(hardwareMap);
+        launcher.init(hardwareMap);
 
-        driveSpeed = 50;
+        driveSpeed = 100;
     }
 //endregion
 
@@ -218,8 +221,8 @@ public class GoonBotTeleOp extends OpMode
 
             if (menuCounter == 3)
             {
-                transferSpeed = increment(gamepad1.dpad_right, launcherSpeed, 1, 100);
-                transferSpeed = decrement(gamepad1.dpad_left, launcherSpeed, 1, 0);
+                transferSpeed = increment(gamepad1.dpad_right, transferSpeed, 1, 100);
+                transferSpeed = decrement(gamepad1.dpad_left, transferSpeed, 1, 0);
                 telemetry.addData(">  Transfer Speed", transferSpeed);
             }
             else
@@ -256,7 +259,7 @@ public class GoonBotTeleOp extends OpMode
 
             // Intake
             intake.suck(gamepad1.left_bumper, intakeSpeed);
-            intake.reverseSuck(gamepad1.right_bumper, intakeSpeed);
+            intake.blow(gamepad1.right_bumper, intakeSpeed);
 
             // Transfer
             transfer.spinTransfer(gamepad1.left_bumper, transferSpeed);

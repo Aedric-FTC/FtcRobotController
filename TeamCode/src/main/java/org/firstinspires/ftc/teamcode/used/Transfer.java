@@ -22,15 +22,24 @@ public class Transfer
         {
             transferMotor.setPower(speed);
         }
+        else
+        {
+            transferMotor.setPower(0);
+        }
     }
 
     public void reverseTransfer(boolean inputButton, double speed)
     {
         speed /= 100;
+        speed *= -1;
 
         if (inputButton)
         {
-            transferMotor.setPower(-speed);
+            transferMotor.setPower(speed);
+        }
+        else
+        {
+            transferMotor.setPower(0);
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.used;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake
@@ -17,20 +18,29 @@ public class Intake
     public void suck(boolean inputButton, double speed)
     {
         speed /= 100;
+        speed *= -1;
 
         if (inputButton)
         {
             intakeMotor.setPower(speed);
         }
+        else
+        {
+            intakeMotor.setPower(0);
+        }
     }
 
-    public void reverseSuck(boolean inputButton, double speed)
+    public void blow(boolean inputButton, double speed)
     {
         speed /= 100;
 
         if (inputButton)
         {
-            intakeMotor.setPower(-speed);
+            intakeMotor.setPower(speed);
+        }
+        else
+        {
+            intakeMotor.setPower(0);
         }
     }
 }
