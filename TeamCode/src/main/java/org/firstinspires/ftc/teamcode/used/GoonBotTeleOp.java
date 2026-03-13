@@ -184,6 +184,8 @@ public class GoonBotTeleOp extends OpMode
 
 //region Loop
 // Loop ------------------------------------------------------------------------------------------------ Loop
+    double ballForward;
+    double ballBackward;
     @Override
     public void loop()
     {
@@ -258,12 +260,46 @@ public class GoonBotTeleOp extends OpMode
                     gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
 
             // Intake
-            intake.suck(gamepad1.left_bumper, intakeSpeed);
-            intake.blow(gamepad1.right_bumper, intakeSpeed);
+            if (gamepad1.left_bumper)
+            {
+                ballForward = intakeSpeed;
+            }
+            else
+            {
+                ballForward = 0.0;
+            }
+            if (gamepad1.right_bumper)
+            {
+                ballBackward = intakeSpeed;
+            }
+            else
+            {
+                ballBackward = 0.0;
+            }
+
+            intake.suck(ballForward);
+            intake.blow(ballBackward);
 
             // Transfer
-            transfer.spinTransfer(gamepad1.left_bumper, transferSpeed);
-            transfer.reverseTransfer(gamepad1.right_bumper, transferSpeed);
+            if (gamepad1.left_bumper)
+            {
+                ballForward = transferSpeed;
+            }
+            else
+            {
+                ballForward = 0.0;
+            }
+            if (gamepad1.right_bumper)
+            {
+                ballBackward = transferSpeed;
+            }
+            else
+            {
+                ballBackward = 0.0;
+            }
+
+            transfer.spinTransfer(ballForward);
+            transfer.reverseTransfer(ballBackward);
 
             // Launcher
             launcher.Launch(gamepad1.right_trigger, launcherSpeed);

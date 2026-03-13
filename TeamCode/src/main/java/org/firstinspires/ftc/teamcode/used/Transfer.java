@@ -14,32 +14,17 @@ public class Transfer
         transferMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void spinTransfer(boolean inputButton, double speed)
+    public void spinTransfer(double speed)
     {
         speed /= 100;
 
-        if (inputButton)
-        {
             transferMotor.setPower(speed);
-        }
-        else
-        {
-            transferMotor.setPower(0);
-        }
     }
 
-    public void reverseTransfer(boolean inputButton, double speed)
+    public void reverseTransfer(double speed)
     {
-        speed /= 100;
-        speed *= -1;
+        speed /= -100;
 
-        if (inputButton)
-        {
             transferMotor.setPower(speed);
-        }
-        else
-        {
-            transferMotor.setPower(0);
-        }
     }
 }
