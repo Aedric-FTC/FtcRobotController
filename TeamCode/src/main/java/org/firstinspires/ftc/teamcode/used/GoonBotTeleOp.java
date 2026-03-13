@@ -17,6 +17,7 @@ public class GoonBotTeleOp extends OpMode
     Intake intake = new Intake();
     Launcher launcher = new Launcher();
     Transfer transfer = new Transfer();
+    Menu menu = new Menu();
 //endregion
 
 // ------------------------------------------------------------------------------------------------------------|
