@@ -190,10 +190,20 @@ public class GoonBotTeleOp extends OpMode
     @Override
     public void loop()
     {
-        if (!menu.menuMode)
+        menu.setMenuMode();
+        if (menu.menuMode)
+        {
+            menu.setMenuCounter(4);
+            menu.setMenuItem(1,"Drive Speed", driveSpeed, 5, 0, 100);
+            menu.setMenuItem(2,"Launcher Speed", launcherSpeed, 1, 0, 100);
+            menu.setMenuItem(3,"Transfer Speed", transferSpeed, 5, 0, 100);
+            menu.setMenuItem(4,"Intake Speed", intakeSpeed, 5, 0, 100);
+        }
+        else
         {
             telemetry.addLine("Press START for menu");
             telemetry.addLine();
+
             // Direction Indicators
             if (motors.isReversed) {
                 telemetry.addData("Direction", "Reversed");
@@ -203,7 +213,7 @@ public class GoonBotTeleOp extends OpMode
                 light.lightGreen();
             }
 
-            // Drivetrain Code Execution
+            // Drivetrain
             motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                     gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
 
@@ -252,10 +262,6 @@ public class GoonBotTeleOp extends OpMode
             // Launcher
             launcher.Launch(gamepad1.right_trigger, launcherSpeed);
             launcher.reverseLaunch(gamepad1.left_trigger, launcherSpeed);
-        }
-        else
-        {
-
         }
     }
 //endregion
