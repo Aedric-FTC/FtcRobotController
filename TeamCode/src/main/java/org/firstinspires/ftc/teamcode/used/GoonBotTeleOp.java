@@ -178,10 +178,6 @@ public class GoonBotTeleOp extends OpMode
 
 //region Loop
 // Loop ------------------------------------------------------------------------------------------------ Loop
-    double menuTest1;
-    double menuTest2;
-    double menuTest3;
-    double menuTest4;
     @Override
     public void loop()
     {
@@ -189,11 +185,8 @@ public class GoonBotTeleOp extends OpMode
 
         if (menu.menuMode)
         {
-            menu.setMenuCounter(4);
-            menuTest1 = menu.setMenuItem(1,"Menu Test 1", menuTest1, 1, 0, 100);
-            menuTest2 = menu.setMenuItem(2,"Menu Test 2", menuTest2, 1, 0, 100);
-            menuTest3 = menu.setMenuItem(3,"Menu Test 3", menuTest3, 1, 0, 100);
-            menuTest4 = menu.setMenuItem(4,"Menu Test 4", menuTest4, 1, 0, 100);
+            menu.setMenuCounter(1);
+            driveSpeed = menu.setMenuItem(1,"Drive Speed", driveSpeed, 5, 0, 100);
         }
         else
         {
