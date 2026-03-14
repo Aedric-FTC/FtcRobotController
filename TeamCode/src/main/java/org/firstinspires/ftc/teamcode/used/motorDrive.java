@@ -20,7 +20,6 @@ public class motorDrive
         frMotor = hwMap.get(DcMotor.class, "frMotor");
         frMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         blMotor = hwMap.get(DcMotor.class, "blMotor");
         blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

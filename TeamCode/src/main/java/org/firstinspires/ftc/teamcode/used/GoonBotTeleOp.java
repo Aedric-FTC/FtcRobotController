@@ -14,9 +14,6 @@ public class GoonBotTeleOp extends OpMode
 //region Class Calls
     motorDrive motors = new motorDrive();
     light light = new light();
-    Intake intake = new Intake();
-    Launcher launcher = new Launcher();
-    Transfer transfer = new Transfer();
     Menu menu = new Menu();
 //endregion
 
@@ -163,10 +160,6 @@ public class GoonBotTeleOp extends OpMode
     {
         motors.init(hardwareMap);
         light.init(hardwareMap);
-        intake.init(hardwareMap);
-        transfer.init(hardwareMap);
-        launcher.init(hardwareMap);
-
         driveSpeed = 100;
     }
 //endregion
@@ -259,52 +252,6 @@ public class GoonBotTeleOp extends OpMode
             // Drivetrain Code Execution
             motors.drive(gamepad1.left_stick_y, gamepad1.left_stick_x,
                     gamepad1.right_stick_x, gamepad1.dpad_down, driveSpeed);
-
-            // Intake
-            if (gamepad1.left_bumper)
-            {
-                ballForward = intakeSpeed;
-            }
-            else
-            {
-                ballForward = 0.0;
-            }
-            if (gamepad1.right_bumper)
-            {
-                ballBackward = intakeSpeed;
-            }
-            else
-            {
-                ballBackward = 0.0;
-            }
-
-            intake.suck(ballForward);
-            intake.blow(ballBackward);
-
-            // Transfer
-            if (gamepad1.left_bumper)
-            {
-                ballForward = transferSpeed;
-            }
-            else
-            {
-                ballForward = 0.0;
-            }
-            if (gamepad1.right_bumper)
-            {
-                ballBackward = transferSpeed;
-            }
-            else
-            {
-                ballBackward = 0.0;
-            }
-
-            transfer.spinTransfer(ballForward);
-            transfer.reverseTransfer(ballBackward);
-
-            // Launcher
-            launcher.Launch(gamepad1.right_trigger, launcherSpeed);
-            launcher.reverseLaunch(gamepad1.left_trigger, launcherSpeed);
         }
     }
 //endregion
