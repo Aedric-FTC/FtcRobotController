@@ -17,7 +17,7 @@ public class GoonBotTeleOp extends OpMode
     Intake intake = new Intake();
     Launcher launcher = new Launcher();
     Transfer transfer = new Transfer();
-    Menu menu = new Menu();
+    Menu menu = new Menu(this);
 //endregion
 
 // ------------------------------------------------------------------------------------------------------------|
@@ -190,60 +190,7 @@ public class GoonBotTeleOp extends OpMode
     @Override
     public void loop()
     {
-        boolean menuMode = buttonToggle(gamepad1.start);
-        if (menuMode)
-        {
-            telemetry.addLine("Modifier Menu");
-            telemetry.addLine();
-            telemetry.addLine("CONTROLS:");
-            telemetry.addLine("D-Pad up/down to scroll");
-            telemetry.addLine("D-Pad left/right to change values");
-            telemetry.addLine();
-
-            menuCounter = menuScroller(gamepad1.dpad_down, gamepad1.dpad_up, menuCounter, 1, 4);
-            if (menuCounter == 1)
-            {
-                // Drive Speed Mods
-                driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
-                driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
-                telemetry.addData(">  Drive Speed", driveSpeed);
-            } else
-            {
-                telemetry.addData("Drive Speed", driveSpeed);
-            }
-
-            if (menuCounter == 2)
-            {
-                intakeSpeed = increment(gamepad1.dpad_right, intakeSpeed, 1, 100);
-                intakeSpeed = decrement(gamepad1.dpad_left, intakeSpeed, 1, 0);
-                telemetry.addData(">  Intake Speed", intakeSpeed);
-            } else
-            {
-                telemetry.addData("Intake Speed", intakeSpeed);
-            }
-
-            if (menuCounter == 3)
-            {
-                transferSpeed = increment(gamepad1.dpad_right, transferSpeed, 1, 100);
-                transferSpeed = decrement(gamepad1.dpad_left, transferSpeed, 1, 0);
-                telemetry.addData(">  Transfer Speed", transferSpeed);
-            }
-            else
-            {
-                telemetry.addData("Transfer Speed", transferSpeed);
-            }
-
-            if (menuCounter == 4)
-            {
-                launcherSpeed = increment(gamepad1.dpad_right, launcherSpeed, 1, 100);
-                launcherSpeed = decrement(gamepad1.dpad_left, launcherSpeed, 1, 0);
-                telemetry.addData(">  Launcher Speed", launcherSpeed);
-            } else
-            {
-                telemetry.addData("Launcher Speed", launcherSpeed);
-            }
-        }
-        else
+        if (!menu.menuMode)
         {
             telemetry.addLine("Press START for menu");
             telemetry.addLine();
@@ -305,6 +252,10 @@ public class GoonBotTeleOp extends OpMode
             // Launcher
             launcher.Launch(gamepad1.right_trigger, launcherSpeed);
             launcher.reverseLaunch(gamepad1.left_trigger, launcherSpeed);
+        }
+        else
+        {
+
         }
     }
 //endregion
