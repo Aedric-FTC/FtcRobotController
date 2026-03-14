@@ -14,7 +14,7 @@ public class GoonBotTeleOp extends OpMode
 //region Class Calls
     motorDrive motors = new motorDrive();
     light light = new light();
-    Menu menu = new Menu();
+    Menu menu = new Menu(this);
 //endregion
 
 // ------------------------------------------------------------------------------------------------------------|
@@ -48,7 +48,7 @@ public class GoonBotTeleOp extends OpMode
 //region Increment
 // Increment ------------------------------------------------------------------------------------------- Increment Method
     public boolean wasIncInput;
-    public double increment(boolean inputKey, double inputValue, int incrementValue, int max)
+    public int increment(boolean inputKey, int inputValue, int incrementValue, int max)
     {
         int increment;
         if (inputKey && !wasIncInput)
@@ -171,70 +171,29 @@ public class GoonBotTeleOp extends OpMode
     {
         telemetry.addData("Drive Speed", driveSpeed);
 
-        driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
+        //driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
         driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
     }
 //endregion
 
 //region Loop
 // Loop ------------------------------------------------------------------------------------------------ Loop
-    double ballForward;
-    double ballBackward;
+    double menuTest1;
+    double menuTest2;
+    double menuTest3;
+    double menuTest4;
     @Override
     public void loop()
     {
-        boolean menuMode = buttonToggle(gamepad1.start);
-        if (menuMode)
+        menu.setMenuMode();
+
+        if (menu.menuMode)
         {
-            telemetry.addLine("Modifier Menu");
-            telemetry.addLine();
-            telemetry.addLine("CONTROLS:");
-            telemetry.addLine("D-Pad up/down to scroll");
-            telemetry.addLine("D-Pad left/right to change values");
-            telemetry.addLine();
-
-            menuCounter = menuScroller(gamepad1.dpad_down, gamepad1.dpad_up, menuCounter, 1, 4);
-            if (menuCounter == 1)
-            {
-                // Drive Speed Mods
-                driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
-                driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
-                telemetry.addData(">  Drive Speed", driveSpeed);
-            } else
-            {
-                telemetry.addData("Drive Speed", driveSpeed);
-            }
-
-            if (menuCounter == 2)
-            {
-                intakeSpeed = increment(gamepad1.dpad_right, intakeSpeed, 1, 100);
-                intakeSpeed = decrement(gamepad1.dpad_left, intakeSpeed, 1, 0);
-                telemetry.addData(">  Intake Speed", intakeSpeed);
-            } else
-            {
-                telemetry.addData("Intake Speed", intakeSpeed);
-            }
-
-            if (menuCounter == 3)
-            {
-                transferSpeed = increment(gamepad1.dpad_right, transferSpeed, 1, 100);
-                transferSpeed = decrement(gamepad1.dpad_left, transferSpeed, 1, 0);
-                telemetry.addData(">  Transfer Speed", transferSpeed);
-            }
-            else
-            {
-                telemetry.addData("Transfer Speed", transferSpeed);
-            }
-
-            if (menuCounter == 4)
-            {
-                launcherSpeed = increment(gamepad1.dpad_right, launcherSpeed, 1, 100);
-                launcherSpeed = decrement(gamepad1.dpad_left, launcherSpeed, 1, 0);
-                telemetry.addData(">  Launcher Speed", launcherSpeed);
-            } else
-            {
-                telemetry.addData("Launcher Speed", launcherSpeed);
-            }
+            menu.setMenuCounter(4);
+            menuTest1 = menu.setMenuItem(1,"Menu Test 1", menuTest1, 1, 0, 100);
+            menuTest2 = menu.setMenuItem(2,"Menu Test 2", menuTest2, 1, 0, 100);
+            menuTest3 = menu.setMenuItem(3,"Menu Test 3", menuTest3, 1, 0, 100);
+            menuTest4 = menu.setMenuItem(4,"Menu Test 4", menuTest4, 1, 0, 100);
         }
         else
         {
