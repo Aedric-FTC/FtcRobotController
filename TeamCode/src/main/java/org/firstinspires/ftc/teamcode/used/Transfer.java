@@ -14,17 +14,21 @@ public class Transfer
         transferMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void spinTransfer(double speed)
+    public void spin(double speed, boolean suckKey, boolean blowKey)
     {
         speed /= 100;
 
+        if (suckKey)
+        {
             transferMotor.setPower(speed);
-    }
-
-    public void reverseTransfer(double speed)
-    {
-        speed /= -100;
-
-            transferMotor.setPower(speed);
+        }
+        else if (blowKey)
+        {
+            transferMotor.setPower(-speed);
+        }
+        else
+        {
+            transferMotor.setPower(0);
+        }
     }
 }

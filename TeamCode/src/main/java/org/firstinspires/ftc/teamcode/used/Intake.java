@@ -16,17 +16,21 @@ public class Intake
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void suck(double speed)
+    public void spin(double speed, boolean suckKey, boolean blowKey)
     {
         speed /= 100;
 
-        intakeMotor.setPower(speed);
-    }
-
-    public void blow(double speed)
-    {
-        speed /= -100;
-
-        intakeMotor.setPower(speed);
+        if (suckKey)
+        {
+            intakeMotor.setPower(speed);
+        }
+        else if (blowKey)
+        {
+            intakeMotor.setPower(-speed);
+        }
+        else
+        {
+            intakeMotor.setPower(0);
+        }
     }
 }
