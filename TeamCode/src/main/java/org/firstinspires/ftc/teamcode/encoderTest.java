@@ -7,34 +7,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@Disabled
 @TeleOp
 public class encoderTest extends OpMode
 {
-    double ticksPerRev;
     private DcMotor motor;
     public void motorInit(HardwareMap hwMap)
     {
         motor = hwMap.get(DcMotor.class, "frMotor");
         motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        ticksPerRev = motor.getMotorType().getTicksPerRev();
     }
 
     public void spin()
     {
-        if (gamepad1.left_bumper)
-        {
-            motor.setPower(0.5);
-        }
-        else if (gamepad1.right_bumper)
-        {
-            motor.setPower(-0.5);
-        }
-        else
-        {
-            motor.setPower(0);
-        }
+        motor.setPower(gamepad1.right_trigger);
     }
 
     @Override
@@ -47,6 +33,5 @@ public class encoderTest extends OpMode
     public void loop()
     {
         spin();
-        telemetry.addData("Motor Revs", motor.getCurrentPosition() / ticksPerRev);
     }
 }
