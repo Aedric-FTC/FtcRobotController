@@ -192,10 +192,10 @@ public class GoonBotTeleOp extends OpMode
         if (menu.menuMode)
         {
             menu.setMenuCounter(4);
-            menu.setMenuItem(1,"Drive Speed", driveSpeed, 5, 0, 100);
-            menu.setMenuItem(2,"Launcher Speed", launcherSpeed, 1, 0, 100);
-            menu.setMenuItem(3,"Transfer Speed", transferSpeed, 5, 0, 100);
-            menu.setMenuItem(4,"Intake Speed", intakeSpeed, 5, 0, 100);
+            driveSpeed = menu.setMenuItem(1,"Drive Speed", driveSpeed, 5, 0, 100);
+            launcherSpeed = menu.setMenuItem(2,"Launcher Speed", launcherSpeed, 1, 0, 100);
+            transferSpeed = menu.setMenuItem(3,"Transfer Speed", transferSpeed, 5, 0, 100);
+            intakeSpeed = menu.setMenuItem(4,"Intake Speed", intakeSpeed, 5, 0, 100);
         }
         else
         {
