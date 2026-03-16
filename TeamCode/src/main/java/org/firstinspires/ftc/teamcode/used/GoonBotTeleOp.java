@@ -222,8 +222,7 @@ public class GoonBotTeleOp extends OpMode
             transfer.spin(transferSpeed, gamepad1.left_bumper, gamepad1.right_bumper);
 
             // Launcher
-            launcher.Launch(gamepad1.right_trigger, launcherSpeed);
-            launcher.reverseLaunch(gamepad1.left_trigger, launcherSpeed);
+            launcher.Launch(launcherSpeed, gamepad1.right_trigger, gamepad1.left_trigger);
         }
     }
 //endregion

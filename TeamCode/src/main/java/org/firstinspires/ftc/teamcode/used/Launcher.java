@@ -22,19 +22,21 @@ public class Launcher
         launcherR.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void Launch(double inputTrigger, double speed)
+    public void Launch(double speed, double launchTrigger, double pullTrigger)
     {
         speed /= 100;
 
-        launcherL.setPower(inputTrigger * speed);
-        launcherR.setPower(inputTrigger * speed);
-    }
+        if (launchTrigger > 0)
+        {
+            launcherL.setPower(speed);
+            launcherR.setPower(speed);
+        }
 
-    public void reverseLaunch(double inputTrigger, double speed)
-    {
-        speed /= 100;
-        launcherL.setPower(-inputTrigger * speed);
-        launcherR.setPower(-inputTrigger * speed);
+        if (pullTrigger > 0)
+        {
+            launcherL.setPower(-speed);
+            launcherR.setPower(-speed);
+        }
     }
 }
 
