@@ -95,57 +95,7 @@ public class GoonBotTeleOp extends OpMode
 //endregion
 
 //region Menu Test
-// Menu Test ------------------------------------------------------------------------------------------- Menu Test
-    boolean wasMenuInputPlus;
-    boolean wasMenuInputMinus;
-    int outputValue;
-    public int menuScroller(boolean incrementKey, boolean decrementKey, int inputValue, int modValue, int itemCount)
-    {
-        int increment;
-
-        // Increment
-        if (incrementKey && !wasMenuInputPlus)
-        {
-            increment = modValue;
-        }
-        else
-        {
-            increment = 0;
-        }
-        wasMenuInputPlus = incrementKey;
-        if (inputValue + increment <= itemCount)
-        {
-            inputValue += increment;
-            outputValue = inputValue;
-        }
-
-        // Decrement
-        if (decrementKey && !wasMenuInputMinus)
-        {
-            increment = modValue;
-        }
-        else
-        {
-            increment = 0;
-        }
-        wasMenuInputMinus = decrementKey;
-        if (inputValue - increment > 0)
-        {
-            inputValue -= increment;
-            outputValue = inputValue;
-        }
-
-        if (outputValue > 0)
-        {
-            return outputValue;
-        }
-        else
-        {
-            return inputValue;
-        }
-    }
-
-    public int menuCounter = 1;
+// Speeds ---------------------------------------------------------------------------------------------- Speeds
     public double intakeSpeed = 100;
     public double transferSpeed = 100;
     public double launcherSpeed = 50;
