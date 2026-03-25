@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.used;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
-public class Launcher
+public class Launcher extends OpMode
 {
+    light light = new light();
     private DcMotor launcherL;
     private DcMotor launcherR;
 
@@ -20,6 +22,40 @@ public class Launcher
         launcherR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launcherR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         launcherR.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    int currentPos;
+    int lastPos;
+    double elapsedTime;
+    double lastTime;
+    double RPM;
+
+    public void getMotorSpeed(double speed)
+    {
+        currentPos = launcherR.getCurrentPosition();
+        elapsedTime = getRuntime();
+
+        int posChange = currentPos - lastPos;
+        double timeChange = elapsedTime - lastTime;
+
+        double motorTPS = posChange / timeChange;
+
+        lastPos = currentPos;
+        lastTime = elapsedTime;
+
+        RPM = (motorTPS * 60) / 400;
+
+        double wantedRPM = 6000 / speed;
+        int deadZone = 250;
+
+        if (Math.abs(RPM) >= wantedRPM - deadZone)
+        {
+            light.lightBlue();
+        }
+        else
+        {
+            light.lightRed();
+        }
     }
 
     public void Launch(double speed, double launchTrigger, double pullTrigger)
@@ -37,6 +73,21 @@ public class Launcher
             launcherL.setPower(-speed);
             launcherR.setPower(-speed);
         }
+
+        getMotorSpeed(speed);
+    }
+
+
+    @Override
+    public void init()
+    {
+
+    }
+
+    @Override
+    public void loop()
+    {
+
     }
 }
 
