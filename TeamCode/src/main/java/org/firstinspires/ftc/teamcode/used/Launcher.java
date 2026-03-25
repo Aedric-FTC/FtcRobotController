@@ -74,7 +74,10 @@ public class Launcher extends OpMode
             launcherR.setPower(-speed);
         }
 
-        getMotorSpeed(speed);
+        if (launchTrigger > 0.15)
+        {
+            getMotorSpeed(speed);
+        }
     }
 
 
