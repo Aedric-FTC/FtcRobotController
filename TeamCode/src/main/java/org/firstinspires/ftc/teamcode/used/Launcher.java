@@ -50,6 +50,9 @@ public class Launcher extends OpMode
 
     }
 
+    boolean didChangeF;
+    boolean didChangeR;
+
     public void spin(double speed, double launchTrigger, double pullTrigger)
     {
         speed /= 100;
@@ -58,12 +61,32 @@ public class Launcher extends OpMode
         {
             launcherL.setPower(speed);
             launcherR.setPower(speed);
+            didChangeF = true;
+        }
+        else
+        {
+            didChangeF = false;
+        }
+        if (!didChangeF)
+        {
+            launcherL.setPower(0);
+            launcherR.setPower(0);
         }
 
         if (pullTrigger > 0)
         {
             launcherL.setPower(-speed);
             launcherR.setPower(-speed);
+            didChangeR = true;
+        }
+        else
+        {
+            didChangeR = false;
+        }
+        if (!didChangeR)
+        {
+            launcherL.setPower(0);
+            launcherR.setPower(0);
         }
 
         if (launchTrigger > 0.15)
