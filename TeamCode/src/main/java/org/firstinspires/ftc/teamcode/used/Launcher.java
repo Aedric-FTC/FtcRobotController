@@ -48,14 +48,6 @@ public class Launcher extends OpMode
         double wantedRPM = 6000 / speed;
         int deadZone = 250;
 
-        if (Math.abs(RPM) >= wantedRPM - deadZone)
-        {
-            light.lightBlue();
-        }
-        else
-        {
-            light.lightRed();
-        }
     }
 
     public void spin(double speed, double launchTrigger, double pullTrigger)
