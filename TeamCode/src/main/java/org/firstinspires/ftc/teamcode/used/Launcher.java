@@ -58,7 +58,7 @@ public class Launcher extends OpMode
         }
     }
 
-    public void Launch(double speed, double launchTrigger, double pullTrigger)
+    public void spin(double speed, double launchTrigger, double pullTrigger)
     {
         speed /= 100;
 

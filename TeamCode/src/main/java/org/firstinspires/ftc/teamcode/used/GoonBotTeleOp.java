@@ -24,30 +24,6 @@ public class GoonBotTeleOp extends OpMode
 // Methods ---------------------------------------------------------------------------------------------Methods
 //-------------------------------------------------------------------------------------------------------------|
 
-//region Toggler Method
-// Toggler Method -------------------------------------------------------------------------------------- Toggler Method
-    public boolean lastInput;
-    public boolean outputToggle;
-    private boolean buttonToggle(boolean input)
-    {
-        boolean output;
-        if (input && !lastInput)
-        {
-            outputToggle = !outputToggle;
-        }
-
-        lastInput = input;
-
-        if (outputToggle)
-        {
-            output = true;
-        } else {
-            output = false;
-        }
-        return output;
-    }
-//endregion
-
 //region Increment
 // Increment ------------------------------------------------------------------------------------------- Increment Method
     public boolean wasIncInput;
@@ -94,8 +70,9 @@ public class GoonBotTeleOp extends OpMode
     }
 //endregion
 
-//region Menu Test
+//region Motor Speed Settings
 // Speeds ---------------------------------------------------------------------------------------------- Speeds
+    public double driveSpeed;
     public double intakeSpeed = 100;
     public double transferSpeed = 100;
     public double launcherSpeed = 50;
@@ -107,7 +84,7 @@ public class GoonBotTeleOp extends OpMode
 
 //region Init
 // Init ------------------------------------------------------------------------------------------------ Init
-    double driveSpeed;
+
     @Override
     public void init()
     {
@@ -118,18 +95,6 @@ public class GoonBotTeleOp extends OpMode
         launcher.init(hardwareMap);
 
         driveSpeed = 100;
-    }
-//endregion
-
-//region Init Loop
-// Init Loop ------------------------------------------------------------------------------------------- Init Loop
-    @Override
-    public void init_loop()
-    {
-        telemetry.addData("Drive Speed", driveSpeed);
-
-        driveSpeed = increment(gamepad1.dpad_right, driveSpeed, 5, 100);
-        driveSpeed = decrement(gamepad1.dpad_left, driveSpeed, 5, 0);
     }
 //endregion
 
@@ -172,7 +137,7 @@ public class GoonBotTeleOp extends OpMode
             transfer.spin(transferSpeed, gamepad1.left_bumper, gamepad1.right_bumper);
 
             // Launcher
-            launcher.Launch(launcherSpeed, gamepad1.right_trigger, gamepad1.left_trigger);
+            launcher.spin(launcherSpeed, gamepad1.right_trigger, gamepad1.left_trigger);
         }
     }
 //endregion
