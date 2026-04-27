@@ -22,7 +22,7 @@ public class RacerOp extends OpMode
     double lastTimeFast;
     double RPMFast;
 
-    public void getSlowMotorSpeed(double speed)
+    public void getSlowMotorSpeed()
     {
         currentPosSlow = motors.slow.getCurrentPosition();
         elapsedTimeSlow = getRuntime();
@@ -36,9 +36,6 @@ public class RacerOp extends OpMode
         lastTimeSlow = elapsedTimeSlow;
 
         RPMSlow = (motorTPS * 60) / 400;
-
-        double wantedRPM = 6000 / speed;
-        int deadZone = 250;
     }
 
     public void getFastMotorSpeed()
@@ -69,30 +66,74 @@ public class RacerOp extends OpMode
     }
 
     public double driveSpeed;
-
+    double trueSpeed = 0;
+    double truerSpeed = 0;
+    double truestSpeed = 0;
     @Override
     public void loop()
     {
         menu.menuMode = true;
         menu.setMenuCounter(1);
 
-        getSlowMotorSpeed(driveSpeed);
+        getSlowMotorSpeed();
         getFastMotorSpeed();
 
-        driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);
-        telemetry.addLine("Drive Speed = " + driveSpeed);
-        if (RPMSlow >= 400 / driveSpeed)
+        if (gamepad1.x)
         {
-            motors.slow.setPower(0);
-            motors.sixR.setPower(gamepad1.right_trigger * (driveSpeed / 100));
-            motors.sixL.setPower(gamepad1.right_trigger * (driveSpeed / 100));
+            motors.sixR.setPower(1);
+            motors.sixL.setPower(1);
         }
         else
         {
             motors.sixR.setPower(0);
             motors.sixL.setPower(0);
-            motors.slow.setPower(gamepad1.right_trigger * (driveSpeed / 100));
+        }
+        if (gamepad1.b)
+        {
+            motors.slow.setPower(1);
+        }
+        else
+        {
+            motors.slow.setPower(0);
         }
 
+        driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);
+        telemetry.addLine("Drive Speed = " + driveSpeed);
+
+
+        if (gamepad1.right_trigger * (driveSpeed / 100) > trueSpeed)
+        {
+            trueSpeed = gamepad1.right_trigger * (driveSpeed / 100);
+        }
+
+        if (gamepad1.right_trigger > 0 && truerSpeed + (0.02 * trueSpeed) <= gamepad1.right_trigger * (driveSpeed / 100))
+        {
+            truerSpeed += 0.05 * trueSpeed;
+            truestSpeed = truerSpeed;
+        }
+        else if (gamepad1.right_trigger == 0)
+        {
+            truestSpeed = 0;
+        }
+
+        if (gamepad1.left_trigger > 0 && truerSpeed - 0.1 >= 0)
+        {
+            truerSpeed -= 0.1 * gamepad1.left_trigger;
+            truestSpeed = truerSpeed;
+        }
+
+        if (RPMSlow >= 400 / driveSpeed)
+        {
+            motors.slow.setPower(0);
+
+            motors.sixR.setPower(truestSpeed);
+            motors.sixL.setPower(truestSpeed);
+        }
+        else
+        {
+            motors.sixR.setPower(0);
+            motors.sixL.setPower(0);
+            motors.slow.setPower(truestSpeed);
+        }
     }
 }
