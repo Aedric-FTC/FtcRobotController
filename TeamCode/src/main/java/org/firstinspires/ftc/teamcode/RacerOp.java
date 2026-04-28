@@ -54,86 +54,95 @@ public class RacerOp extends OpMode
         RPMFast = (motorTPS * 60) / 400;
     }
 
-    public double avgMotorSpeed()
-    {
-        return (RPMSlow + RPMFast) /2;
-    }
-
     @Override
     public void init()
     {
         motors.init(hardwareMap);
     }
-
-    public double driveSpeed;
+    public double driveSpeed = 100;
     double trueSpeed = 0;
     double truerSpeed = 0;
     double truestSpeed = 0;
+    double truesterSpeed = 0;
+
     @Override
     public void loop()
     {
         menu.menuMode = true;
+        menu.setMenuMode();
         menu.setMenuCounter(1);
 
         getSlowMotorSpeed();
         getFastMotorSpeed();
 
-        if (gamepad1.x)
+        if (menu.menuMode)
         {
-            motors.sixR.setPower(1);
-            motors.sixL.setPower(1);
+            if (gamepad1.x)
+            {
+                motors.sixR.setPower(1 * (driveSpeed / 100));
+                motors.sixL.setPower(1 * (driveSpeed / 100));
+            } else
+            {
+                motors.sixR.setPower(0);
+                motors.sixL.setPower(0);
+            }
+            if (gamepad1.b)
+            {
+                motors.slow.setPower(1 * (driveSpeed / 100));
+            } else
+            {
+                motors.slow.setPower(0);
+            }
         }
         else
         {
-            motors.sixR.setPower(0);
-            motors.sixL.setPower(0);
-        }
-        if (gamepad1.b)
-        {
-            motors.slow.setPower(1);
-        }
-        else
-        {
-            motors.slow.setPower(0);
+            if (gamepad1.right_trigger * (driveSpeed / 100) > trueSpeed)
+            {
+                trueSpeed = gamepad1.right_trigger * (driveSpeed / 100);
+            }
+
+            if (gamepad1.right_trigger > 0 && truerSpeed + (0.02 * trueSpeed) <= gamepad1.right_trigger * (driveSpeed / 100))
+            {
+                truerSpeed += 0.05 * trueSpeed;
+                truestSpeed = truerSpeed;
+                truesterSpeed = truestSpeed;
+            }
+            else if (gamepad1.right_trigger == 0 && truerSpeed - (0.02 * trueSpeed) >= 0)
+            {
+                truerSpeed -= 0.05 * trueSpeed;
+                truestSpeed = truerSpeed;
+                truesterSpeed = truestSpeed;
+            }
+
+            if (gamepad1.left_trigger > 0)
+            {
+                motors.brake();
+            }
+            else
+            {
+                motors.floatyTime();
+            }
+
+            if (truesterSpeed >= 0.5 * (driveSpeed / 100))
+            {
+                motors.slow.setPower(0);
+
+                motors.sixR.setPower(truestSpeed);
+                motors.sixL.setPower(truestSpeed);
+            }
+            else if (gamepad1.right_trigger >0)
+            {
+                motors.sixR.setPower(0);
+                motors.sixL.setPower(0);
+                motors.slow.setPower(truesterSpeed);
+            }
+            else
+            {
+                motors.coast();
+            }
         }
 
         driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);
         telemetry.addLine("Drive Speed = " + driveSpeed);
-
-
-        if (gamepad1.right_trigger * (driveSpeed / 100) > trueSpeed)
-        {
-            trueSpeed = gamepad1.right_trigger * (driveSpeed / 100);
-        }
-
-        if (gamepad1.right_trigger > 0 && truerSpeed + (0.02 * trueSpeed) <= gamepad1.right_trigger * (driveSpeed / 100))
-        {
-            truerSpeed += 0.05 * trueSpeed;
-            truestSpeed = truerSpeed;
-        }
-        else if (gamepad1.right_trigger == 0)
-        {
-            truestSpeed = 0;
-        }
-
-        if (gamepad1.left_trigger > 0 && truerSpeed - 0.1 >= 0)
-        {
-            truerSpeed -= 0.1 * gamepad1.left_trigger;
-            truestSpeed = truerSpeed;
-        }
-
-        if (RPMSlow >= 400 / driveSpeed)
-        {
-            motors.slow.setPower(0);
-
-            motors.sixR.setPower(truestSpeed);
-            motors.sixL.setPower(truestSpeed);
-        }
-        else
-        {
-            motors.sixR.setPower(0);
-            motors.sixL.setPower(0);
-            motors.slow.setPower(truestSpeed);
-        }
     }
 }
