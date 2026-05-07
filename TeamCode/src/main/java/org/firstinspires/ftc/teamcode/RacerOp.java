@@ -24,7 +24,7 @@ public class RacerOp extends OpMode
 
     public void getSlowMotorSpeed()
     {
-        currentPosSlow = motors.slow.getCurrentPosition();
+        currentPosSlow = motors.sixM.getCurrentPosition();
         elapsedTimeSlow = getRuntime();
 
         int posChange = currentPosSlow - lastPosSlow;
@@ -88,10 +88,10 @@ public class RacerOp extends OpMode
             }
             if (gamepad1.b)
             {
-                motors.slow.setPower(1 * (driveSpeed / 100));
+                motors.sixM.setPower(1 * (driveSpeed / 100));
             } else
             {
-                motors.slow.setPower(0);
+                motors.sixM.setPower(0);
             }
         }
         else
@@ -123,23 +123,22 @@ public class RacerOp extends OpMode
                 motors.floatyTime();
             }
 
-            if (truesterSpeed >= 0.5 * (driveSpeed / 100))
+            if (gamepad1.right_trigger >= 0.15)
             {
-                motors.slow.setPower(0);
-
+                motors.sixM.setPower(truestSpeed);
                 motors.sixR.setPower(truestSpeed);
                 motors.sixL.setPower(truestSpeed);
-            }
-            else if (gamepad1.right_trigger >0)
-            {
-                motors.sixR.setPower(0);
-                motors.sixL.setPower(0);
-                motors.slow.setPower(truesterSpeed);
             }
             else
             {
                 motors.coast();
             }
+
+            double turnTicks = 383.6;
+
+            double turnAngle = ((17.0/300) * turnTicks);
+
+            motors.turnMotor.setTargetPosition((int)(turnAngle * (-gamepad1.left_stick_x)));
         }
 
         driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);

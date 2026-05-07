@@ -1,49 +1,52 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RaceMotors
 {
     public DcMotor sixR;
     public DcMotor sixL;
-    public DcMotor slow;
+    public DcMotor sixM;
+    public DcMotor turnMotor;
 
     public void init(HardwareMap hwMap)
     {
         sixR = hwMap.get(DcMotor.class, "sixR");
         sixR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sixR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        sixR.setDirection(DcMotor.Direction.REVERSE);
 
         sixL = hwMap.get(DcMotor.class, "sixL");
         sixL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sixL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        sixL.setDirection(DcMotorSimple.Direction.REVERSE);
+        sixL.setDirection(DcMotor.Direction.REVERSE);
 
-        slow = hwMap.get(DcMotor.class, "slow");
-        slow.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        slow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        sixM = hwMap.get(DcMotor.class, "slow");
+        sixM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        sixM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        turnMotor = hwMap.get(DcMotor.class, "turnMotor");
+        turnMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turnMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void coast()
     {
         sixL.setPower(0);
         sixR.setPower(0);
-        slow.setPower(0);
+        sixM.setPower(0);
     }
 
     public void brake()
     {
-        sixR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        sixL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        sixM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void floatyTime()
     {
         sixR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         sixL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        slow.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        sixM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 }
