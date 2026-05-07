@@ -22,7 +22,7 @@ public class RaceMotors
         sixL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         sixL.setDirection(DcMotor.Direction.REVERSE);
 
-        sixM = hwMap.get(DcMotor.class, "slow");
+        sixM = hwMap.get(DcMotor.class, "sixM");
         sixM.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sixM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
