@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.used.Menu;
 @TeleOp
@@ -139,6 +140,8 @@ public class RacerOp extends OpMode
             double turnAngle = ((17.0/300) * turnTicks);
 
             motors.turnMotor.setTargetPosition((int)(turnAngle * (-gamepad1.left_stick_x)));
+            motors.turnMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motors.turnMotor.setPower(0.5);
         }
 
         driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);

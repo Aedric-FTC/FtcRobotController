@@ -27,7 +27,7 @@ public class RaceMotors
         sixM.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         turnMotor = hwMap.get(DcMotor.class, "turnMotor");
-        turnMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turnMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turnMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
