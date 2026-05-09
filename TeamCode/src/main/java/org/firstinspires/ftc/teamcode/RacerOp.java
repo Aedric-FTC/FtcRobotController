@@ -10,6 +10,7 @@ public class RacerOp extends OpMode
 {
     RaceMotors motors = new RaceMotors();
     Menu menu = new Menu(this);
+    camControl camera = new camControl();
 
     int currentPosSlow;
     int lastPosSlow;
@@ -59,6 +60,7 @@ public class RacerOp extends OpMode
     public void init()
     {
         motors.init(hardwareMap);
+        camera.initCamera(hardwareMap);
     }
     public double driveSpeed = 100;
     double trueSpeed = 0;
@@ -137,9 +139,21 @@ public class RacerOp extends OpMode
 
             double turnTicks = 383.6;
 
-            double turnAngle = ((30.0/360.0) * turnTicks);
+            double turnAngle = ((45.0/360.0) * turnTicks);
 
-            motors.turnMotor.setTargetPosition((int)(turnAngle * (-gamepad1.left_stick_x)));
+            //motors.turnMotor.setTargetPosition((int)(turnAngle * (-gamepad1.left_stick_x)));
+            if (gamepad1.left_stick_x > 0)
+            {
+                motors.turnMotor.setTargetPosition(-(int)turnAngle);
+            }
+            else if (gamepad1.left_stick_x < 0)
+            {
+                motors.turnMotor.setTargetPosition((int)turnAngle);
+            }
+            else
+            {
+                motors.turnMotor.setTargetPosition(0);
+            }
             motors.turnMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motors.turnMotor.setPower(1);
         }
