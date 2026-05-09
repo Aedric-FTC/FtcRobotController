@@ -1,59 +1,45 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.used.Menu;
+
+import java.text.DecimalFormat;
+
 @TeleOp
 public class RacerOp extends OpMode
 {
     RaceMotors motors = new RaceMotors();
     Menu menu = new Menu(this);
     camControl camera = new camControl();
+    FtcDashboard ftcDashboard = FtcDashboard.getInstance();
+    Telemetry dashTelemetry = ftcDashboard.getTelemetry();
+    DecimalFormat df = new DecimalFormat("#.##");
 
-    int currentPosSlow;
-    int lastPosSlow;
-    double elapsedTimeSlow;
-    double lastTimeSlow;
-    double RPMSlow;
-
-    int currentPosFast;
-    int lastPosFast;
-    double elapsedTimeFast;
-    double lastTimeFast;
-    double RPMFast;
-
-    public void getSlowMotorSpeed()
-    {
-        currentPosSlow = motors.sixM.getCurrentPosition();
-        elapsedTimeSlow = getRuntime();
-
-        int posChange = currentPosSlow - lastPosSlow;
-        double timeChange = elapsedTimeSlow - lastTimeSlow;
-
-        double motorTPS = posChange / timeChange;
-
-        lastPosSlow = currentPosSlow;
-        lastTimeSlow = elapsedTimeSlow;
-
-        RPMSlow = (motorTPS * 60) / 400;
-    }
+    int currentPos;
+    int lastPos;
+    double elapsedTime;
+    double lastTime;
+    double RPM;
 
     public void getFastMotorSpeed()
     {
-        currentPosFast = (motors.sixR.getCurrentPosition() + motors.sixL.getCurrentPosition()) / 2;
-        elapsedTimeFast = getRuntime();
+        currentPos = (motors.sixR.getCurrentPosition() + motors.sixL.getCurrentPosition() + motors.sixM.getCurrentPosition()) / 3;
+        elapsedTime = getRuntime();
 
-        int posChange = currentPosFast - lastPosFast;
-        double timeChange = elapsedTimeFast - lastTimeFast;
+        int posChange = currentPos - lastPos;
+        double timeChange = elapsedTime - lastTime;
 
         double motorTPS = posChange / timeChange;
 
-        lastPosFast = currentPosFast;
-        lastTimeFast = elapsedTimeFast;
+        lastPos = currentPos;
+        lastTime = elapsedTime;
 
-        RPMFast = (motorTPS * 60) / 400;
+        RPM = (motorTPS * 60) / 400;
     }
 
     @Override
@@ -67,6 +53,9 @@ public class RacerOp extends OpMode
     double truerSpeed = 0;
     double truestSpeed = 0;
     double truesterSpeed = 0;
+    String preMph;
+    double mph;
+    double mps;
 
     @Override
     public void loop()
@@ -75,7 +64,6 @@ public class RacerOp extends OpMode
         menu.setMenuMode();
         menu.setMenuCounter(1);
 
-        getSlowMotorSpeed();
         getFastMotorSpeed();
 
         if (menu.menuMode)
@@ -160,5 +148,10 @@ public class RacerOp extends OpMode
 
         driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);
         telemetry.addLine("Drive Speed = " + driveSpeed);
+        mph = Double.parseDouble(df.format((0.3 * RPM)/26.8224));
+        mps = Double.parseDouble(df.format((0.3 * RPM/26.8224)/2.237));
+        dashTelemetry.addData("Speed in Miles per Hour", mph);
+        dashTelemetry.addData("Speed in Meters per Second", mps);
+        dashTelemetry.update();
     }
 }
