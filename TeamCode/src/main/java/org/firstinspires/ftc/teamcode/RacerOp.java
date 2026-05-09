@@ -137,7 +137,7 @@ public class RacerOp extends OpMode
 
             double turnTicks = 383.6;
 
-            double turnAngle = ((17.0/300) * turnTicks);
+            double turnAngle = ((30.0/360.0) * turnTicks);
 
             motors.turnMotor.setTargetPosition((int)(turnAngle * (-gamepad1.left_stick_x)));
             motors.turnMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
