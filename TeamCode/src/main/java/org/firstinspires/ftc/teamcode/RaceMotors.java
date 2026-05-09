@@ -15,7 +15,6 @@ public class RaceMotors
         sixR = hwMap.get(DcMotor.class, "sixR");
         sixR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         sixR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        sixR.setDirection(DcMotor.Direction.REVERSE);
 
         sixL = hwMap.get(DcMotor.class, "sixL");
         sixL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

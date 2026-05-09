@@ -141,7 +141,7 @@ public class RacerOp extends OpMode
 
             motors.turnMotor.setTargetPosition((int)(turnAngle * (-gamepad1.left_stick_x)));
             motors.turnMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motors.turnMotor.setPower(0.5);
+            motors.turnMotor.setPower(1);
         }
 
         driveSpeed = menu.setMenuItem(1, "Drive Speed", driveSpeed, 5, 0, 100);
