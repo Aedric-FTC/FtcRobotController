@@ -1,14 +1,15 @@
-package org.firstinspires.ftc.teamcode.used;
+package org.firstinspires.ftc.teamcode.Json;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-public class Menu
+public class JsonMenu
 {
-    public Menu(OpMode opMode)
+    public JsonMenu(OpMode opMode)
     {
         this.opMode = opMode;
     }
     OpMode opMode;
+    json json = new json();
 
     public boolean menuMode;
     public int menuCounter = 1;
@@ -89,7 +90,7 @@ public class Menu
 
     boolean wasIncremented;
     boolean wasDecremented;
-    public double setMenuItem(int menuNumber, String itemName, double input, double increment, double min, double max)
+    public void createMenuItem(int menuNumber, String itemName, double input, double increment, double min, double max)
     {
         if (menuMode)
         {
@@ -116,7 +117,11 @@ public class Menu
             {
                 opMode.telemetry.addData(itemName, input);
             }
+            json.writeJsonProperty(itemName, input);
         }
-        return input;
+    }
+    public Object useMenuItem(String itemName)
+    {
+        return json.getJsonProperty(itemName);
     }
 }
