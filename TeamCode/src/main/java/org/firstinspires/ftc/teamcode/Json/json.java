@@ -24,11 +24,11 @@ public class json
     {
         if (fileName != null)
         {
-            filePath = "/sdcard/FIRST/" + fileName + ".json";
+            filePath = "/src/main/assets" + fileName + ".json";
         }
         else
         {
-            filePath = "/sdcard/FIRST/configFile.json";
+            filePath = "/src/main/assets/configFile.json";
         }
     }
 
@@ -36,7 +36,10 @@ public class json
     {
         String newValue = value.toString();
         configFile.addProperty(identifier, newValue);
+    }
 
+    public void saveJsonFile()
+    {
         try (FileWriter writer = new FileWriter(filePath))
         {
             gson.toJson(configFile, writer);

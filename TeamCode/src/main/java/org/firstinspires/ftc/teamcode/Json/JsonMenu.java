@@ -11,15 +11,15 @@ public class JsonMenu
     OpMode opMode;
     json json = new json();
 
-    public boolean menuMode;
+    public int menuMode;
     public int menuCounter = 1;
     boolean menuWasIncremented;
     boolean menuWasDecremented;
     public boolean lastInput;
     public boolean outputToggle;
+    int output;
     public void setMenuMode()
     {
-        boolean output;
         if (opMode.gamepad1.start && !lastInput)
         {
             outputToggle = !outputToggle;
@@ -29,12 +29,20 @@ public class JsonMenu
 
         if (outputToggle)
         {
-            output = true;
-        } else {
-            output = false;
+            if (menuMode == 0 || menuMode == 1)
+            {
+                output += 1;
+            }
+            else
+            {
+                output = 0;
+                json.saveJsonFile();
+            }
         }
 
-        if (menuMode)
+
+
+        if (menuMode == 1)
         {
             opMode.telemetry.addLine("Press START to exit the menu");
             opMode.telemetry.addLine();
@@ -49,8 +57,7 @@ public class JsonMenu
     int decrement;
     public void setMenuCounter(int itemCount)
     {
-
-        if (menuMode)
+        if (menuMode == 1)
         {
             if (opMode.gamepad1.dpad_down && !menuWasIncremented)
             {
@@ -86,13 +93,19 @@ public class JsonMenu
                 menuCounter = itemCount;
             }
         }
+
+        if (menuMode == 2)
+        {
+            opMode.telemetry.addLine("Save and exit?");
+            opMode.telemetry.addLine("START to save, B to cancel");
+        }
     }
 
     boolean wasIncremented;
     boolean wasDecremented;
     public void createMenuItem(int menuNumber, String itemName, double input, double increment, double min, double max)
     {
-        if (menuMode)
+        if (menuMode == 1)
         {
             String itemSelected = ">  " + itemName;
 
