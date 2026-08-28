@@ -25,4 +25,5 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'com.github.Aedric-FTC:FtcRobotController:Menu-SNAPSHOT'
 }

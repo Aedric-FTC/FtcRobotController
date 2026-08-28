@@ -15,15 +15,26 @@ buildscript {
     }
 }
 
+plugins {
+    id 'java-library'
+    id 'maven-publish' // Required for JitPack
+}
+
+group = 'com.github.Aedric-FTC'
+version = '1.0-SNAPSHOT'
+
 // This is now required because aapt2 has to be downloaded from the
 // google() repository beginning with version 3.2 of the Android Gradle Plugin
 allprojects {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://jitpack.io' }
     }
 }
 
 repositories {
     mavenCentral()
 }
+
+
