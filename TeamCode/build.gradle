@@ -12,8 +12,26 @@
 // Custom definitions may go here
 
 // Include common definitions from above.
+
+plugins {
+    // Ensure the maven-publish plugin is explicitly declared
+    id 'maven-publish'
+}
+
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
+
+// Directly target the output AAR file created by the Android build system
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                // Tells Gradle exactly where the compiled library file is located
+                artifact("$buildDir/outputs/aar/TeamCode-release.aar")
+            }
+        }
+    }
+}
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
@@ -25,5 +43,5 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'com.github.Aedric-FTC:FtcRobotController:Menu-SNAPSHOT'
+    implementation 'com.github.Aedric-FTC.FtcRobotController:TeamCode:Menu-SNAPSHOT'
 }
