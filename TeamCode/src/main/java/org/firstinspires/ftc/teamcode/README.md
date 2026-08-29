@@ -5,7 +5,7 @@ placed in your loop() function.
 First, in your dependencies in
 teamcode/build.gradle, add this:
 ```java
-    implementation 'com.github.Aedric-FTC.FtcRobotController:TeamCode:Menu-SNAPSHOT'
+implementation 'com.github.Aedric-FTC.FtcRobotController:TeamCode:Menu-SNAPSHOT'
 ```
 ## Menu Button
 ```java
