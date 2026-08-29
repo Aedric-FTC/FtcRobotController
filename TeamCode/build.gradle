@@ -43,7 +43,7 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'com.github.Aedric-FTC.FtcRobotController:TeamCode:Menu-SNAPSHOT'
+    //implementation 'com.github.Aedric-FTC.FtcRobotController:TeamCode:Menu-SNAPSHOT'
 }
 
 tasks.configureEach { task ->

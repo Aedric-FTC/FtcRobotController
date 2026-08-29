@@ -1,9 +1,11 @@
 jdk:
   - openjdk17
 install:
-  # Instructs Gradle to build the library code without internal validation checks
-  - ./gradlew :TeamCode:assembleRelease -x checkReleaseAarMetadata -x checkDebugAarMetadata
-  # Allocates local build paths matching what JitPack queries
+  # 1. Compile using the faster debug task, turning off checking blockers
+  - ./gradlew :TeamCode:assembleDebug -x checkReleaseAarMetadata -x checkDebugAarMetadata -x mapReleaseSourceSetPaths
+  # 2. Build the local target Maven repository directories
   - mkdir -p ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/
-  - cp TeamCode/build/outputs/aar/TeamCode-release.aar ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.aar
+  # 3. Copy the debug artifact binary into place
+  - cp TeamCode/build/outputs/aar/TeamCode-debug.aar ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.aar
+  # 4. Generate the placeholder project object model
   - echo '<project><modelVersion>4.0.0</modelVersion><groupId>com.github.Aedric-FTC.FtcRobotController</groupId><artifactId>TeamCode</artifactId><version>Menu-SNAPSHOT</version><packaging>aar</packaging></project>' > ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.pom
