@@ -1,0 +1,11 @@
+jdk:
+  - openjdk17
+install:
+  # Force Gradle to build the exact submodule directly, ignoring root-level task discovery quirks
+  - ./gradlew :TeamCode:assembleRelease
+  # Manually create the local maven cache structure that JitPack looks for
+  - mkdir -p ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/
+  # Copy the generated AAR file directly into the target repository cache
+  - cp TeamCode/build/outputs/aar/TeamCode-release.aar ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.aar
+  # Generate a placeholder POM file so the dependency resolver doesn't throw a missing metadata warning
+  - echo '<project><modelVersion>4.0.0</modelVersion><groupId>com.github.Aedric-FTC.FtcRobotController</groupId><artifactId>TeamCode</artifactId><version>Menu-SNAPSHOT</version><packaging>aar</packaging></project>' > ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.pom
