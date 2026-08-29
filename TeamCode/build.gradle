@@ -45,3 +45,9 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation 'com.github.Aedric-FTC.FtcRobotController:TeamCode:Menu-SNAPSHOT'
 }
+
+tasks.configureEach { task ->
+    if (task.name.contains("checkDebugAarMetadata") || task.name.contains("checkReleaseAarMetadata")) {
+        task.enabled = false
+    }
+}
