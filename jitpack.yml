@@ -1,9 +1,9 @@
 jdk:
   - openjdk17
 install:
-  # Force Gradle to target the AAR build, strictly turning off metadata checks
+  # Instructs Gradle to build the library code without internal validation checks
   - ./gradlew :TeamCode:assembleRelease -x checkReleaseAarMetadata -x checkDebugAarMetadata
-  # Re-route the build files to line up with the paths Gradle searches for
+  # Allocates local build paths matching what JitPack queries
   - mkdir -p ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/
   - cp TeamCode/build/outputs/aar/TeamCode-release.aar ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.aar
   - echo '<project><modelVersion>4.0.0</modelVersion><groupId>com.github.Aedric-FTC.FtcRobotController</groupId><artifactId>TeamCode</artifactId><version>Menu-SNAPSHOT</version><packaging>aar</packaging></project>' > ~/.m2/repository/com/github/Aedric-FTC/FtcRobotController/TeamCode/Menu-SNAPSHOT/TeamCode-Menu-SNAPSHOT.pom
