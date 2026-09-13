@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Transfer
 {
-    private DcMotor transferMotor;
+    private final DcMotor transferMotor;
 
-    public void init(HardwareMap hwMap)
+    public Transfer(HardwareMap hwMap)
     {
         transferMotor = hwMap.get(DcMotor.class, "transferMotor");
         transferMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

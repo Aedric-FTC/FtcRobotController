@@ -5,46 +5,46 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class light
 {
-    private Servo light = null;
+    private final Servo light;
 
-    double Off = 0.000;
-    double Red = 0.277;
-    double Yellow = 0.388;
-    double Green = 0.500;
-    double Blue = 0.611;
-    double Purple = 0.722;
-    double White = 1.000;
+    public static final double OFF = 0.000;
+    public static final double RED = 0.277;
+    public static final double YELLOW = 0.388;
+    public static final double GREEN = 0.500;
+    public static final double BLUE = 0.611;
+    public static final double PURPLE = 0.722;
+    public static final double WHITE = 1.000;
 
-    public void init(HardwareMap hwMap)
+    public light(HardwareMap hwMap)
     {
         light = hwMap.get(Servo.class, "light");
     }
     public void lightOff()
     {
-        light.setPosition(Off);
+        light.setPosition(OFF);
     }
     public void lightRed()
     {
-        light.setPosition(Red);
+        light.setPosition(RED);
     }
     public void lightYellow()
     {
-        light.setPosition(Yellow);
+        light.setPosition(YELLOW);
     }
     public void lightGreen()
     {
-        light.setPosition(Green);
+        light.setPosition(GREEN);
     }
     public void lightBlue()
     {
-        light.setPosition(Blue);
+        light.setPosition(BLUE);
     }
     public void lightPurple()
     {
-        light.setPosition(Purple);
+        light.setPosition(PURPLE);
     }
     public void lightWhite()
     {
-        light.setPosition(White);
+        light.setPosition(WHITE);
     }
 }

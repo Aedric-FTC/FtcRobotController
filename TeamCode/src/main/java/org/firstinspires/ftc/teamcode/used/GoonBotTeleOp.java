@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.used;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+
 @TeleOp
 public class GoonBotTeleOp extends OpMode
 {
@@ -12,67 +13,17 @@ public class GoonBotTeleOp extends OpMode
 // ------------------------------------------------------------------------------------------------------------------------|
 
 //region Class Calls
-    motorDrive motors = new motorDrive();
-    //light light = new light();
-    //Intake intake = new Intake();
-    //Launcher launcher = new Launcher();
-    //Transfer transfer = new Transfer();
+    motorDrive motors;
+    //light light;
+    //Intake intake;
+    //Launcher launcher;
+    //Transfer transfer;
     Menu menu = new Menu(this);
-//endregion
-
-// ------------------------------------------------------------------------------------------------------------|
-// Methods ---------------------------------------------------------------------------------------------Methods
-//-------------------------------------------------------------------------------------------------------------|
-
-//region Increment
-// Increment ------------------------------------------------------------------------------------------- Increment Method
-    public boolean wasIncInput;
-    public double increment(boolean inputKey, double inputValue, int incrementValue, int max)
-    {
-        int increment;
-        if (inputKey && !wasIncInput)
-        {
-            increment = incrementValue;
-        }
-        else
-        {
-            increment = 0;
-        }
-        wasIncInput = inputKey;
-        if (inputValue + increment <= max)
-        {
-            inputValue += increment;
-        }
-        return inputValue;
-    }
-//endregion
-
-//region Decrement
-// Decrement ------------------------------------------------------------------------------------------- Decrement Method
-    public boolean wasDecInput;
-    public double decrement(boolean inputKey, double inputValue, int decrementValue, int min)
-    {
-        int decrement;
-        if (inputKey && !wasDecInput)
-        {
-            decrement = decrementValue;
-        }
-        else
-        {
-            decrement = 0;
-        }
-        wasDecInput = inputKey;
-        if (inputValue - decrement >= min)
-        {
-            inputValue -= decrement;
-        }
-        return inputValue;
-    }
 //endregion
 
 //region Motor Speed Settings
 // Speeds ---------------------------------------------------------------------------------------------- Speeds
-    public double driveSpeed;
+    public double driveSpeed = 100;
     //public double intakeSpeed = 100;
     //public double transferSpeed = 100;
     //public double launcherSpeed = 50;
@@ -84,17 +35,14 @@ public class GoonBotTeleOp extends OpMode
 
 //region Init
 // Init ------------------------------------------------------------------------------------------------ Init
-
     @Override
     public void init()
     {
-        motors.init(hardwareMap);
-        //light.init(hardwareMap);
-        //intake.init(hardwareMap);
-        //transfer.init(hardwareMap);
-        //launcher.init(hardwareMap);
-
-        driveSpeed = 100;
+        motors = new motorDrive(hardwareMap);
+        //light = new light(hardwareMap);
+        //intake = new Intake(hardwareMap);
+        //transfer = new Transfer(hardwareMap);
+        //launcher = new Launcher(hardwareMap);
     }
 //endregion
 
@@ -140,6 +88,56 @@ public class GoonBotTeleOp extends OpMode
             // Launcher
             launcher.spin(launcherSpeed, gamepad1.right_trigger, gamepad1.left_trigger);*/
         }
+    }
+//endregion
+
+// -------------------------------------------------------------------------------------------------------------|
+// Methods --------------------------------------------------------------------------------------------- Methods
+//--------------------------------------------------------------------------------------------------------------|
+
+//region Increment
+// Increment ------------------------------------------------------------------------------------------- Increment Method
+    public boolean wasIncInput;
+    public double increment(boolean inputKey, double inputValue, int incrementValue, int max)
+    {
+        int increment;
+        if (inputKey && !wasIncInput)
+        {
+            increment = incrementValue;
+        }
+        else
+        {
+            increment = 0;
+        }
+        wasIncInput = inputKey;
+        if (inputValue + increment <= max)
+        {
+            inputValue += increment;
+        }
+        return inputValue;
+    }
+//endregion
+
+//region Decrement
+// Decrement ------------------------------------------------------------------------------------------- Decrement Method
+    public boolean wasDecInput;
+    public double decrement(boolean inputKey, double inputValue, int decrementValue, int min)
+    {
+        int decrement;
+        if (inputKey && !wasDecInput)
+        {
+            decrement = decrementValue;
+        }
+        else
+        {
+            decrement = 0;
+        }
+        wasDecInput = inputKey;
+        if (inputValue - decrement >= min)
+        {
+            inputValue -= decrement;
+        }
+        return inputValue;
     }
 //endregion
 }

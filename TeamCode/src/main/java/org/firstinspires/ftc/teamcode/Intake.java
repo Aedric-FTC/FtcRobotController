@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake
 {
-    private DcMotor intakeMotor;
+    private final DcMotor intakeMotor;
 
-    public void init(HardwareMap hwMap)
+    public Intake(HardwareMap hwMap)
     {
         intakeMotor = hwMap.get(DcMotor.class, "intakeMotor");
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
