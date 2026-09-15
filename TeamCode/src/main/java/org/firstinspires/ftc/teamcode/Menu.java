@@ -27,12 +27,7 @@ public class Menu
 
         lastInput = opMode.gamepad1.start;
 
-        if (outputToggle)
-        {
-            output = true;
-        } else {
-            output = false;
-        }
+        output = outputToggle;
 
         if (menuMode)
         {
@@ -49,7 +44,6 @@ public class Menu
     int decrement;
     public void setMenuCounter(int itemCount)
     {
-
         if (menuMode)
         {
             if (opMode.gamepad1.dpad_down && !menuWasIncremented)
