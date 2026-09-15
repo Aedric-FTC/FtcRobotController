@@ -12,7 +12,7 @@ import java.io.IOException;
 public class DataSaver {
     static Gson gson;
     public static JsonObject saveData = new JsonObject();
-    public void saveThis(String label, double value) {
+    public static void saveThis(String label, double value) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         saveData.addProperty(label, value);
         try(FileWriter writer = new FileWriter("TeamCode/src/java/org/firstinspires/ftc/teamcode/saveData/SaveData.json"))
@@ -22,7 +22,7 @@ public class DataSaver {
             e.printStackTrace();
         }
     }
-    public void saveThis(String label, int value) {
+    public static void saveThis(String label, int value) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         saveData.addProperty(label, value);
         try(FileWriter writer = new FileWriter("TeamCode/src/java/org/firstinspires/ftc/teamcode/saveData/SaveData.json"))
@@ -32,7 +32,7 @@ public class DataSaver {
             e.printStackTrace();
         }
     }
-    public void saveThis(String label, boolean value) {
+    public static void saveThis(String label, boolean value) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         saveData.addProperty(label, value);
         try(FileWriter writer = new FileWriter("TeamCode/src/java/org/firstinspires/ftc/teamcode/saveData/SaveData.json"))
@@ -42,7 +42,7 @@ public class DataSaver {
             e.printStackTrace();
         }
     }
-    public void saveThis(String label, String value) {
+    public static void saveThis(String label, String value) {
         gson = new GsonBuilder().setPrettyPrinting().create();
         saveData.addProperty(label, value);
         try(FileWriter writer = new FileWriter("TeamCode/src/java/org/firstinspires/ftc/teamcode/saveData/SaveData.json"))

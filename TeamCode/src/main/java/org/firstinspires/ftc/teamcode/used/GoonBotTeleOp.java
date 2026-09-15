@@ -93,7 +93,10 @@ public class GoonBotTeleOp extends OpMode
         //intake.init(hardwareMap);
         //transfer.init(hardwareMap);
         //launcher.init(hardwareMap);
-
+        DataSaver.loadThis("Drive Speed");
+        //DataSaver.loadThis("Intake Speed");
+        //DataSaver.loadThis("Transfer Speed");
+        //DataSaver.loadThis("Launcher Speed");
         driveSpeed = 100;
     }
 //endregion
@@ -140,6 +143,15 @@ public class GoonBotTeleOp extends OpMode
             // Launcher
             launcher.spin(launcherSpeed, gamepad1.right_trigger, gamepad1.left_trigger);*/
         }
+    }
+
+    @Override
+    public void stop()
+    {
+        DataSaver.saveThis("Drive Speed", driveSpeed);
+        //DataSaver.saveData("Intake Speed", intakeSpeed);
+        //DataSaver.saveData("Transfer Speed", transferSpeed);
+        //DataSaver.saveData("Launcher Speed", launcherSpeed);
     }
 //endregion
 }
