@@ -12,7 +12,7 @@ public class GoonBotTeleOp extends OpMode
 // ------------------------------------------------------------------------------------------------------------------------|
 
 //region Class Calls
-    motorDrive motors = new motorDrive();
+    motorDrive motors;
     //light light = new light();
     //Intake intake = new Intake();
     //Launcher launcher = new Launcher();
@@ -88,7 +88,7 @@ public class GoonBotTeleOp extends OpMode
     @Override
     public void init()
     {
-        motors.init(hardwareMap);
+        motors = new motorDrive(hardwareMap);
         //light.init(hardwareMap);
         //intake.init(hardwareMap);
         //transfer.init(hardwareMap);
