@@ -6,12 +6,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class motorDrive
 {
-    private DcMotor flMotor;
-    private DcMotor frMotor;
-    private DcMotor blMotor;
-    private DcMotor brMotor;
+    private final DcMotor flMotor;
+    private final DcMotor frMotor;
+    private final DcMotor blMotor;
+    private final DcMotor brMotor;
 
-    public void init(HardwareMap hwMap)
+    public motorDrive(HardwareMap hwMap)
     {
         flMotor = hwMap.get(DcMotor.class, "flMotor");
         flMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -92,10 +92,5 @@ public class motorDrive
         frMotor.setPower((maxSpeed * (frPower / maxPower)) * powMod);
         blMotor.setPower((maxSpeed * (blPower / maxPower)) * powMod);
         brMotor.setPower((maxSpeed * (brPower / maxPower)) * powMod);
-        powMod *= 100;
     }
-
-
-
-
 }

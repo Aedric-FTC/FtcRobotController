@@ -8,11 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Launcher extends OpMode
 {
-    light light = new light();
-    private DcMotor launcherL;
-    private DcMotor launcherR;
+    private final DcMotor launcherL;
+    private final DcMotor launcherR;
 
-    public void init(HardwareMap hwMap)
+    public Launcher(HardwareMap hwMap)
     {
         launcherL = hwMap.get(DcMotor.class, "launcherL");
         launcherL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
