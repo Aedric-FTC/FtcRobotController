@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class MecanumDrive {
+public class MecanumDriveTrain {
     private DcMotor frontLeft;
     private DcMotor frontRight;
     private DcMotor backLeft;
     private DcMotor backRight;
     private final Gamepad gamepad;
-    public MecanumDrive(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor)
+    public MecanumDriveTrain(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor)
     {
         this.gamepad = gamepad;
         this.frontLeft = frontLeftMotor;
@@ -18,26 +18,34 @@ public class MecanumDrive {
         this.backLeft = backLeftMotor;
         this.backRight = backRightMotor;
     }
-    public void createMotor(HardwareMap hwMap, String motorNameOnHardwareMap, DriveMotor motorLocation)
+    public void createMotor(HardwareMap hwMap, String frontLeftName, String frontRightName, String backLeftName, String backRightName, DriveMotor motorLocation, DcMotor.RunMode runMode, DcMotor.ZeroPowerBehavior zeroPowerBehavior)
     {
         if (motorLocation == DriveMotor.FRONT_LEFT)
         {
-            frontLeft = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+            this.frontLeft = hwMap.get(DcMotor.class, frontLeftName);
+            this.frontLeft.setMode(runMode);
+            this.frontLeft.setZeroPowerBehavior(zeroPowerBehavior);
         }
 
         if (motorLocation == DriveMotor.FRONT_RIGHT)
         {
-            frontRight = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+            this.frontRight = hwMap.get(DcMotor.class, frontRightName);
+            this.frontRight.setMode(runMode);
+            this.frontRight.setZeroPowerBehavior(zeroPowerBehavior);
         }
 
         if (motorLocation == DriveMotor.BACK_LEFT)
         {
-            backLeft = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+            this.backLeft = hwMap.get(DcMotor.class, backLeftName);
+            this.backLeft.setMode(runMode);
+            this.backLeft.setZeroPowerBehavior(zeroPowerBehavior);
         }
 
         if (motorLocation == DriveMotor.BACK_RIGHT)
         {
-            backRight = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+            this.backRight = hwMap.get(DcMotor.class, backRightName);
+            this.backRight.setMode(runMode);
+            this.backRight.setZeroPowerBehavior(zeroPowerBehavior);
         }
     }
 
