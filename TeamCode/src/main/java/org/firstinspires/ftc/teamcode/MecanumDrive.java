@@ -25,6 +25,7 @@ public class MecanumDrive {
     double forward;
     double strafe;
     double rotate;
+    double reverseModifier = 1;
     double maxPower = 1;
     public void drive(double powerPercentage)
     {
@@ -52,9 +53,16 @@ public class MecanumDrive {
         this.backLeft.setPower(blPower);
         this.backRight.setPower(brPower);
     }
-
-    public void reverse()
+    boolean isReversed = false;
+    boolean willReverse = false;
+    boolean didReverse = false;
+    public void reverse(boolean reverseButton)
     {
+        if (reverseButton && !didReverse) {
+            isReversed = !isReversed;
+        }
 
+        didReverse = reverseButton;
+        reverseModifier = isReversed ? -1 : 1;
     }
 }
