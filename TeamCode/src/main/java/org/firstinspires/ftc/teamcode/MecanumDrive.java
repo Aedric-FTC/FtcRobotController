@@ -2,12 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MecanumDrive {
-    private final DcMotor frontLeft;
-    private final DcMotor frontRight;
-    private final DcMotor backLeft;
-    private final DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
     private final Gamepad gamepad;
     public MecanumDrive(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor)
     {
@@ -16,6 +17,28 @@ public class MecanumDrive {
         this.frontRight = frontRightMotor;
         this.backLeft = backLeftMotor;
         this.backRight = backRightMotor;
+    }
+    public void createMotor(HardwareMap hwMap, String motorNameOnHardwareMap, DriveMotor motorLocation)
+    {
+        if (motorLocation == DriveMotor.FRONT_LEFT)
+        {
+            frontLeft = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+        }
+
+        if (motorLocation == DriveMotor.FRONT_RIGHT)
+        {
+            frontRight = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+        }
+
+        if (motorLocation == DriveMotor.BACK_LEFT)
+        {
+            backLeft = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+        }
+
+        if (motorLocation == DriveMotor.BACK_RIGHT)
+        {
+            backRight = hwMap.get(DcMotor.class, motorNameOnHardwareMap);
+        }
     }
 
     double flPower;
