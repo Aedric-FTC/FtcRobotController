@@ -10,26 +10,24 @@ public class MecanumDriveTrain {
     private final DcMotor backLeft;
     private final DcMotor backRight;
     private final Gamepad gamepad;
-    public MecanumDriveTrain(Gamepad gamepad, HardwareMap hwMap, String frontLeftName,
-                             String frontRightName, String backLeftName, String backRightName,
-                              DcMotor.RunMode runMode)
+    public MecanumDriveTrain(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, DcMotor.RunMode driveTrainRunMode)
     {
         this.gamepad = gamepad;
 
-        this.frontLeft = hwMap.get(DcMotor.class, frontLeftName);
-        this.frontLeft.setMode(runMode);
+        this.frontLeft = frontLeftMotor;
+        this.frontLeft.setMode(driveTrainRunMode);
         this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.frontRight = hwMap.get(DcMotor.class, frontRightName);
-        this.frontRight.setMode(runMode);
+        this.frontRight = frontRightMotor;
+        this.frontRight.setMode(driveTrainRunMode);
         this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.backLeft = hwMap.get(DcMotor.class, backLeftName);
-        this.backLeft.setMode(runMode);
+        this.backLeft = backLeftMotor;
+        this.backLeft.setMode(driveTrainRunMode);
         this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.backRight = hwMap.get(DcMotor.class, backRightName);
-        this.backRight.setMode(runMode);
+        this.backRight = backRightMotor;
+        this.backRight.setMode(driveTrainRunMode);
         this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
@@ -60,30 +58,30 @@ public class MecanumDriveTrain {
         this.blPower = this.forward + this.strafe - this.rotate;
         this.brPower = this.forward - this.strafe + this.rotate;
 
-        this.maxPower = Math.max(maxPower, Math.abs(this.flPower));
-        this.maxPower = Math.max(maxPower, Math.abs(this.frPower));
-        this.maxPower = Math.max(maxPower, Math.abs(this.blPower));
-        this.maxPower = Math.max(maxPower, Math.abs(this.brPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.flPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.frPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.blPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.brPower));
 
         this.flPower *= (powerPercentage/this.maxPower);
         this.frPower *= (powerPercentage/this.maxPower);
         this.blPower *= (powerPercentage/this.maxPower);
         this.brPower *= (powerPercentage/this.maxPower);
 
-        this.frontLeft.setPower(flPower);
-        this.frontRight.setPower(frPower);
-        this.backLeft.setPower(blPower);
-        this.backRight.setPower(brPower);
+        this.frontLeft.setPower(this.flPower);
+        this.frontRight.setPower(this.frPower);
+        this.backLeft.setPower(this.blPower);
+        this.backRight.setPower(this.brPower);
     }
     boolean isReversed = false;
     boolean didReverse = false;
     public void reverse(boolean reverseButton)
     {
-        if (reverseButton && !didReverse) {
-            isReversed = !isReversed;
+        if (reverseButton && !this.didReverse) {
+            this.isReversed = !this.isReversed;
         }
 
-        didReverse = reverseButton;
-        reverseModifier = isReversed ? -1 : 1;
+        this.didReverse = reverseButton;
+        this.reverseModifier = this.isReversed ? -1 : 1;
     }
 }
