@@ -1,25 +1,40 @@
 package org.firstinspires.ftc.teamcode;
 
-import java.util.HashMap;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class ButtonOperation {
-
-    private static final HashMap<String, Boolean> buttonStates = new HashMap<>();
+    GamepadButton gb;
+    Gamepad gamepad;
+    boolean isPressed;
+    boolean buttonWasDown;
+    Runnable action;
 
     /**
      * Runs code once when a button is pressed
-     * @param buttonId Any unique identifier for this specific action
-     * @param isPressed The current raw gamepad button boolean (e.g., gamepad1.a)
+     * @param gamepadButton The button that will trigger the action
      * @param action The custom code block to run
      */
-    public static void onClick(String buttonId, boolean isPressed, Runnable action) {
-        // Get the last state (default to false if it's the first time running)
-        boolean lastState = Boolean.TRUE.equals(buttonStates.getOrDefault(buttonId, false));
-
-        if (isPressed && !lastState) {
-            action.run();
+    public ButtonOperation(GamepadButton gamepadButton, Runnable action)
+    {
+        this.gb = gamepadButton;
+        this.action = action;
+    }
+    boolean buttonIsDown() {
+        switch (this.gb)
+        {
+            case A: return gamepad.a;
+            case B: return gamepad.b;
+            case X: return gamepad.x;
+            case Y: return gamepad.y;
+            case LEFT_BUMPER: return gamepad.left_bumper;
+            case RIGHT_BUMPER: return  gamepad.right_bumper;
+            default: return false;
         }
-
-        buttonStates.put(buttonId, isPressed);
+    }
+    public void run() {
+        if (this.buttonIsDown() && !this.buttonWasDown) {
+            this.action.run();
+        }
+        this.buttonWasDown = this.isPressed;
     }
 }

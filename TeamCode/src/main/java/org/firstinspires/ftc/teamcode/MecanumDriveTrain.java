@@ -10,25 +10,29 @@ public class MecanumDriveTrain {
     private final DcMotor backLeft;
     private final DcMotor backRight;
     private final Gamepad gamepad;
-    public MecanumDriveTrain(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, DcMotor.RunMode driveTrainRunMode)
+    public MecanumDriveTrain(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
     {
         this.gamepad = gamepad;
 
         this.frontLeft = frontLeftMotor;
-        this.frontLeft.setMode(driveTrainRunMode);
         this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.frontRight = frontRightMotor;
-        this.frontRight.setMode(driveTrainRunMode);
         this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.backLeft = backLeftMotor;
-        this.backLeft.setMode(driveTrainRunMode);
         this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.backRight = backRightMotor;
-        this.backRight.setMode(driveTrainRunMode);
         this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        if (hasEncoder)
+        {
+            this.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            this.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
     double flPower;
