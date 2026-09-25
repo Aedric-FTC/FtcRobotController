@@ -13,6 +13,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     DcMotor fR = hardwareMap.get(DcMotor.class, "fR");
     DcMotor bL = hardwareMap.get(DcMotor.class, "bL");
     DcMotor bR = hardwareMap.get(DcMotor.class, "bR");
+    PWMLight light = new PWMLight("light", hardwareMap);
 
     @Override
     public void init()
@@ -38,6 +39,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
             mecDrive.drive(drivePower);
             testButton.run();
         }
+        light.setColor(light.GREEN);
     }
 
     @Override
