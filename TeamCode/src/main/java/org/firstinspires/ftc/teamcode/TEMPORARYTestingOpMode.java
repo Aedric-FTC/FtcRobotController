@@ -25,7 +25,8 @@ public class TEMPORARYTestingOpMode extends OpMode {
     double drivePower = DataSaver.loadThis("Drive Power").getAsDouble();
     int something;
     Menu.MenuItem item = new Menu.MenuItem(1, "Drive Power", drivePower, 5, 0, 100);
-    Menu.MenuItem item2 = new Menu.MenuItem(2, "sum bullshit", something, 1, 0, 5);
+    Menu.MenuItem item2 = new Menu.MenuItem("testSubMenu", 2, "sum bullshit", something, 1, 0, 5);
+    Menu.SubMenu testSubMenu = new Menu.SubMenu("testSubMenu", 2);
     @Override
     public void loop()
     {
@@ -33,6 +34,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
         {
             item.createMenu();
             drivePower = item.getDoubleValue();
+            testSubMenu.addSubMenu();
             something = item2.getIntValue();
         }
         else {
