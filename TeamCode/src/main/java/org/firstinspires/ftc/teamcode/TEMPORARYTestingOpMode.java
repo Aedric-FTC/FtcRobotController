@@ -18,7 +18,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     {
         mecDrive = new MecanumDriveTrain(gamepad1, fL, fR, bL, bR, false);
         menu = new Menu(this);
-        testButton = new ButtonOperation(GamepadButton.A, () -> telemetry.addLine("gooned"));
+        testButton = new ButtonOperation(GamepadButton.A, () -> telemetry.addLine("worked"));
     }
     double drivePower = 100;
     int something;
