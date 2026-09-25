@@ -13,6 +13,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     DcMotor fR = hardwareMap.get(DcMotor.class, "fR");
     DcMotor bL = hardwareMap.get(DcMotor.class, "bL");
     DcMotor bR = hardwareMap.get(DcMotor.class, "bR");
+
     @Override
     public void init()
     {
@@ -20,7 +21,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
         menu = new Menu(this);
         testButton = new ButtonOperation(GamepadButton.A, () -> telemetry.addLine("worked"));
     }
-    double drivePower = 100;
+    double drivePower = DataSaver.loadThis("Drive Power").getAsDouble();
     int something;
     Menu.MenuItem item = new Menu.MenuItem(1, "Drive Power", drivePower, 5, 0, 100);
     Menu.MenuItem item2 = new Menu.MenuItem(2, "sum bullshit", something, 1, 0, 5);
@@ -37,5 +38,12 @@ public class TEMPORARYTestingOpMode extends OpMode {
             mecDrive.drive(drivePower);
             testButton.run();
         }
+    }
+
+    @Override
+    public void stop()
+    {
+        DataSaver.saveThis("Drive Power", drivePower);
+        DataSaver.saveThis("sum bullshit", something);
     }
 }

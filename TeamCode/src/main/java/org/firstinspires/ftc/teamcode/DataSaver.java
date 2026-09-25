@@ -101,7 +101,7 @@ public class DataSaver {
             {
                 ex.printStackTrace();
             }
-            jsonElement = null;
+            jsonElement = SaveData.get(name).getAsJsonObject();
         }
         return jsonElement;
     }

@@ -28,6 +28,8 @@ public class ButtonOperation {
             case Y: return gamepad.y;
             case LEFT_BUMPER: return gamepad.left_bumper;
             case RIGHT_BUMPER: return  gamepad.right_bumper;
+            case LEFT_STICK_BUTTON: return gamepad.left_stick_button;
+            case RIGHT_STICK_BUTTON: return gamepad.right_stick_button;
             default: return false;
         }
     }
