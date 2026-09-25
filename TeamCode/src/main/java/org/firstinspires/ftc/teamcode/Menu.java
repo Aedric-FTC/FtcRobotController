@@ -2,26 +2,33 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import java.util.ArrayList;
-
-/// NOTE: If your robot's code utilizes the d-pad, consider wrapping the setMenuCounter and setMenuItem methods in an if statement for 'if (menuMode)', then put your TeleOp code in an else statement so that it only runs when not in the menu<br>
+/// NOTE: If your robot's code utilizes the d-pad, consider wrapping the menu methods in an if statement for 'if (Menu.menuMode)', then put your TeleOp code in an else statement so that it only runs when not in the menu<br>
+///
+/// Create a Menu object first, then, in your init method, give the object a value:
 /// ```java
-/// setMenuMode();
+/// Menu menu;
+/// public void init()
+/// {
+///     menu = new Menu(this);
+/// }
 /// ```
-/// Place this at the start of your loop function. It will activate the menu when the start button is pressed<br>
+///
+/// Then, create some menu items:
+/// ```java
+/// Menu.MenuItem item = new MenuItem(int itemNumber, String displayName, Number inputValue, Number increment, Number min, Number max)
+/// ```
+///
+/// Next, place these methods:
 ///
 /// ```java
-/// setMenuCounter(int numberOfItems);
+/// item.createMenu();
 /// ```
-/// Place this after your setMenuMode(). It will save the number of menu items and create the "cursor"<br>
+/// Place this at the start of your loop function. It will toggle menuMode when the start button is pressed<br>
 ///
 /// ```java
-/// setMenuItem(int menuNumber, String itemName, double input, double increment, double min, double max);
+/// item.getDoubleValue();
 /// ```
-/// This will add an item to your menu and return a Number<br>
-///
+/// Handles the value changing code and returns a new double value. Can be replaced with item.getIntValue();
 public class Menu
 {
     /// When creating an instance of this class, place (this) within the parentheses:
@@ -34,7 +41,7 @@ public class Menu
     }
     public static OpMode opMode;
 
-    public boolean menuMode;
+    public static boolean menuMode;
     public int menuCounter = 1;
     boolean menuWasIncremented;
     boolean menuWasDecremented;
@@ -64,7 +71,7 @@ public class Menu
         }
 
         menuMode = output;
-        setMenuCounter(globalMenuNumber);
+        setMenuCounter(MenuItem.numberOfMenuItems);
     }
     int counterIncrement;
     int counterDecrement;
@@ -72,39 +79,12 @@ public class Menu
     {
         if (menuMode)
         {
-            if (opMode.gamepad1.dpad_down && !menuWasIncremented)
-            {
-                counterIncrement = 1;
-            } else
-            {
-                counterIncrement = 0;
-            }
+            counterIncrement = (opMode.gamepad1.dpad_down && !menuWasIncremented) ? 1 : 0;
             menuWasIncremented = opMode.gamepad1.dpad_down;
-            if (menuCounter + counterIncrement <= itemCount)
-            {
-                menuCounter += counterIncrement;
-            }
-            else
-            {
-                menuCounter = 1;
-            }
-
-            if (opMode.gamepad1.dpad_up && !menuWasDecremented)
-            {
-                counterDecrement = 1;
-            } else
-            {
-                counterDecrement = 0;
-            }
+            menuCounter = (menuCounter + counterIncrement <= itemCount) ? (menuCounter + counterIncrement) : 1;
+            counterDecrement = (opMode.gamepad1.dpad_up && !menuWasDecremented) ? 1 : 0;
             menuWasDecremented = opMode.gamepad1.dpad_up;
-            if (menuCounter - counterDecrement > 0)
-            {
-                menuCounter -= counterDecrement;
-            }
-            else
-            {
-                menuCounter = itemCount;
-            }
+            menuCounter = (menuCounter - counterDecrement > 0) ? (menuCounter - counterDecrement) : itemCount;
         }
     }
 
@@ -123,6 +103,7 @@ public class Menu
     /// ```java
     /// myDouble = setMenuItem(1, "My Double", myDouble, 5, 0, 100).doubleValue();
     /// ```
+    @Deprecated
     public Number setMenuItem(int menuNumber, String itemName, double input, double increment, double min, double max)
     {
         if (menuMode)
@@ -160,18 +141,27 @@ public class Menu
         public Number min;
         public Number max;
         public int itemNumber;
-        public MenuItem(int itemNumber, Number inputValue, Number increment, Number min, Number max)
+        /// Creates and adds an item to your menu, returning a number
+        /// @param itemNumber The index that tells where in the menu your item will be, so if it is 1, your item will be the first on the menu
+        /// @param displayName The displayed name of your item
+        /// @param inputValue The variable that you want to modify
+        /// @param increment The amount by which your variable's value will change when using the left/right d-pad buttons
+        /// @param min The minimum value your variable will be allowed to reach
+        /// @param max The maximum value your variable will be allowed to reach
+        public MenuItem(int itemNumber, String displayName, Number inputValue, Number increment, Number min, Number max)
         {
             super(opMode);
             numberOfMenuItems ++;
-            this.itemName = this.getClass().getSimpleName();
+            this.itemName = displayName;
             this.itemNumber = itemNumber;
             this.itemValue = inputValue;
             this.increment = increment;
             this.min = min;
             this.max = max;
         }
-        public Number getItemValue()
+        /// @return The new double value of your menu item
+        /// IMPORTANT: This method can only be used once in your loop
+        public double getDoubleValue()
         {
             if (menuMode)
             {
@@ -197,8 +187,38 @@ public class Menu
                     opMode.telemetry.addData(this.itemName, this.itemValue);
                 }
             }
-            globalMenuNumber = Math.max(this.itemNumber, globalMenuNumber);
-            return this.itemValue;
+            return this.itemValue.doubleValue();
+        }
+
+        /// @return The new integer value of your menu item
+        /// IMPORTANT: This method can only be used once in your loop
+        public int getIntValue()
+        {
+            if (menuMode)
+            {
+                if (this.itemNumber == menuCounter)
+                {
+                    opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
+                    if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
+                    {
+                        this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
+                    }
+
+                    this.wasIncremented = opMode.gamepad1.dpad_right;
+
+                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() != this.min.doubleValue() - 1 && !wasDecremented)
+                    {
+                        this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
+                    }
+
+                    wasDecremented = opMode.gamepad1.dpad_left;
+                }
+                else
+                {
+                    opMode.telemetry.addData(this.itemName, this.itemValue);
+                }
+            }
+            return this.itemValue.intValue();
         }
     }
 }
