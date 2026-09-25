@@ -48,9 +48,11 @@ public class Menu
     public boolean lastInput;
     public boolean outputToggle;
     public int globalMenuNumber;
+    String subMenu;
     /// Turns menu on when START is pressed (place at start of loop() method)
     public void createMenu()
     {
+        subMenu = "MAIN";
         boolean output;
         if (opMode.gamepad1.start && !lastInput)
         {
@@ -159,6 +161,18 @@ public class Menu
             this.min = min;
             this.max = max;
         }
+        public MenuItem(String subMenu, int itemNumber, String displayName, Number inputValue, Number increment, Number min, Number max)
+        {
+            super(opMode);
+            numberOfMenuItems ++;
+            this.itemName = displayName;
+            this.itemNumber = itemNumber;
+            this.itemValue = inputValue;
+            this.increment = increment;
+            this.min = min;
+            this.max = max;
+            this.subMenu = subMenu;
+        }
         /// @return The new double value of your menu item
         /// IMPORTANT: This method can only be used once in your loop
         public double getDoubleValue()
@@ -219,6 +233,16 @@ public class Menu
                 }
             }
             return this.itemValue.intValue();
+        }
+    }
+
+    public class SubMenu extends Menu
+    {
+        String subMenuName;
+        public SubMenu(String subMenuName)
+        {
+            super(opMode);
+            this.subMenuName = subMenuName;
         }
     }
 }
