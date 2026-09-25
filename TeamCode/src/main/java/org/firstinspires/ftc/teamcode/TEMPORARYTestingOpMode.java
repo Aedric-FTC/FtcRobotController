@@ -21,17 +21,21 @@ public class TEMPORARYTestingOpMode extends OpMode {
         testButton = new ButtonOperation(GamepadButton.A, () -> telemetry.addLine("gooned"));
     }
     double drivePower = 100;
+    int something;
     Menu.MenuItem item = new Menu.MenuItem(1, "Drive Power", drivePower, 5, 0, 100);
+    Menu.MenuItem item2 = new Menu.MenuItem(2, "sum bullshit", something, 1, 0, 5);
     @Override
     public void loop()
     {
-        mecDrive.drive(drivePower);
-        testButton.run();
-
         if (Menu.menuMode)
         {
             item.createMenu();
             drivePower = item.getDoubleValue();
+            something = item2.getIntValue();
+        }
+        else {
+            mecDrive.drive(drivePower);
+            testButton.run();
         }
     }
 }
