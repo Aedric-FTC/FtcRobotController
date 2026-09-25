@@ -1,27 +1,34 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@TeleOp
 public class TEMPORARYTestingOpMode extends OpMode {
     ButtonOperation testButton;
     MecanumDriveTrain mecDrive;
     Menu menu;
-    DcMotor fL, fR, bL, bR;
+    DcMotor fL = hardwareMap.get(DcMotor.class, "fL");
+    DcMotor fR = hardwareMap.get(DcMotor.class, "fR");
+    DcMotor bL = hardwareMap.get(DcMotor.class, "bL");
+    DcMotor bR = hardwareMap.get(DcMotor.class, "bR");
     @Override
     public void init()
     {
         mecDrive = new MecanumDriveTrain(gamepad1, fL, fR, bL, bR, false);
         menu = new Menu(this);
-        testButton = new ButtonOperation(GamepadButton.A,
-                () -> telemetry.addLine("gooned"));
+        testButton = new ButtonOperation(GamepadButton.A, () -> telemetry.addLine("gooned"));
     }
-
     double drivePower = 100;
+    Menu.MenuItem item = new Menu.MenuItem(1, drivePower, 5, 0, 100);
     @Override
     public void loop()
     {
         mecDrive.drive(drivePower);
         testButton.run();
+
+        item.createMenu();
+        drivePower = item.getItemValue().doubleValue();
     }
 }

@@ -5,11 +5,11 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class MecanumDriveTrain {
-    private final DcMotor frontLeft;
-    private final DcMotor frontRight;
-    private final DcMotor backLeft;
-    private final DcMotor backRight;
-    private final Gamepad gamepad;
+    public final DcMotor frontLeft;
+    public final DcMotor frontRight;
+    public final DcMotor backLeft;
+    public final DcMotor backRight;
+    public final Gamepad gamepad;
     public MecanumDriveTrain(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
     {
         this.gamepad = gamepad;

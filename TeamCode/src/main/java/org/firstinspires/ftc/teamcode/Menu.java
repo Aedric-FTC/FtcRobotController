@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.ArrayList;
+
 /// NOTE: If your robot's code utilizes the d-pad, consider wrapping the setMenuCounter and setMenuItem methods in an if statement for 'if (menuMode)', then put your TeleOp code in an else statement so that it only runs when not in the menu<br>
 /// ```java
 /// setMenuMode();
@@ -23,11 +28,11 @@ public class Menu
     /// ```java
     /// Menu menu = new Menu(this);
     /// ```
-    public Menu(OpMode opMode)
+    public Menu(OpMode OpMode)
     {
-        this.opMode = opMode;
+        opMode = OpMode;
     }
-    OpMode opMode;
+    public static OpMode opMode;
 
     public boolean menuMode;
     public int menuCounter = 1;
@@ -35,8 +40,9 @@ public class Menu
     boolean menuWasDecremented;
     public boolean lastInput;
     public boolean outputToggle;
+    public int globalMenuNumber;
     /// Turns menu on when START is pressed (place at start of loop() method)
-    public void setMenuMode()
+    public void createMenu()
     {
         boolean output;
         if (opMode.gamepad1.start && !lastInput)
@@ -58,26 +64,25 @@ public class Menu
         }
 
         menuMode = output;
+        setMenuCounter(globalMenuNumber);
     }
-    int increment;
-    int decrement;
-    /// Sets the number of items in your menu while simultaneously handling menu navigation
-    /// @param itemCount The number of items in your menu
-    public void setMenuCounter(int itemCount)
+    int counterIncrement;
+    int counterDecrement;
+    private void setMenuCounter(int itemCount)
     {
         if (menuMode)
         {
             if (opMode.gamepad1.dpad_down && !menuWasIncremented)
             {
-                increment = 1;
+                counterIncrement = 1;
             } else
             {
-                increment = 0;
+                counterIncrement = 0;
             }
             menuWasIncremented = opMode.gamepad1.dpad_down;
-            if (menuCounter + increment <= itemCount)
+            if (menuCounter + counterIncrement <= itemCount)
             {
-                menuCounter += increment;
+                menuCounter += counterIncrement;
             }
             else
             {
@@ -86,15 +91,15 @@ public class Menu
 
             if (opMode.gamepad1.dpad_up && !menuWasDecremented)
             {
-                decrement = 1;
+                counterDecrement = 1;
             } else
             {
-                decrement = 0;
+                counterDecrement = 0;
             }
             menuWasDecremented = opMode.gamepad1.dpad_up;
-            if (menuCounter - decrement > 0)
+            if (menuCounter - counterDecrement > 0)
             {
-                menuCounter -= decrement;
+                menuCounter -= counterDecrement;
             }
             else
             {
@@ -122,11 +127,9 @@ public class Menu
     {
         if (menuMode)
         {
-            String itemSelected = ">  " + itemName;
-
             if (menuNumber == menuCounter)
             {
-                opMode.telemetry.addData(itemSelected, input);
+                opMode.telemetry.addData(">  " + itemName, input);
                 if (opMode.gamepad1.dpad_right && input + increment <= max && !wasIncremented)
                 {
                     input += increment;
@@ -146,6 +149,56 @@ public class Menu
                 opMode.telemetry.addData(itemName, input);
             }
         }
+        globalMenuNumber = Math.max(menuNumber, globalMenuNumber);
         return input;
+    }
+    public static class MenuItem extends Menu{
+        public static int numberOfMenuItems;
+        public String itemName;
+        public Number itemValue;
+        public Number increment;
+        public Number min;
+        public Number max;
+        public int itemNumber;
+        public MenuItem(int itemNumber, Number inputValue, Number increment, Number min, Number max)
+        {
+            super(opMode);
+            numberOfMenuItems ++;
+            this.itemName = this.getClass().getSimpleName();
+            this.itemNumber = itemNumber;
+            this.itemValue = inputValue;
+            this.increment = increment;
+            this.min = min;
+            this.max = max;
+        }
+        public Number getItemValue()
+        {
+            if (menuMode)
+            {
+                if (this.itemNumber == menuCounter)
+                {
+                    opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
+                    if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
+                    {
+                        this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
+                    }
+
+                    this.wasIncremented = opMode.gamepad1.dpad_right;
+
+                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() != this.min.doubleValue() - 1 && !wasDecremented)
+                    {
+                        this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
+                    }
+
+                    wasDecremented = opMode.gamepad1.dpad_left;
+                }
+                else
+                {
+                    opMode.telemetry.addData(this.itemName, this.itemValue);
+                }
+            }
+            globalMenuNumber = Math.max(this.itemNumber, globalMenuNumber);
+            return this.itemValue;
+        }
     }
 }
