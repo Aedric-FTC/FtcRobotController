@@ -253,9 +253,14 @@ public class Menu
         });
         ButtonOperation exitSubMenu = new ButtonOperation(GamepadButton.B, () -> {
             currentSubMenu = "MAIN";
+            menuCounter = 1;
         });
         public void addSubMenu()
         {
+            if (menuCounter == this.subMenuNumber)
+            {
+                opMode.telemetry.addLine(">  " + this.subMenuName);
+            }
             opMode.telemetry.addLine(this.subMenuName);
             enterSubMenu.run();
             exitSubMenu.run();

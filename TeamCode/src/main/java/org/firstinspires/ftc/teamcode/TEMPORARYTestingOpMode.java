@@ -20,7 +20,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     {
         mecDrive = new MecanumDriveTrain(gamepad1, fL, fR, bL, bR, false);
         menu = new Menu(this);
-        testButton = new ButtonOperation(GamepadButton.A, () -> telemetry.addLine("worked"));
+        testButton = new ButtonOperation(GamepadButton.X, () -> telemetry.addLine("worked"));
     }
     double drivePower = DataSaver.loadThis("Drive Power").getAsDouble();
     int something;
@@ -36,12 +36,13 @@ public class TEMPORARYTestingOpMode extends OpMode {
             drivePower = item.getDoubleValue();
             testSubMenu.addSubMenu();
             something = item2.getIntValue();
+            light.setColor(PWMLight.Color.YELLOW);
         }
         else {
             mecDrive.drive(drivePower);
             testButton.run();
+            light.setColor(PWMLight.Color.GREEN);
         }
-        light.setColor(light.GREEN);
     }
 
     @Override
