@@ -145,29 +145,35 @@ public class Menu
         public Number max;
         public int itemNumber;
         /// Creates a menu item
-        /// @param itemNumber The index that tells where in the menu your item will be, so if it is 1, your item will be the first on the menu
         /// @param displayName The displayed name of your item
         /// @param inputValue The variable that you want to modify
         /// @param increment The amount by which your variable's value will change when using the left/right d-pad buttons
         /// @param min The minimum value your variable will be allowed to reach
         /// @param max The maximum value your variable will be allowed to reach
-        public MenuItem(int itemNumber, String displayName, Number inputValue, Number increment, Number min, Number max)
+        public MenuItem(String displayName, Number inputValue, Number increment, Number min, Number max)
         {
             super(opMode);
             numberOfMenuItems ++;
+            this.itemNumber = numberOfMenuItems;
             this.itemName = displayName;
-            this.itemNumber = itemNumber;
             this.itemValue = inputValue;
             this.increment = increment;
             this.min = min;
             this.max = max;
+            this.itemSubMenu = "MAIN";
         }
-        public MenuItem(String subMenu, int itemNumber, String displayName, Number inputValue, Number increment, Number min, Number max)
+        /// Creates a menu item
+        /// @param displayName The displayed name of your item
+        /// @param inputValue The variable that you want to modify
+        /// @param increment The amount by which your variable's value will change when using the left/right d-pad buttons
+        /// @param min The minimum value your variable will be allowed to reach
+        /// @param max The maximum value your variable will be allowed to reach
+        public MenuItem(String subMenu, String displayName, Number inputValue, Number increment, Number min, Number max)
         {
             super(opMode);
             numberOfMenuItems ++;
+            this.itemNumber = numberOfMenuItems;
             this.itemName = displayName;
-            this.itemNumber = itemNumber;
             this.itemValue = inputValue;
             this.increment = increment;
             this.min = min;
