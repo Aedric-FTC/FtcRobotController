@@ -3,6 +3,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp
 public class TEMPORARYTestingOpMode extends OpMode {
@@ -13,7 +16,12 @@ public class TEMPORARYTestingOpMode extends OpMode {
     DcMotor fR = hardwareMap.get(DcMotor.class, "fR");
     DcMotor bL = hardwareMap.get(DcMotor.class, "bL");
     DcMotor bR = hardwareMap.get(DcMotor.class, "bR");
+    DcMotor leftOdom = hardwareMap.get(DcMotor.class, "leftOdom");
+    DcMotor rightOdom = hardwareMap.get(DcMotor.class, "rightOdom");
+    DcMotor strafeOdom = hardwareMap.get(DcMotor.class, "strafeOdom");
+    IMU imu;
     PWMLight light = new PWMLight("light", hardwareMap);
+    EasyOdom.threePodOdom odom;
 
     @Override
     public void init()
@@ -21,6 +29,8 @@ public class TEMPORARYTestingOpMode extends OpMode {
         mecDrive = new MecanumDriveTrain(gamepad1, fL, fR, bL, bR, false);
         menu = new Menu(this);
         testButton = new ButtonOperation(GamepadButton.X, () -> telemetry.addLine("worked"));
+        odom = new EasyOdom.threePodOdom(imu, leftOdom, rightOdom, strafeOdom,
+                2000, 1.37795354, -2);
     }
     double drivePower = DataSaver.loadThis("Drive Power").getAsDouble();
     int something;
@@ -30,6 +40,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     @Override
     public void loop()
     {
+        odom.update();
         if (Menu.menuMode)
         {
             item.createMenu();
@@ -42,6 +53,9 @@ public class TEMPORARYTestingOpMode extends OpMode {
             mecDrive.drive(drivePower);
             testButton.run();
             light.setColor(PWMLight.Color.GREEN);
+            telemetry.addData("Robot X", odom.getRobotX());
+            telemetry.addData("Robot Y", odom.getRobotY());
+            telemetry.addData("Robot Heading", odom.getRobotHeading());
         }
     }
 

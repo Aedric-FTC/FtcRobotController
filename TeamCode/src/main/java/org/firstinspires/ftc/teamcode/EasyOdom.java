@@ -20,7 +20,7 @@ public class EasyOdom {
         private final double WHEEL_DIAMETER_INCHES;
         private final double INCHES_PER_TICK;
         private final double STRAFE_ODOM_OFFSET;
-        public threePodOdom(HardwareMap hwMap, DcMotor leftSideEncoder, DcMotor rightSideEncoder, DcMotor strafeRearEncoder,
+        public threePodOdom(IMU IMU, DcMotor leftSideEncoder, DcMotor rightSideEncoder, DcMotor strafeRearEncoder,
                             double ticksPerRevolution, double diameterInInches, double rearOdomOffset)
         {
             STRAFE_ODOM_OFFSET = rearOdomOffset;
@@ -41,7 +41,7 @@ public class EasyOdom {
             rightEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             strafeEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            imu = hwMap.get(IMU.class, "imu");
+            imu = IMU;
             imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.UP,
                     RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
@@ -55,7 +55,7 @@ public class EasyOdom {
         private int prevRightTicks = 0;
         private int prevBackTicks = 0;
         private double prevHeading = 0.0;
-        private void update() {
+        public void update() {
             int currentLeft = leftEncoder.getCurrentPosition();
             int currentRight = rightEncoder.getCurrentPosition();
             int currentBack = strafeEncoder.getCurrentPosition();
