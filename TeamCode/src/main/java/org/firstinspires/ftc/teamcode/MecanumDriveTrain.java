@@ -9,15 +9,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import java.util.function.BooleanSupplier;
 
 public class MecanumDriveTrain {
-    public final DcMotor frontLeft;
-    public final DcMotor frontRight;
-    public final DcMotor backLeft;
-    public final DcMotor backRight;
-    public final Gamepad gamepad;
+    private final DcMotor frontLeft;
+    private final DcMotor frontRight;
+    private final DcMotor backLeft;
+    private final DcMotor backRight;
     OpMode opMode;
-    public MecanumDriveTrain(OpMode opMode, Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
+    public MecanumDriveTrain(OpMode opMode, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
     {
-        this.gamepad = gamepad;
         this.opMode = opMode;
 
         this.frontLeft = frontLeftMotor;

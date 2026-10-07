@@ -26,7 +26,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     @Override
     public void init()
     {
-        mecDrive = new MecanumDriveTrain(this, gamepad1, fL, fR, bL, bR, false);
+        mecDrive = new MecanumDriveTrain(this, fL, fR, bL, bR, false);
         menu = new Menu(this);
         testButton = new ButtonOperation(this, GamepadButton.X, 1, () -> telemetry.addLine(" singleworked"));
         odom = new EasyOdom.threePodOdom(imu, leftOdom, rightOdom, strafeOdom,
