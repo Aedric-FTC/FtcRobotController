@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.util.function.BooleanSupplier;
 
 public class MecanumDriveTrain {
     public final DcMotor frontLeft;
@@ -10,18 +14,22 @@ public class MecanumDriveTrain {
     public final DcMotor backLeft;
     public final DcMotor backRight;
     public final Gamepad gamepad;
-    public MecanumDriveTrain(Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
+    OpMode opMode;
+    public MecanumDriveTrain(OpMode opMode, Gamepad gamepad, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
     {
         this.gamepad = gamepad;
+        this.opMode = opMode;
 
         this.frontLeft = frontLeftMotor;
         this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.frontRight = frontRightMotor;
         this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.backLeft = backLeftMotor;
         this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         this.backRight = backRightMotor;
         this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -53,14 +61,14 @@ public class MecanumDriveTrain {
 
         powerPercentage /= 100;
 
-        this.forward = -gamepad.left_stick_y;
-        this.strafe = gamepad.left_stick_x;
-        this.rotate = gamepad.right_stick_x;
+        this.forward = -opMode.gamepad1.left_stick_y;
+        this.strafe = opMode.gamepad1.left_stick_x;
+        this.rotate = opMode.gamepad1.right_stick_x;
 
-        this.flPower = this.forward - this.strafe - this.rotate;
-        this.frPower = this.forward + this.strafe + this.rotate;
-        this.blPower = this.forward + this.strafe - this.rotate;
-        this.brPower = this.forward - this.strafe + this.rotate;
+        this.flPower = this.forward + this.strafe + this.rotate;
+        this.frPower = this.forward - this.strafe - this.rotate;
+        this.blPower = this.forward - this.strafe + this.rotate;
+        this.brPower = this.forward + this.strafe - this.rotate;
 
         this.maxPower = Math.max(this.maxPower, Math.abs(this.flPower));
         this.maxPower = Math.max(this.maxPower, Math.abs(this.frPower));
@@ -78,14 +86,10 @@ public class MecanumDriveTrain {
         this.backRight.setPower(this.brPower);
     }
     boolean isReversed = false;
-    boolean didReverse = false;
-    public void reverse(boolean reverseButton)
+    ButtonOperation reverseIt;
+    public void reverse(GamepadButton button)
     {
-        if (reverseButton && !this.didReverse) {
-            this.isReversed = !this.isReversed;
-        }
-
-        this.didReverse = reverseButton;
+        reverseIt = new ButtonOperation(opMode, button, 1, () -> this.isReversed = !this.isReversed);
         this.reverseModifier = this.isReversed ? -1 : 1;
     }
 }

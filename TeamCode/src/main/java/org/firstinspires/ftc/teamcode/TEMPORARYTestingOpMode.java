@@ -5,20 +5,20 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 @TeleOp
 public class TEMPORARYTestingOpMode extends OpMode {
     ButtonOperation testButton;
+    ButtonComboOperation comboTest;
     MecanumDriveTrain mecDrive;
     Menu menu;
-    DcMotor fL = hardwareMap.get(DcMotor.class, "fL");
-    DcMotor fR = hardwareMap.get(DcMotor.class, "fR");
-    DcMotor bL = hardwareMap.get(DcMotor.class, "bL");
-    DcMotor bR = hardwareMap.get(DcMotor.class, "bR");
-    DcMotor leftOdom = hardwareMap.get(DcMotor.class, "leftOdom");
-    DcMotor rightOdom = hardwareMap.get(DcMotor.class, "rightOdom");
-    DcMotor strafeOdom = hardwareMap.get(DcMotor.class, "strafeOdom");
+    DcMotor fL = hardwareMap.get(DcMotor.class, "fL"),
+            fR = hardwareMap.get(DcMotor.class, "fR"),
+            bL = hardwareMap.get(DcMotor.class, "bL"),
+            bR = hardwareMap.get(DcMotor.class, "bR"),
+            leftOdom = hardwareMap.get(DcMotor.class, "leftOdom"),
+            rightOdom = hardwareMap.get(DcMotor.class, "rightOdom"),
+            strafeOdom = hardwareMap.get(DcMotor.class, "strafeOdom"),
+            intakeMotor = hardwareMap.get(DcMotor.class, "intakeM");
     IMU imu;
     PWMLight light = new PWMLight("light", hardwareMap);
     EasyOdom.threePodOdom odom;
@@ -26,17 +26,19 @@ public class TEMPORARYTestingOpMode extends OpMode {
     @Override
     public void init()
     {
-        mecDrive = new MecanumDriveTrain(gamepad1, fL, fR, bL, bR, false);
+        mecDrive = new MecanumDriveTrain(this, gamepad1, fL, fR, bL, bR, false);
         menu = new Menu(this);
-        testButton = new ButtonOperation(GamepadButton.X, () -> telemetry.addLine("worked"));
+        testButton = new ButtonOperation(this, GamepadButton.X, 1, () -> telemetry.addLine(" singleworked"));
         odom = new EasyOdom.threePodOdom(imu, leftOdom, rightOdom, strafeOdom,
                 2000, 1.37795354, -2);
+        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        comboTest = new ButtonComboOperation(() -> gamepad1.a && gamepad1.right_bumper, () -> telemetry.addLine("combo worked"));
     }
     double drivePower = DataSaver.loadThis("Drive Power").getAsDouble();
     int something;
     Menu.MenuItem item = new Menu.MenuItem("Drive Power", drivePower, 5, 0, 100);
     Menu.MenuItem item2 = new Menu.MenuItem("testSubMenu", "sum bullshit", something, 1, 0, 5);
-    Menu.SubMenu testSubMenu = new Menu.SubMenu("testSubMenu", 2);
+    Menu.SubMenu testSubMenu = new Menu.SubMenu("testSubMenu", 3);
     @Override
     public void loop()
     {
@@ -51,7 +53,16 @@ public class TEMPORARYTestingOpMode extends OpMode {
         }
         else {
             mecDrive.drive(drivePower);
+            mecDrive.reverse(GamepadButton.DPAD_DOWN);
+            if (gamepad1.left_bumper)
+            {
+                intakeMotor.setPower(1);
+            }
+            else {
+                intakeMotor.setPower(0);
+            }
             testButton.run();
+            comboTest.run();
             light.setColor(PWMLight.Color.GREEN);
             telemetry.addData("Robot X", odom.getRobotX());
             telemetry.addData("Robot Y", odom.getRobotY());
