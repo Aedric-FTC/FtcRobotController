@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class PWMLight {
     Servo light;
@@ -14,7 +15,7 @@ public class PWMLight {
     final double WHITE_VALUE = 1.000;
     public PWMLight(String lightName, HardwareMap hardwareMap)
     {
-        if (hardwareMap.get(Servo.class, lightName) != null)
+        if (hardwareMap.servo.contains(lightName))
         {
             this.light = hardwareMap.get(Servo.class, lightName);
         }
@@ -34,6 +35,29 @@ public class PWMLight {
             case OFF: this.colorValue = 0; break;
         }
         this.light.setPosition(this.colorValue);
+    }
+    private ElapsedTime flashTimer = new ElapsedTime();
+    boolean lightIsOn;
+    boolean dontMessWithMe;
+    public void blink(double interval, Color color)
+    {
+        switch (color)
+        {
+            case RED: this.colorValue = RED_VALUE; break;
+            case ORANGE: this.colorValue = ORANGE_VALUE; break;
+            case YELLOW: this.colorValue = YELLOW_VALUE; break;
+            case GREEN: this.colorValue = GREEN_VALUE; break;
+            case BLUE: this.colorValue = BLUE_VALUE; break;
+            case PURPLE: this.colorValue = PURPLE_VALUE; break;
+            case WHITE: this.colorValue = WHITE_VALUE; break;
+            case OFF: this.colorValue = 0; break;
+        }
+        if (flashTimer.milliseconds() >= interval)
+        {
+            lightIsOn = !lightIsOn;
+            this.light.setPosition(lightIsOn ? this.colorValue : 0);
+            flashTimer.reset();
+        }
     }
     /// @param pwmColorValue Any double value 0-1
     public void setColor(double pwmColorValue)

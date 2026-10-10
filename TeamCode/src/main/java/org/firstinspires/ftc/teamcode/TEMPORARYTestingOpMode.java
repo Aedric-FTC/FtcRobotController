@@ -11,30 +11,57 @@ public class TEMPORARYTestingOpMode extends OpMode {
     ButtonComboOperation comboTest;
     MecanumDriveTrain mecDrive;
     Menu menu;
-    DcMotor fL = hardwareMap.get(DcMotor.class, "fL"),
-            fR = hardwareMap.get(DcMotor.class, "fR"),
-            bL = hardwareMap.get(DcMotor.class, "bL"),
-            bR = hardwareMap.get(DcMotor.class, "bR"),
-            leftOdom = hardwareMap.get(DcMotor.class, "leftOdom"),
-            rightOdom = hardwareMap.get(DcMotor.class, "rightOdom"),
-            strafeOdom = hardwareMap.get(DcMotor.class, "strafeOdom"),
-            intakeMotor = hardwareMap.get(DcMotor.class, "intakeM");
+    DcMotor intakeMotor() {
+        if (hardwareMap.dcMotor.contains("intakeM")) {
+            return hardwareMap.get(DcMotor.class, "intakeM");
+        }
+        else {
+            return null;
+        }
+    }
+    DcMotor leftOdom(){
+        if (hardwareMap.dcMotor.contains("leftOdom"))
+        {
+            return hardwareMap.get(DcMotor.class, "leftOdom");
+        }
+        else {
+            return null;
+        }
+    }
+    DcMotor rightOdom(){
+        if (hardwareMap.dcMotor.contains("rightOdom"))
+        {
+            return hardwareMap.get(DcMotor.class, "rightOdom");
+        }
+        else {
+            return null;
+        }
+    }
+    DcMotor strafeOdom(){
+        if (hardwareMap.dcMotor.contains("strafeOdom"))
+        {
+            return hardwareMap.get(DcMotor.class, "strafeOdom");
+        }
+        else {
+            return null;
+        }
+    }
     IMU imu;
-    PWMLight light = new PWMLight("light", hardwareMap);
+    //PWMLight light = new PWMLight("light", hardwareMap);
     EasyOdom.threePodOdom odom;
 
     @Override
     public void init()
     {
-        mecDrive = new MecanumDriveTrain(this, fL, fR, bL, bR, false);
+        mecDrive = new MecanumDriveTrain(this, "fL", "fR", "bL", "bR", false);
         menu = new Menu(this);
         testButton = new ButtonOperation(this, GamepadButton.X, 1, () -> telemetry.addLine(" singleworked"));
-        odom = new EasyOdom.threePodOdom(imu, leftOdom, rightOdom, strafeOdom,
-                2000, 1.37795354, -2);
-        intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //odom = new EasyOdom.threePodOdom(imu, leftOdom(), rightOdom(), strafeOdom(),
+         //       2000, 1.37795354, -2);
+        //intakeMotor().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         comboTest = new ButtonComboOperation(() -> gamepad1.a && gamepad1.right_bumper, () -> telemetry.addLine("combo worked"));
     }
-    double drivePower = DataSaver.loadThis("Drive Power").getAsDouble();
+    double drivePower = 100;//DataSaver.loadThis("Drive Power").getAsDouble();
     int something;
     Menu.MenuItem item = new Menu.MenuItem("Drive Power", drivePower, 5, 0, 100);
     Menu.MenuItem item2 = new Menu.MenuItem("testSubMenu", "sum bullshit", something, 1, 0, 5);
@@ -42,31 +69,31 @@ public class TEMPORARYTestingOpMode extends OpMode {
     @Override
     public void loop()
     {
-        odom.update();
-        if (Menu.menuMode)
+        Menu.createMenu();
+        //odom.update();
+        if (Menu.inMenu)
         {
-            item.createMenu();
             drivePower = item.getDoubleValue();
-            testSubMenu.addSubMenu();
+            //testSubMenu.addSubMenu();
             something = item2.getIntValue();
-            light.setColor(PWMLight.Color.YELLOW);
+         //   light.setColor(PWMLight.Color.YELLOW);
         }
         else {
             mecDrive.drive(drivePower);
             mecDrive.reverse(GamepadButton.DPAD_DOWN);
-            if (gamepad1.left_bumper)
+            if (gamepad1.left_bumper && intakeMotor() != null)
             {
-                intakeMotor.setPower(1);
+                intakeMotor().setPower(1);
             }
-            else {
-                intakeMotor.setPower(0);
+            else if (intakeMotor() != null){
+                intakeMotor().setPower(0);
             }
             testButton.run();
             comboTest.run();
-            light.setColor(PWMLight.Color.GREEN);
-            telemetry.addData("Robot X", odom.getRobotX());
+          //  light.setColor(PWMLight.Color.GREEN);
+            /*telemetry.addData("Robot X", odom.getRobotX());
             telemetry.addData("Robot Y", odom.getRobotY());
-            telemetry.addData("Robot Heading", odom.getRobotHeading());
+            telemetry.addData("Robot Heading", odom.getRobotHeading());*/
         }
     }
 

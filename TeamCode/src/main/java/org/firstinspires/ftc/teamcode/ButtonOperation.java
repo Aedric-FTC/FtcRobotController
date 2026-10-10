@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import java.util.function.BooleanSupplier;
-
 public class ButtonOperation {
     GamepadButton gb;
     Gamepad gamepad;
@@ -52,6 +50,8 @@ public class ButtonOperation {
                     return opMode.gamepad1.dpad_right;
                 case DPAD_LEFT:
                     return opMode.gamepad1.dpad_left;
+                case START:
+                    return opMode.gamepad1.start;
                 default:
                     return false;
             }
@@ -82,6 +82,8 @@ public class ButtonOperation {
                         return opMode.gamepad2.dpad_right;
                     case DPAD_LEFT:
                         return opMode.gamepad2.dpad_left;
+                    case START:
+                        return opMode.gamepad2.start;
                     default:
                         return false;
                 }

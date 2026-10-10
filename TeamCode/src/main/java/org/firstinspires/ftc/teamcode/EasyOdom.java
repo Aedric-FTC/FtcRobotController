@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -57,9 +56,14 @@ public class EasyOdom {
         private int prevBackTicks = 0;
         private double prevHeading = 0.0;
         public void update() {
-            int currentLeft = leftEncoder.getCurrentPosition();
-            int currentRight = rightEncoder.getCurrentPosition();
-            int currentBack = strafeEncoder.getCurrentPosition();
+            int currentLeft = 0;
+            int currentRight = 0;
+            int currentBack = 0;
+            if (leftEncoder != null && rightEncoder != null && strafeEncoder != null) {
+                currentLeft = leftEncoder.getCurrentPosition();
+                currentRight = rightEncoder.getCurrentPosition();
+                currentBack = strafeEncoder.getCurrentPosition();
+            }
 
             YawPitchRollAngles robotAngles = imu.getRobotYawPitchRollAngles();
             double currentHeading = robotAngles.getYaw(AngleUnit.RADIANS);

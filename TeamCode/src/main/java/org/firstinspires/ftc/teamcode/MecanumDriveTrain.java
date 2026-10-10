@@ -3,10 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import java.util.function.BooleanSupplier;
 
 public class MecanumDriveTrain {
     private final DcMotor frontLeft;
@@ -14,22 +10,22 @@ public class MecanumDriveTrain {
     private final DcMotor backLeft;
     private final DcMotor backRight;
     OpMode opMode;
-    public MecanumDriveTrain(OpMode opMode, DcMotor frontLeftMotor, DcMotor frontRightMotor, DcMotor backLeftMotor, DcMotor backRightMotor, boolean hasEncoder)
+    public MecanumDriveTrain(OpMode opMode, String frontLeftMotor, String frontRightMotor, String backLeftMotor, String backRightMotor, boolean hasEncoder)
     {
         this.opMode = opMode;
 
-        this.frontLeft = frontLeftMotor;
+        this.frontLeft = this.opMode.hardwareMap.get(DcMotor.class, frontLeftMotor);
         this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.frontRight = frontRightMotor;
+        this.frontRight = this.opMode.hardwareMap.get(DcMotor.class, frontRightMotor);
         this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.backLeft = backLeftMotor;
+        this.backLeft = this.opMode.hardwareMap.get(DcMotor.class, backLeftMotor);
         this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        this.backRight = backRightMotor;
+        this.backRight = this.opMode.hardwareMap.get(DcMotor.class, backRightMotor);
         this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         if (hasEncoder)

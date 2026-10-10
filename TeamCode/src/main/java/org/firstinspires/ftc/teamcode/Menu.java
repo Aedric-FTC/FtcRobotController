@@ -41,46 +41,73 @@ public class Menu
     }
     public static OpMode opMode;
 
-    public static boolean menuMode;
+    public static boolean inMenu;
     public static int menuCounter = 1;
     static boolean menuWasIncremented;
     static boolean menuWasDecremented;
-    public boolean lastInput;
-    public boolean outputToggle;
+    public static boolean lastInput;
+    public static boolean outputToggle;
     public int globalMenuNumber;
     static String currentSubMenu;
     String itemSubMenu;
+    public interface menuChange { void run(); }
+    private static menuChange menuEnter = () -> {};
+    private static menuChange menuExit = () -> {};
+    public static void onMenuEnter(menuChange menuChange)  { menuEnter = menuChange; }
+    public static void onMenuExit(menuChange menuChange)  { menuExit = menuChange; }
+    public static void runOnMenuEnter() { menuEnter.run(); }
+    public static void runOnMenuExit() { menuExit.run(); }
+
     /// Turns menu on when START is pressed (place at start of loop() method)
-    public void createMenu()
+    public static void createMenu()
     {
         currentSubMenu = "MAIN";
         boolean output;
         if (opMode.gamepad1.start && !lastInput)
         {
             outputToggle = !outputToggle;
+            if (outputToggle)
+            {
+                runOnMenuEnter();
+            }
+            else {
+                runOnMenuExit();
+            }
         }
 
         lastInput = opMode.gamepad1.start;
 
         output = outputToggle;
 
-        if (menuMode)
+        if (inMenu)
         {
+            setMenuCounter(MenuItem.numberOfMenuItems);
             opMode.telemetry.addLine("Press START to exit the menu");
             opMode.telemetry.addLine();
             opMode.telemetry.addLine("D-Pad up/down to scroll");
             opMode.telemetry.addLine("D-Pad right/left to change values");
             opMode.telemetry.addLine();
         }
+        else {
+            opMode.telemetry.addLine("Press START to open menu");
+        }
 
-        menuMode = output;
-        setMenuCounter(MenuItem.numberOfMenuItems);
+        inMenu = output;
+        //menuMode = output;
     }
-    int counterIncrement;
-    int counterDecrement;
-    private void setMenuCounter(int itemCount)
+    public static void displayMenuLabels()
     {
-        if (menuMode)
+        opMode.telemetry.addLine("Press START to exit the menu");
+        opMode.telemetry.addLine();
+        opMode.telemetry.addLine("D-Pad up/down to scroll");
+        opMode.telemetry.addLine("D-Pad right/left to change values");
+        opMode.telemetry.addLine();
+    }
+    static int counterIncrement;
+    static int counterDecrement;
+    private static void setMenuCounter(int itemCount)
+    {
+        if (inMenu)
         {
             counterIncrement = (opMode.gamepad1.dpad_down && !menuWasIncremented) ? 1 : 0;
             menuWasIncremented = opMode.gamepad1.dpad_down;
@@ -93,49 +120,6 @@ public class Menu
 
     boolean wasIncremented;
     boolean wasDecremented;
-    /// Creates and adds an item to your menu, returning a number
-    /// @param menuNumber The index that tells where in the menu your item will be, so if it is 1, your item will be the first on the menu
-    /// @param itemName The displayed name of your item
-    /// @param input The variable that you want to modify
-    /// @param increment The amount by which your variable's value will change when using the left/right d-pad buttons
-    /// @param min The minimum value your variable will be allowed to reach
-    /// @param max The maximum value your variable will be allowed to reach
-    /// @return Number
-    /// <p></p>
-    /// <br>To use this method, set your original variable equal to the method and use the .doubleValue() (or whatever number variable you need), for example:
-    /// ```java
-    /// myDouble = setMenuItem(1, "My Double", myDouble, 5, 0, 100).doubleValue();
-    /// ```
-    @Deprecated
-    public Number setMenuItem(int menuNumber, String itemName, double input, double increment, double min, double max)
-    {
-        if (menuMode)
-        {
-            if (menuNumber == menuCounter)
-            {
-                opMode.telemetry.addData(">  " + itemName, input);
-                if (opMode.gamepad1.dpad_right && input + increment <= max && !wasIncremented)
-                {
-                    input += increment;
-                }
-
-                wasIncremented = opMode.gamepad1.dpad_right;
-
-                if (opMode.gamepad1.dpad_left && input - increment != min - 1 && !wasDecremented)
-                {
-                    input -= increment;
-                }
-
-                wasDecremented = opMode.gamepad1.dpad_left;
-            }
-            else
-            {
-                opMode.telemetry.addData(itemName, input);
-            }
-        }
-        globalMenuNumber = Math.max(menuNumber, globalMenuNumber);
-        return input;
-    }
     public static class MenuItem extends Menu{
         public static int numberOfMenuItems;
         public String itemName;
@@ -180,11 +164,19 @@ public class Menu
             this.max = max;
             this.itemSubMenu = subMenu;
         }
+        public void onMenuExit()
+        {
+            DataSaver.saveThis(itemName, itemValue.doubleValue());
+        }
+        public void onMenuOpen()
+        {
+
+        }
         /// @return The new double value of your menu item
         /// IMPORTANT: This method can only be used once in your loop
         public double getDoubleValue()
         {
-            if (menuMode && currentSubMenu.equals(this.itemSubMenu))
+            if (inMenu && currentSubMenu.equals(this.itemSubMenu))
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -215,7 +207,7 @@ public class Menu
         /// IMPORTANT: This method can only be used once in your loop
         public int getIntValue()
         {
-            if (menuMode && currentSubMenu.equals(this.itemSubMenu))
+            if (inMenu && currentSubMenu.equals(this.itemSubMenu))
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -253,11 +245,11 @@ public class Menu
             this.subMenuName = subMenuName;
             this.subMenuNumber = itemNumber;
         }
-        ButtonOperation enterSubMenu = new ButtonOperation(GamepadButton.A, () -> {
+        ButtonOperation enterSubMenu = new ButtonOperation(opMode, GamepadButton.A, 1, () -> {
             currentSubMenu =  this.subMenuName;
             menuCounter = 1;
         });
-        ButtonOperation exitSubMenu = new ButtonOperation(GamepadButton.B, () -> {
+        ButtonOperation exitSubMenu = new ButtonOperation(opMode, GamepadButton.B, 1, () -> {
             currentSubMenu = "MAIN";
             menuCounter = 1;
         });
