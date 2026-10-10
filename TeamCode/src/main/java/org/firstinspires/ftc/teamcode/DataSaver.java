@@ -25,6 +25,7 @@ public class DataSaver {
         try
         {
             ReadWriteFile.writeFile(FILE, gson.toJson(SaveData));
+            RobotLog.ii("SaveData", "Saved to " + FILE.getAbsolutePath());
         }
         catch (Exception e)
         {
@@ -96,14 +97,14 @@ public class DataSaver {
             try {
                 SaveData = new JsonParser().parse(ReadWriteFile.readFile(FILE)).getAsJsonObject();
                 if (SaveData != null && SaveData.has(name)) {
-                    jsonElement = SaveData.get(name).getAsJsonObject();
+                    jsonElement = SaveData.get(name);
                 }
             } catch (Exception e) {
                 RobotLog.ee("SaveData", e, "Load Failed");
             }
         }
         else {
-
+            RobotLog.ee("SaveData", "Load Failed");
         }
         return jsonElement;
     }

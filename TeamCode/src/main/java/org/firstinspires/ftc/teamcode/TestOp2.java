@@ -19,7 +19,7 @@ public class TestOp2 extends OpMode {
         menu = new Menu(this);
         menuDriveSpeed = new Menu.MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
         light = new PWMLight("light", hardwareMap);
-        //telemetry.addData("testy time", DataSaver.loadThis("driveSpeed").getAsDouble());
+        telemetry.addData("testy time", DataSaver.loadThis("driveSpeed").getAsDouble());
     }
 
     @Override
