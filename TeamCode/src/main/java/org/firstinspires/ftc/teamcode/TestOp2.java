@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TestOp2 extends OpMode {
     MecanumDriveTrain mecDrive;
     Menu.MenuItem menuDriveSpeed;
-    double driveSpeed = 100;
+    Menu.MenuItem item2;
+    double driveSpeed = RobotJson.load("driveSpeed").getAsDouble();
+    double item2Value = RobotJson.load("item2Value").getAsDouble();
     PWMLight light;
     Menu menu;
 
@@ -19,7 +21,7 @@ public class TestOp2 extends OpMode {
         menu = new Menu(this);
         menuDriveSpeed = new Menu.MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
         light = new PWMLight("light", hardwareMap);
-        telemetry.addData("testy time", DataSaver.loadThis("driveSpeed").getAsDouble());
+        item2 = new Menu.MenuItem("test 2", 50, 5, 0, 100);
     }
 
     @Override
@@ -33,7 +35,11 @@ public class TestOp2 extends OpMode {
         else {
             light.blink(500, PWMLight.Color.YELLOW);
             driveSpeed = menuDriveSpeed.getDoubleValue();
+            item2Value = item2.getDoubleValue();
         }
-        Menu.onMenuExit(() -> DataSaver.saveThis("driveSpeed", driveSpeed));
+        Menu.onMenuExit(() -> {
+            RobotJson.save("driveSpeed", driveSpeed);
+            RobotJson.save("item2Value", item2Value);
+        });
     }
 }

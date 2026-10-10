@@ -5,35 +5,48 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class MecanumDriveTrain {
-    private final DcMotor frontLeft;
-    private final DcMotor frontRight;
-    private final DcMotor backLeft;
-    private final DcMotor backRight;
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
     OpMode opMode;
     public MecanumDriveTrain(OpMode opMode, String frontLeftMotor, String frontRightMotor, String backLeftMotor, String backRightMotor, boolean hasEncoder)
     {
         this.opMode = opMode;
 
-        this.frontLeft = this.opMode.hardwareMap.get(DcMotor.class, frontLeftMotor);
-        this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        this.frontRight = this.opMode.hardwareMap.get(DcMotor.class, frontRightMotor);
-        this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        this.backLeft = this.opMode.hardwareMap.get(DcMotor.class, backLeftMotor);
-        this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        this.backRight = this.opMode.hardwareMap.get(DcMotor.class, backRightMotor);
-        this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        if (hasEncoder)
-        {
-            this.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            this.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            this.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            this.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (this.opMode.hardwareMap.dcMotor.contains(frontLeftMotor)) {
+            this.frontLeft = this.opMode.hardwareMap.get(DcMotor.class, frontLeftMotor);
+            this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            this.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            if (hasEncoder)
+            {
+                this.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        if (this.opMode.hardwareMap.dcMotor.contains(frontRightMotor)) {
+            this.frontRight = this.opMode.hardwareMap.get(DcMotor.class, frontRightMotor);
+            this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if (hasEncoder)
+            {
+                this.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        if (this.opMode.hardwareMap.dcMotor.contains(backLeftMotor)) {
+            this.backLeft = this.opMode.hardwareMap.get(DcMotor.class, backLeftMotor);
+            this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            this.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            if (hasEncoder)
+            {
+                this.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        if (this.opMode.hardwareMap.dcMotor.contains(backRightMotor)) {
+            this.backRight = this.opMode.hardwareMap.get(DcMotor.class, backRightMotor);
+            this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if (hasEncoder)
+            {
+                this.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
         }
     }
 

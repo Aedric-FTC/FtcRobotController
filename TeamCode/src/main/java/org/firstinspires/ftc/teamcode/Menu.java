@@ -166,7 +166,7 @@ public class Menu
         }
         public void onMenuExit()
         {
-            DataSaver.saveThis(itemName, itemValue.doubleValue());
+            RobotJson.save(itemName, itemValue.doubleValue());
         }
         public void onMenuOpen()
         {

@@ -100,7 +100,7 @@ public class TEMPORARYTestingOpMode extends OpMode {
     @Override
     public void stop()
     {
-        DataSaver.saveThis("Drive Power", drivePower);
-        DataSaver.saveThis("sum bullshit", something);
+        RobotJson.save("Drive Power", drivePower);
+        RobotJson.save("sum bullshit", something);
     }
 }
