@@ -87,10 +87,10 @@ public class MecanumDriveTrain {
         this.blPower *= (powerPercentage/this.maxPower);
         this.brPower *= (powerPercentage/this.maxPower);
 
-        this.frontLeft.setPower(this.flPower);
-        this.frontRight.setPower(this.frPower);
-        this.backLeft.setPower(this.blPower);
-        this.backRight.setPower(this.brPower);
+        if (this.frontLeft != null) {this.frontLeft.setPower(this.flPower);}
+        if (this.frontRight != null) {this.frontRight.setPower(this.frPower);}
+        if (this.backLeft != null) {this.backLeft.setPower(this.blPower);}
+        if (this.backRight != null) {this.backRight.setPower(this.brPower);}
     }
     boolean isReversed = false;
     ButtonOperation reverseIt;

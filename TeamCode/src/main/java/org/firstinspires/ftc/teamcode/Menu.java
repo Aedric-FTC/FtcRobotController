@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /// NOTE: If your robot's code utilizes the d-pad, consider wrapping the menu methods in an if statement for 'if (Menu.menuMode)', then put your TeleOp code in an else statement so that it only runs when not in the menu<br>
 ///
 /// Create a Menu object first, then, in your init method, give the object a value:
@@ -72,6 +75,7 @@ public class Menu
             }
             else {
                 runOnMenuExit();
+                menuExit();
             }
         }
 
@@ -117,6 +121,13 @@ public class Menu
             menuCounter = (menuCounter - counterDecrement > 0) ? (menuCounter - counterDecrement) : itemCount;
         }
     }
+    private static void menuExit()
+    {
+        for (int i = 1; i <= MenuItem.numberOfMenuItems; i++)
+        {
+            RobotJson.save(MenuItem.thisItem(i).itemName, MenuItem.thisItem(i).itemValue);
+        }
+    }
 
     boolean wasIncremented;
     boolean wasDecremented;
@@ -128,6 +139,7 @@ public class Menu
         public Number min;
         public Number max;
         public int itemNumber;
+        public static final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
         /// Creates a menu item
         /// @param displayName The displayed name of your item
         /// @param inputValue The variable that you want to modify
@@ -145,6 +157,7 @@ public class Menu
             this.min = min;
             this.max = max;
             this.itemSubMenu = "MAIN";
+            itemRegistry.put(this.itemNumber, this);
         }
         /// Creates a menu item
         /// @param displayName The displayed name of your item
@@ -163,14 +176,11 @@ public class Menu
             this.min = min;
             this.max = max;
             this.itemSubMenu = subMenu;
+            itemRegistry.put(this.itemNumber, this);
         }
-        public void onMenuExit()
+        public static MenuItem thisItem(int itemID)
         {
-            RobotJson.save(itemName, itemValue.doubleValue());
-        }
-        public void onMenuOpen()
-        {
-
+            return itemRegistry.get(itemID);
         }
         /// @return The new double value of your menu item
         /// IMPORTANT: This method can only be used once in your loop

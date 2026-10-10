@@ -2,14 +2,17 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.robot.Robot;
 
 @TeleOp
 public class TestOp2 extends OpMode {
     MecanumDriveTrain mecDrive;
     Menu.MenuItem menuDriveSpeed;
-    Menu.MenuItem item2;
-    double driveSpeed = RobotJson.load("driveSpeed").getAsDouble();
-    double item2Value = RobotJson.load("item2Value").getAsDouble();
+    Menu.MenuItem menuItem2;
+    Menu.MenuItem menuItem3;
+    double driveSpeed = RobotJson.load("Drive Speed").getAsDouble();
+    double item2 = RobotJson.load("test 2").getAsDouble();
+    int item3 = RobotJson.load("test 3").getAsInt();
     PWMLight light;
     Menu menu;
 
@@ -21,7 +24,8 @@ public class TestOp2 extends OpMode {
         menu = new Menu(this);
         menuDriveSpeed = new Menu.MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
         light = new PWMLight("light", hardwareMap);
-        item2 = new Menu.MenuItem("test 2", 50, 5, 0, 100);
+        menuItem2 = new Menu.MenuItem("test 2", item2, 5, 0, 100);
+        menuItem3 = new Menu.MenuItem("test 3", item3, 5, 0, 100);
     }
 
     @Override
@@ -35,11 +39,13 @@ public class TestOp2 extends OpMode {
         else {
             light.blink(500, PWMLight.Color.YELLOW);
             driveSpeed = menuDriveSpeed.getDoubleValue();
-            item2Value = item2.getDoubleValue();
+            item2 = menuItem2.getDoubleValue();
+            item3 = menuItem3.getIntValue();
         }
-        Menu.onMenuExit(() -> {
+        /*Menu.onMenuExit(() -> {
             RobotJson.save("driveSpeed", driveSpeed);
-            RobotJson.save("item2Value", item2Value);
-        });
+            RobotJson.save("item2Value", item2);
+            RobotJson.save("item3Value", item3);
+        });*/
     }
 }
