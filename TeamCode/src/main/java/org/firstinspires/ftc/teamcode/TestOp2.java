@@ -47,10 +47,5 @@ public class TestOp2 extends OpMode {
             testFlt = testFloat.getFloatValue();
             telemetry.addData("Sub Menu", Menu.currentSubMenu);
         }
-        /*Menu.onMenuExit(() -> {
-            RobotJson.save("driveSpeed", driveSpeed);
-            RobotJson.save("item2Value", item2);
-            RobotJson.save("item3Value", item3);
-        });*/
     }
 }
