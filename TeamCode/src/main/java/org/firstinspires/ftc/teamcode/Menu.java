@@ -41,11 +41,13 @@ public class Menu
     public Menu(OpMode OpMode)
     {
         opMode = OpMode;
+        menuCounter = 1;
+        currentSubMenu = "MAIN";
     }
     public static OpMode opMode;
 
     public static boolean inMenu;
-    public static int menuCounter = 1;
+    public static int menuCounter;
     static boolean menuWasIncremented;
     static boolean menuWasDecremented;
     public static boolean lastInput;
@@ -64,7 +66,6 @@ public class Menu
     /// Turns menu on when START is pressed (place at start of loop() method)
     public static void createMenu()
     {
-        currentSubMenu = "MAIN";
         boolean output;
         if (opMode.gamepad1.start && !lastInput)
         {
@@ -99,14 +100,6 @@ public class Menu
         inMenu = output;
         //menuMode = output;
     }
-    public static void displayMenuLabels()
-    {
-        opMode.telemetry.addLine("Press START to exit the menu");
-        opMode.telemetry.addLine();
-        opMode.telemetry.addLine("D-Pad up/down to scroll");
-        opMode.telemetry.addLine("D-Pad right/left to change values");
-        opMode.telemetry.addLine();
-    }
     static int counterIncrement;
     static int counterDecrement;
     private static void setMenuCounter(int itemCount)
@@ -125,7 +118,11 @@ public class Menu
     {
         for (int i = 1; i <= MenuItem.numberOfMenuItems; i++)
         {
-            RobotJson.save(MenuItem.thisItem(i).itemName, MenuItem.thisItem(i).itemValue);
+            if (!MenuItem.thisItem(i).isBoolean) {
+                RobotJson.save(MenuItem.thisItem(i).itemName, MenuItem.thisItem(i).itemValue);
+            } else {
+                RobotJson.save(MenuItem.thisItem(i).itemName, MenuItem.thisItem(i).booleanInputValue);
+            }
         }
     }
 
@@ -139,6 +136,8 @@ public class Menu
         public Number min;
         public Number max;
         public int itemNumber;
+        public boolean booleanInputValue;
+        public boolean isBoolean;
         public static final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
         /// Creates a menu item
         /// @param displayName The displayed name of your item
@@ -178,6 +177,17 @@ public class Menu
             this.itemSubMenu = subMenu;
             itemRegistry.put(this.itemNumber, this);
         }
+        public MenuItem(String displayName, boolean inputValue)
+        {
+            super(opMode);
+            numberOfMenuItems ++;
+            this.itemNumber = numberOfMenuItems;
+            this.itemName = displayName;
+            this.booleanInputValue = inputValue;
+            this.isBoolean = true;
+            this.itemSubMenu = "MAIN";
+            itemRegistry.put(this.itemNumber, this);
+        }
         public static MenuItem thisItem(int itemID)
         {
             return itemRegistry.get(itemID);
@@ -198,7 +208,7 @@ public class Menu
 
                     this.wasIncremented = opMode.gamepad1.dpad_right;
 
-                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() != this.min.doubleValue() - 1 && !wasDecremented)
+                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
                     {
                         this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
                     }
@@ -229,7 +239,7 @@ public class Menu
 
                     this.wasIncremented = opMode.gamepad1.dpad_right;
 
-                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() != this.min.doubleValue() - 1 && !wasDecremented)
+                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
                     {
                         this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
                     }
@@ -243,17 +253,70 @@ public class Menu
             }
             return this.itemValue.intValue();
         }
+        /// @return The new double value of your menu item
+        /// IMPORTANT: This method can only be used once in your loop
+        public float getFloatValue()
+        {
+            if (inMenu && currentSubMenu.equals(this.itemSubMenu))
+            {
+                if (this.itemNumber == menuCounter)
+                {
+                    opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
+                    if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
+                    {
+                        this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
+                    }
+
+                    this.wasIncremented = opMode.gamepad1.dpad_right;
+
+                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
+                    {
+                        this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
+                    }
+
+                    wasDecremented = opMode.gamepad1.dpad_left;
+                }
+                else
+                {
+                    opMode.telemetry.addData(this.itemName, this.itemValue);
+                }
+            }
+            return this.itemValue.floatValue();
+        }
+        public boolean getBooleanValue()
+        {
+            if (inMenu)// && currentSubMenu.equals(this.itemSubMenu))
+            {
+                if (this.itemNumber == menuCounter && this.itemSubMenu.equals(currentSubMenu))
+                {
+                    opMode.telemetry.addData(">  " + this.itemName, this.booleanInputValue);
+                    if ((opMode.gamepad1.dpad_right || opMode.gamepad1.dpad_left) && (!this.wasIncremented && !this.wasDecremented))
+                    {
+                        this.booleanInputValue = !this.booleanInputValue;
+                    }
+                    this.wasIncremented = opMode.gamepad1.dpad_right;
+                    this.wasDecremented = opMode.gamepad1.dpad_left;
+                }
+                else if (this.itemSubMenu.equals(currentSubMenu))
+                {
+                    opMode.telemetry.addData(this.itemName, this.booleanInputValue);
+                }
+            }
+            return this.booleanInputValue;
+        }
     }
 
     public static class SubMenu extends Menu
     {
+        public static int numberOfSubMenuItems;
         String subMenuName;
         int subMenuNumber;
-        public SubMenu(String subMenuName, int itemNumber)
+        public SubMenu(String subMenuName)
         {
             super(opMode);
             this.subMenuName = subMenuName;
-            this.subMenuNumber = itemNumber;
+            MenuItem.numberOfMenuItems ++;
+            this.subMenuNumber = MenuItem.numberOfMenuItems;
         }
         ButtonOperation enterSubMenu = new ButtonOperation(opMode, GamepadButton.A, 1, () -> {
             currentSubMenu =  this.subMenuName;
@@ -269,7 +332,9 @@ public class Menu
             {
                 opMode.telemetry.addLine(">  " + this.subMenuName);
             }
-            opMode.telemetry.addLine(this.subMenuName);
+            else {
+                opMode.telemetry.addLine(this.subMenuName);
+            }
             enterSubMenu.run();
             exitSubMenu.run();
         }

@@ -7,12 +7,14 @@ import com.qualcomm.robotcore.robot.Robot;
 @TeleOp
 public class TestOp2 extends OpMode {
     MecanumDriveTrain mecDrive;
+    Menu.MenuItem testInteger;
+    Menu.MenuItem testFloat;
     Menu.MenuItem menuDriveSpeed;
-    Menu.MenuItem menuItem2;
-    Menu.MenuItem menuItem3;
+    Menu.MenuItem testBoolean;
     double driveSpeed = RobotJson.load("Drive Speed").getAsDouble();
-    double item2 = RobotJson.load("test 2").getAsDouble();
-    int item3 = RobotJson.load("test 3").getAsInt();
+    boolean testBool = RobotJson.load("Test Boolean").getAsBoolean();
+    int testInt = RobotJson.load("Test Integer").getAsInt();
+    float testFlt = RobotJson.load("Test Float").getAsFloat();
     PWMLight light;
     Menu menu;
 
@@ -24,8 +26,9 @@ public class TestOp2 extends OpMode {
         menu = new Menu(this);
         menuDriveSpeed = new Menu.MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
         light = new PWMLight("light", hardwareMap);
-        menuItem2 = new Menu.MenuItem("test 2", item2, 5, 0, 100);
-        menuItem3 = new Menu.MenuItem("test 3", item3, 5, 0, 100);
+        testBoolean = new Menu.MenuItem("Test Boolean", testBool);
+        testInteger = new Menu.MenuItem("Test Integer", testInt, 5, 0, 100);
+        testFloat = new Menu.MenuItem("Test Float", testFlt, 5, 0, 100);
     }
 
     @Override
@@ -39,8 +42,10 @@ public class TestOp2 extends OpMode {
         else {
             light.blink(500, PWMLight.Color.YELLOW);
             driveSpeed = menuDriveSpeed.getDoubleValue();
-            item2 = menuItem2.getDoubleValue();
-            item3 = menuItem3.getIntValue();
+            testBool = testBoolean.getBooleanValue();
+            testInt = testInteger.getIntValue();
+            testFlt = testFloat.getFloatValue();
+            telemetry.addData("Sub Menu", Menu.currentSubMenu);
         }
         /*Menu.onMenuExit(() -> {
             RobotJson.save("driveSpeed", driveSpeed);
