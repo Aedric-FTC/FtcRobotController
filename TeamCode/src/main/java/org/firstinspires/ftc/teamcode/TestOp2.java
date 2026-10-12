@@ -38,6 +38,8 @@ public class TestOp2 extends OpMode {
         if (!Menu.inMenu) {
             light.setColor(PWMLight.Color.GREEN);
             mecDrive.drive(driveSpeed);
+            telemetry.addData("left", gamepad1.left_bumper);
+            telemetry.addData("right", gamepad1.right_bumper);
         }
         else {
             light.blink(500, PWMLight.Color.YELLOW);
@@ -45,7 +47,6 @@ public class TestOp2 extends OpMode {
             testBool = testBoolean.getBooleanValue();
             testInt = testInteger.getIntValue();
             testFlt = testFloat.getFloatValue();
-            telemetry.addData("Sub Menu", Menu.currentSubMenu);
         }
     }
 }

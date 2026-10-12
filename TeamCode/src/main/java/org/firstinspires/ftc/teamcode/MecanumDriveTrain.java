@@ -59,6 +59,8 @@ public class MecanumDriveTrain {
     double rotate;
     double reverseModifier = 1;
     double maxPower = 1;
+    public boolean canDrive;
+    DIRECTION currentDirection = DIRECTION.STOPPED;
     public void drive(double powerPercentage)
     {
         if (powerPercentage < -100 || powerPercentage > 100)
@@ -87,10 +89,31 @@ public class MecanumDriveTrain {
         this.blPower *= (powerPercentage/this.maxPower);
         this.brPower *= (powerPercentage/this.maxPower);
 
+        if (this.flPower > 0 && this.frPower > 0 && this.blPower > 0 && this.brPower > 0) {
+            currentDirection = DIRECTION.FORWARDS;
+        }
+        if (this.flPower < 0 && this.frPower < 0 && this.blPower < 0 && this.brPower < 0) {
+            currentDirection = DIRECTION.BACKWARDS;
+        }
+        if (this.flPower < 0 && this.frPower > 0 && this.blPower > 0 && this.brPower < 0) {
+            currentDirection = DIRECTION.LEFT;
+        }
+        if (this.flPower > 0 && this.frPower < 0 && this.blPower < 0 && this.brPower > 0) {
+            currentDirection = DIRECTION.RIGHT;
+        }
+        if (this.flPower < 0 && this.frPower > 0 && this.blPower < 0 && this.brPower > 0) {
+            currentDirection = DIRECTION.SPIN_LEFT;
+        }
+        if (this.flPower > 0 && this.frPower < 0 && this.blPower > 0 && this.brPower < 0) {
+            currentDirection = DIRECTION.SPIN_RIGHT;
+        }
+
+        if (canDrive) {
         if (this.frontLeft != null) {this.frontLeft.setPower(this.flPower);}
         if (this.frontRight != null) {this.frontRight.setPower(this.frPower);}
         if (this.backLeft != null) {this.backLeft.setPower(this.blPower);}
         if (this.backRight != null) {this.backRight.setPower(this.brPower);}
+        }
     }
     boolean isReversed = false;
     ButtonOperation reverseIt;
@@ -98,5 +121,8 @@ public class MecanumDriveTrain {
     {
         reverseIt = new ButtonOperation(opMode, button, 1, () -> this.isReversed = !this.isReversed);
         this.reverseModifier = this.isReversed ? -1 : 1;
+    }
+    public enum DIRECTION {
+        FORWARDS, BACKWARDS, LEFT, RIGHT, SPIN_LEFT, SPIN_RIGHT, STOPPED
     }
 }

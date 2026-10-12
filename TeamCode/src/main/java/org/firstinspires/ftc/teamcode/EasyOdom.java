@@ -107,5 +107,12 @@ public class EasyOdom {
         {
             return Math.toDegrees(robotHeading);
         }
+        public void restrainArea(MecanumDriveTrain driveTrain, int squareLengthInches)
+        {
+            if (getRobotX() >= squareLengthInches)
+            {
+                driveTrain.canDrive = false;
+            }
+        }
     }
 }
