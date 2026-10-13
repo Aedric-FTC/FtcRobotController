@@ -38,7 +38,7 @@ public class TestOp2 extends OpMode {
     public void loop()
     {
         mainMenu.create();
-        if (!Menu.inMenu) {
+        if (mainMenu.inMenu) {
             light.setColor(PWMLight.Color.GREEN);
             mecDrive.drive(driveSpeed);
             telemetry.addData("left", gamepad1.left_bumper);

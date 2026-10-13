@@ -46,19 +46,19 @@ public class Menu
     {
         opMode = OpMode;
         menuCounter = 1;
-        currentSubMenu = "MAIN";
+        currentSubMenu = 0;
     }
-    public static OpMode opMode;
+    public OpMode opMode;
 
-    public static boolean inMenu;
-    public static int menuCounter;
-    static boolean menuWasIncremented;
-    static boolean menuWasDecremented;
-    public static boolean lastInput;
-    public static boolean outputToggle;
+    public boolean inMenu;
+    public int menuCounter;
+    boolean menuWasIncremented;
+    boolean menuWasDecremented;
+    public boolean lastInput;
+    public boolean outputToggle;
     public int globalMenuNumber;
-    static String currentSubMenu;
-    String itemSubMenu;
+    int currentSubMenu;
+    int itemSubMenu;
     public int numberOfMenuItems;
     public final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
 
@@ -111,7 +111,9 @@ public class Menu
     {
         Gamepad gp;
         if (gamepadNumber == 1) gp = gamepad1; else gp = gamepad2;
-        boolean buttonIsDown = menuButton.isPressed(gp);
+        boolean buttonIsDown;
+        if (menuButton != null) buttonIsDown = menuButton.isPressed(gp);
+        else buttonIsDown = false;
         boolean output;
         if (buttonIsDown && !lastInput)
         {
@@ -175,6 +177,10 @@ public class Menu
     {
         return itemRegistry.get(itemID);
     }
+    public Menu thisMenu()
+    {
+        return this;
+    }
 
     public class MenuItem {
         boolean wasIncremented;
@@ -187,7 +193,7 @@ public class Menu
         public int itemNumber;
         public boolean booleanInputValue;
         public boolean isBoolean;
-        public String itemSubMenu;
+        public int itemSubMenu;
         /// Creates a menu item
         /// @param displayName The displayed name of your item
         /// @param inputValue The variable that you want to modify
@@ -203,25 +209,7 @@ public class Menu
             this.increment = increment;
             this.min = min;
             this.max = max;
-            this.itemSubMenu = "MAIN";
-            itemRegistry.put(this.itemNumber, this);
-        }
-        /// Creates a menu item
-        /// @param displayName The displayed name of your item
-        /// @param inputValue The variable that you want to modify
-        /// @param increment The amount by which your variable's value will change when using the left/right d-pad buttons
-        /// @param min The minimum value your variable will be allowed to reach
-        /// @param max The maximum value your variable will be allowed to reach
-        public MenuItem(String subMenu, String displayName, Number inputValue, Number increment, Number min, Number max)
-        {
-            numberOfMenuItems ++;
-            this.itemNumber = numberOfMenuItems;
-            this.itemName = displayName;
-            this.itemValue = inputValue;
-            this.increment = increment;
-            this.min = min;
-            this.max = max;
-            this.itemSubMenu = subMenu;
+            this.itemSubMenu = 0;
             itemRegistry.put(this.itemNumber, this);
         }
         public MenuItem(String displayName, boolean inputValue)
@@ -231,14 +219,21 @@ public class Menu
             this.itemName = displayName;
             this.booleanInputValue = inputValue;
             this.isBoolean = true;
-            this.itemSubMenu = "MAIN";
+            this.itemSubMenu = 0;
+            itemRegistry.put(this.itemNumber, this);
+        }
+        public MenuItem(String displayName)
+        {
+            numberOfMenuItems ++;
+            this.itemNumber = numberOfMenuItems;
+            this.itemName = displayName;
             itemRegistry.put(this.itemNumber, this);
         }
         /// @return The new double value of your menu item
         /// IMPORTANT: This method can only be used once in your loop
         public double getDoubleValue()
         {
-            if (inMenu && currentSubMenu.equals(this.itemSubMenu))
+            if (inMenu && currentSubMenu == this.itemSubMenu)
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -269,7 +264,7 @@ public class Menu
         /// IMPORTANT: This method can only be used once in your loop
         public int getIntValue()
         {
-            if (inMenu && currentSubMenu.equals(this.itemSubMenu))
+            if (inMenu && currentSubMenu == this.itemSubMenu)
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -299,7 +294,7 @@ public class Menu
         /// IMPORTANT: This method can only be used once in your loop
         public float getFloatValue()
         {
-            if (inMenu && currentSubMenu.equals(this.itemSubMenu))
+            if (inMenu && currentSubMenu == this.itemSubMenu)
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -329,7 +324,7 @@ public class Menu
         {
             if (inMenu)// && currentSubMenu.equals(this.itemSubMenu))
             {
-                if (this.itemNumber == menuCounter && this.itemSubMenu.equals(currentSubMenu))
+                if (this.itemNumber == menuCounter && this.itemSubMenu == currentSubMenu)
                 {
                     opMode.telemetry.addData(">  " + this.itemName, this.booleanInputValue);
                     if ((opMode.gamepad1.dpad_right || opMode.gamepad1.dpad_left) && (!this.wasIncremented && !this.wasDecremented))
@@ -339,12 +334,30 @@ public class Menu
                     this.wasIncremented = opMode.gamepad1.dpad_right;
                     this.wasDecremented = opMode.gamepad1.dpad_left;
                 }
-                else if (this.itemSubMenu.equals(currentSubMenu))
+                else if (this.itemSubMenu == currentSubMenu)
                 {
                     opMode.telemetry.addData(this.itemName, this.booleanInputValue);
                 }
             }
             return this.booleanInputValue;
+        }
+    }
+    public class SubMenu {
+        Menu sub = new Menu(opMode);
+        Menu superMenu = thisMenu();
+        Menu.MenuItem subItem;
+        public void create(String displayName)
+        {
+            sub.create(null, 1);
+            subItem = superMenu.new MenuItem(displayName);
+            if (subItem.itemNumber == menuCounter && subItem.itemSubMenu == currentSubMenu)
+            {
+                opMode.telemetry.addLine(">  " + subItem.itemName);
+            }
+            else if (subItem.itemSubMenu == currentSubMenu)
+            {
+                opMode.telemetry.addLine(subItem.itemName);
+            }
         }
     }
 }
