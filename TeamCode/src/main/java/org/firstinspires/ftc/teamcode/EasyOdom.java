@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -11,10 +13,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class EasyOdom {
     public static class threePodOdom
     {
-        private DcMotor leftEncoder;
-        private DcMotor rightEncoder;
-        private DcMotor strafeEncoder;
-        private IMU imu;
+        @SuppressWarnings("ASCII")
+        private final double π = Math.PI;
+        private final DcMotor leftEncoder;
+        private final DcMotor rightEncoder;
+        private final DcMotor strafeEncoder;
+        private final IMU imu;
 
         private final double TICKS_PER_REV;
         private final double WHEEL_DIAMETER_INCHES;
@@ -73,8 +77,8 @@ public class EasyOdom {
             int deltaBackTicks = currentBack - prevBackTicks;
 
             double deltaHeading = currentHeading - prevHeading;
-            if (deltaHeading > Math.PI)  deltaHeading -= 2 * Math.PI;
-            if (deltaHeading < -Math.PI) deltaHeading += 2 * Math.PI;
+            if (deltaHeading > π)  deltaHeading -= 2 * π;
+            if (deltaHeading < -π) deltaHeading += 2 * π;
 
             double deltaLeftInches = deltaLeftTicks * INCHES_PER_TICK;
             double deltaRightInches = deltaRightTicks * INCHES_PER_TICK;
@@ -107,11 +111,138 @@ public class EasyOdom {
         {
             return Math.toDegrees(robotHeading);
         }
-        public void restrainArea(MecanumDriveTrain driveTrain, int squareLengthInches)
+
+        public void restrainArea(@NonNull MecanumDriveTrain driveTrain, double squareLengthInches)
         {
-            if (getRobotX() >= squareLengthInches)
+            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.STOPPED)
             {
-                driveTrain.canDrive = false;
+                if (getRobotX() >= (squareLengthInches / 2))
+                {
+                    if (getRobotHeading() >= 0 && getRobotHeading() <= (π / 2))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotHeading() >= (π / 2) && getRobotHeading() <= (π))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotHeading() >= (π) && getRobotHeading() <= (3 * π / 2))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotHeading() >= (3 * π / 2) && getRobotHeading() <= (0))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                }
+                if (getRobotX() <= -(squareLengthInches / 2))
+                {
+                    if (getRobotHeading() >= 0 && getRobotHeading() <= (π / 2))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotHeading() >= (π / 2) && getRobotHeading() <= (π))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotHeading() >= (π) && getRobotHeading() <= (3 * π / 2))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotHeading() >= (3 * π / 2) && getRobotHeading() <= (0))
+                    {
+                        if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                        {
+                            driveTrain.blockedDirection = driveTrain.currentDirection;
+                        }
+                    }
+                    if (getRobotY() >= (squareLengthInches / 2))
+                    {
+                        if (getRobotHeading() >= 0 && getRobotHeading() <= (π / 2))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                        if (getRobotHeading() >= (π / 2) && getRobotHeading() <= (π))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                        if (getRobotHeading() >= (π) && getRobotHeading() <= (3 * π / 2))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                        if (getRobotHeading() >= (3 * π / 2) && getRobotHeading() <= (0))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                    }
+                    if (getRobotY() <= -(squareLengthInches / 2))
+                    {
+                        if (getRobotHeading() >= 0 && getRobotHeading() <= (π / 2))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                        if (getRobotHeading() >= (π / 2) && getRobotHeading() <= (π))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.BACKWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                        if (getRobotHeading() >= (π) && getRobotHeading() <= (3 * π / 2))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.LEFT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                        if (getRobotHeading() >= (3 * π / 2) && getRobotHeading() <= (0))
+                        {
+                            if (driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.RIGHT || driveTrain.currentDirection == MecanumDriveTrain.DIRECTION.FORWARDS)
+                            {
+                                driveTrain.blockedDirection = driveTrain.currentDirection;
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                driveTrain.blockedDirection = MecanumDriveTrain.DIRECTION.NONE;
             }
         }
     }

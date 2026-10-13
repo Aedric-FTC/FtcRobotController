@@ -59,8 +59,9 @@ public class MecanumDriveTrain {
     double rotate;
     double reverseModifier = 1;
     double maxPower = 1;
-    public boolean canDrive;
+    public boolean canDrive = true;
     DIRECTION currentDirection = DIRECTION.STOPPED;
+    DIRECTION blockedDirection = DIRECTION.NONE;
     public void drive(double powerPercentage)
     {
         if (powerPercentage < -100 || powerPercentage > 100)
@@ -107,6 +108,10 @@ public class MecanumDriveTrain {
         if (this.flPower > 0 && this.frPower < 0 && this.blPower > 0 && this.brPower < 0) {
             currentDirection = DIRECTION.SPIN_RIGHT;
         }
+        if (currentDirection == blockedDirection)
+        {
+            canDrive = false;
+        }
 
         if (canDrive) {
         if (this.frontLeft != null) {this.frontLeft.setPower(this.flPower);}
@@ -123,6 +128,6 @@ public class MecanumDriveTrain {
         this.reverseModifier = this.isReversed ? -1 : 1;
     }
     public enum DIRECTION {
-        FORWARDS, BACKWARDS, LEFT, RIGHT, SPIN_LEFT, SPIN_RIGHT, STOPPED
+        FORWARDS, BACKWARDS, LEFT, RIGHT, SPIN_LEFT, SPIN_RIGHT, STOPPED, NONE
     }
 }
