@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
 public class TestOp2 extends OpMode {
@@ -16,25 +16,28 @@ public class TestOp2 extends OpMode {
     int testInt = RobotJson.load("Test Integer").getAsInt();
     float testFlt = RobotJson.load("Test Float").getAsFloat();
     PWMLight light;
-    Menu menu;
+    Menu mainMenu;
+    DcMotor motor;
+    EasyPID pid = new EasyPID(this);
 
     @Override
     public void init()
     {
         mecDrive = new MecanumDriveTrain(this, "fL", "fR",
                 "bL", "bR", false);
-        menu = new Menu(this);
-        menuDriveSpeed = new Menu.MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
+        mainMenu = new Menu(this);
+        menuDriveSpeed = mainMenu.new MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
         light = new PWMLight("light", hardwareMap);
-        testBoolean = new Menu.MenuItem("Test Boolean", testBool);
-        testInteger = new Menu.MenuItem("Test Integer", testInt, 5, 0, 100);
-        testFloat = new Menu.MenuItem("Test Float", testFlt, 5, 0, 100);
+        testBoolean = mainMenu.new MenuItem("Test Boolean", testBool);
+        testInteger = mainMenu.new MenuItem("Test Integer", testInt, 5, 0, 100);
+        testFloat = mainMenu.new MenuItem("Test Float", testFlt, 5, 0, 100);
+        motor = SafeHardware.get(DcMotor.class, "motor", this);
     }
 
     @Override
     public void loop()
     {
-        Menu.createMenu();
+        mainMenu.create();
         if (!Menu.inMenu) {
             light.setColor(PWMLight.Color.GREEN);
             mecDrive.drive(driveSpeed);

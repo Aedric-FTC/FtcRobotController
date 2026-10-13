@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +59,9 @@ public class Menu
     public int globalMenuNumber;
     static String currentSubMenu;
     String itemSubMenu;
+    public int numberOfMenuItems;
+    public final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
+
     public interface menuChange { void run(); }
     private static menuChange menuEnter = () -> {};
     private static menuChange menuExit = () -> {};
@@ -64,7 +71,7 @@ public class Menu
     public static void runOnMenuExit() { menuExit.run(); }
 
     /// Turns menu on when START is pressed (place at start of loop() method)
-    public static void createMenu()
+    public void create()
     {
         boolean output;
         if (opMode.gamepad1.start && !lastInput)
@@ -86,7 +93,46 @@ public class Menu
 
         if (inMenu)
         {
-            setMenuCounter(MenuItem.numberOfMenuItems);
+            setMenuCounter(numberOfMenuItems);
+            opMode.telemetry.addLine("Press START to exit the menu");
+            opMode.telemetry.addLine();
+            opMode.telemetry.addLine("D-Pad up/down to scroll");
+            opMode.telemetry.addLine("D-Pad right/left to change values");
+            opMode.telemetry.addLine();
+        }
+        else {
+            opMode.telemetry.addLine("Press START to open menu");
+        }
+
+        inMenu = output;
+        //menuMode = output;
+    }
+    public void create(GamepadButton menuButton, int gamepadNumber)
+    {
+        Gamepad gp;
+        if (gamepadNumber == 1) gp = gamepad1; else gp = gamepad2;
+        boolean buttonIsDown = menuButton.isPressed(gp);
+        boolean output;
+        if (buttonIsDown && !lastInput)
+        {
+            outputToggle = !outputToggle;
+            if (outputToggle)
+            {
+                runOnMenuEnter();
+            }
+            else {
+                runOnMenuExit();
+                menuExit();
+            }
+        }
+
+        lastInput = opMode.gamepad1.start;
+
+        output = outputToggle;
+
+        if (inMenu)
+        {
+            setMenuCounter(numberOfMenuItems);
             opMode.telemetry.addLine("Press START to exit the menu");
             opMode.telemetry.addLine();
             opMode.telemetry.addLine("D-Pad up/down to scroll");
@@ -102,7 +148,7 @@ public class Menu
     }
     static int counterIncrement;
     static int counterDecrement;
-    private static void setMenuCounter(int itemCount)
+    private void setMenuCounter(int itemCount)
     {
         if (inMenu)
         {
@@ -114,22 +160,25 @@ public class Menu
             menuCounter = (menuCounter - counterDecrement > 0) ? (menuCounter - counterDecrement) : itemCount;
         }
     }
-    private static void menuExit()
+    private void menuExit()
     {
-        for (int i = 1; i <= MenuItem.numberOfMenuItems; i++)
+        for (int i = 1; i <= numberOfMenuItems; i++)
         {
-            if (!MenuItem.thisItem(i).isBoolean) {
-                RobotJson.save(MenuItem.thisItem(i).itemName, MenuItem.thisItem(i).itemValue);
+            if (!thisItem(i).isBoolean) {
+                RobotJson.save(thisItem(i).itemName, thisItem(i).itemValue);
             } else {
-                RobotJson.save(MenuItem.thisItem(i).itemName, MenuItem.thisItem(i).booleanInputValue);
+                RobotJson.save(thisItem(i).itemName, thisItem(i).booleanInputValue);
             }
         }
     }
+    public MenuItem thisItem(int itemID)
+    {
+        return itemRegistry.get(itemID);
+    }
 
-    boolean wasIncremented;
-    boolean wasDecremented;
-    public static class MenuItem extends Menu{
-        public static int numberOfMenuItems;
+    public class MenuItem {
+        boolean wasIncremented;
+        boolean wasDecremented;
         public String itemName;
         public Number itemValue;
         public Number increment;
@@ -138,7 +187,7 @@ public class Menu
         public int itemNumber;
         public boolean booleanInputValue;
         public boolean isBoolean;
-        public static final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
+        public String itemSubMenu;
         /// Creates a menu item
         /// @param displayName The displayed name of your item
         /// @param inputValue The variable that you want to modify
@@ -147,7 +196,6 @@ public class Menu
         /// @param max The maximum value your variable will be allowed to reach
         public MenuItem(String displayName, Number inputValue, Number increment, Number min, Number max)
         {
-            super(opMode);
             numberOfMenuItems ++;
             this.itemNumber = numberOfMenuItems;
             this.itemName = displayName;
@@ -166,7 +214,6 @@ public class Menu
         /// @param max The maximum value your variable will be allowed to reach
         public MenuItem(String subMenu, String displayName, Number inputValue, Number increment, Number min, Number max)
         {
-            super(opMode);
             numberOfMenuItems ++;
             this.itemNumber = numberOfMenuItems;
             this.itemName = displayName;
@@ -179,7 +226,6 @@ public class Menu
         }
         public MenuItem(String displayName, boolean inputValue)
         {
-            super(opMode);
             numberOfMenuItems ++;
             this.itemNumber = numberOfMenuItems;
             this.itemName = displayName;
@@ -187,10 +233,6 @@ public class Menu
             this.isBoolean = true;
             this.itemSubMenu = "MAIN";
             itemRegistry.put(this.itemNumber, this);
-        }
-        public static MenuItem thisItem(int itemID)
-        {
-            return itemRegistry.get(itemID);
         }
         /// @return The new double value of your menu item
         /// IMPORTANT: This method can only be used once in your loop
@@ -303,40 +345,6 @@ public class Menu
                 }
             }
             return this.booleanInputValue;
-        }
-    }
-
-    public static class SubMenu extends Menu
-    {
-        public static int numberOfSubMenuItems;
-        String subMenuName;
-        int subMenuNumber;
-        public SubMenu(String subMenuName)
-        {
-            super(opMode);
-            this.subMenuName = subMenuName;
-            MenuItem.numberOfMenuItems ++;
-            this.subMenuNumber = MenuItem.numberOfMenuItems;
-        }
-        ButtonOperation enterSubMenu = new ButtonOperation(opMode, GamepadButton.A, 1, () -> {
-            currentSubMenu =  this.subMenuName;
-            menuCounter = 1;
-        });
-        ButtonOperation exitSubMenu = new ButtonOperation(opMode, GamepadButton.B, 1, () -> {
-            currentSubMenu = "MAIN";
-            menuCounter = 1;
-        });
-        public void addSubMenu()
-        {
-            if (menuCounter == this.subMenuNumber)
-            {
-                opMode.telemetry.addLine(">  " + this.subMenuName);
-            }
-            else {
-                opMode.telemetry.addLine(this.subMenuName);
-            }
-            enterSubMenu.run();
-            exitSubMenu.run();
         }
     }
 }

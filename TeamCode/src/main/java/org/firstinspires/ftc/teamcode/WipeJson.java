@@ -8,7 +8,6 @@ public class WipeJson extends OpMode {
     public void init()
     {
         RobotJson.wipe();
-        Menu.MenuItem.numberOfMenuItems = 0;
         requestOpModeStop();
     }
     public void loop(){}

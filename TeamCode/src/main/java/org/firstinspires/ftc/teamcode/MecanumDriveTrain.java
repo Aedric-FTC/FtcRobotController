@@ -10,7 +10,8 @@ public class MecanumDriveTrain {
     private DcMotor backLeft;
     private DcMotor backRight;
     OpMode opMode;
-    public MecanumDriveTrain(OpMode opMode, String frontLeftMotor, String frontRightMotor, String backLeftMotor, String backRightMotor, boolean hasEncoder)
+    public MecanumDriveTrain(OpMode opMode, String frontLeftMotor, String frontRightMotor,
+                             String backLeftMotor, String backRightMotor, boolean hasEncoder)
     {
         this.opMode = opMode;
 
@@ -23,6 +24,8 @@ public class MecanumDriveTrain {
                 this.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
         }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", frontLeftMotor);
+
         if (this.opMode.hardwareMap.dcMotor.contains(frontRightMotor)) {
             this.frontRight = this.opMode.hardwareMap.get(DcMotor.class, frontRightMotor);
             this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -31,6 +34,8 @@ public class MecanumDriveTrain {
                 this.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
         }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", frontRightMotor);
+
         if (this.opMode.hardwareMap.dcMotor.contains(backLeftMotor)) {
             this.backLeft = this.opMode.hardwareMap.get(DcMotor.class, backLeftMotor);
             this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -40,6 +45,8 @@ public class MecanumDriveTrain {
                 this.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
         }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", backLeftMotor);
+
         if (this.opMode.hardwareMap.dcMotor.contains(backRightMotor)) {
             this.backRight = this.opMode.hardwareMap.get(DcMotor.class, backRightMotor);
             this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -48,6 +55,7 @@ public class MecanumDriveTrain {
                 this.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
         }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", backRightMotor);
     }
 
     double flPower;
