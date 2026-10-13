@@ -90,34 +90,37 @@ public class MecanumDriveTrain {
         this.blPower *= (powerPercentage/this.maxPower);
         this.brPower *= (powerPercentage/this.maxPower);
 
-        if (this.flPower > 0 && this.frPower > 0 && this.blPower > 0 && this.brPower > 0) {
-            currentDirection = DIRECTION.FORWARDS;
-        }
-        if (this.flPower < 0 && this.frPower < 0 && this.blPower < 0 && this.brPower < 0) {
-            currentDirection = DIRECTION.BACKWARDS;
-        }
-        if (this.flPower < 0 && this.frPower > 0 && this.blPower > 0 && this.brPower < 0) {
-            currentDirection = DIRECTION.LEFT;
-        }
-        if (this.flPower > 0 && this.frPower < 0 && this.blPower < 0 && this.brPower > 0) {
-            currentDirection = DIRECTION.RIGHT;
-        }
-        if (this.flPower < 0 && this.frPower > 0 && this.blPower < 0 && this.brPower > 0) {
-            currentDirection = DIRECTION.SPIN_LEFT;
-        }
-        if (this.flPower > 0 && this.frPower < 0 && this.blPower > 0 && this.brPower < 0) {
-            currentDirection = DIRECTION.SPIN_RIGHT;
-        }
-        if (currentDirection == blockedDirection)
-        {
-            canDrive = false;
-        }
+        currentDirection = getNetDirection();
+
+        canDrive = (currentDirection != blockedDirection);
 
         if (canDrive) {
         if (this.frontLeft != null) {this.frontLeft.setPower(this.flPower);}
         if (this.frontRight != null) {this.frontRight.setPower(this.frPower);}
         if (this.backLeft != null) {this.backLeft.setPower(this.blPower);}
         if (this.backRight != null) {this.backRight.setPower(this.brPower);}
+        }
+    }
+    private char signOf(double power)
+    {
+        if (power > 0) return '+';
+        if (power < 0) return '-';
+        return '0';
+    }
+    public DIRECTION getNetDirection()
+    {
+        String key = "" + signOf(flPower) + signOf(frPower) + signOf(blPower) + signOf(brPower);
+
+        switch (key)
+        {
+            case "++++": return DIRECTION.FORWARDS;
+            case "----": return DIRECTION.BACKWARDS;
+            case "-++-": return DIRECTION.LEFT;
+            case "+--+": return DIRECTION.RIGHT;
+            case "-+-+": return DIRECTION.SPIN_LEFT;
+            case "+-+-": return DIRECTION.SPIN_RIGHT;
+            case "0000": return DIRECTION.STOPPED;
+            default:     return DIRECTION.NONE;
         }
     }
     boolean isReversed = false;
