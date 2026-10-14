@@ -139,7 +139,7 @@ public class Menu
             opMode.telemetry.addLine("D-Pad right/left to change values");
             opMode.telemetry.addLine();
         }
-        else if (!inAMenu && this.subMenuName == null) {
+        else if (!inAMenu && this.subMenuName == null){
             opMode.telemetry.addLine("Press " + this.menuButton + " to enter the " + this.menuName + " menu");
         }
 
