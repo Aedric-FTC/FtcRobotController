@@ -49,8 +49,6 @@ public class Menu
         globalMenuNumber ++;
         this.menuIndex = globalMenuNumber;
         menuRegistry.put(this.menuIndex, this);
-
-
         toggleMenu = new ButtonOperation(opMode.gamepad1, menuButton, () -> {
             for (Menu child : children)
             {
@@ -75,14 +73,15 @@ public class Menu
             }
         });
         closeMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.B, () -> {
-            outputToggle = true;
-            inMenu = true;
-            runOnMenuEnter();
-            menuEnter();
+            outputToggle = false;
+            inMenu = false;
+            runOnMenuExit();
+            menuExit();
         });
         this.menuButton = menuButton.name();
         this.menuName = menuName;
         numberOfMenuItems = 0;
+        runClose = true;
     }
     private Menu(OpMode OpMode, String menuName)
     {
@@ -93,6 +92,7 @@ public class Menu
         menuRegistry.put(this.menuIndex, this);
         this.menuName = menuName;
         numberOfMenuItems = 0;
+        runClose = false;
     }
     public OpMode opMode;
     public String menuButton;
@@ -107,6 +107,7 @@ public class Menu
     public String menuName;
     public static boolean inAMenu;
     public String subMenuName;
+    public boolean runClose;
     public final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
 
     public interface menuChange { void run(); }
@@ -131,7 +132,7 @@ public class Menu
         if (inMenu)
         {
             setMenuCounter(numberOfMenuItems);
-            closeMenu.run();
+            if (runClose && closeMenu != null) closeMenu.run();
             opMode.telemetry.addLine("Press " + this.menuButton + " to exit the menu");
             opMode.telemetry.addLine();
             opMode.telemetry.addLine("D-Pad up/down to scroll");
@@ -369,6 +370,7 @@ public class Menu
             subMenu = new Menu(opMode, subMenuName);
             subMenu.subMenuName = subMenuName;
             superMenu.children.add(subMenu);
+            subMenu.runClose = false;
             subItem = superMenu.new MenuItem(subMenu.subMenuName);
             openSubMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.A, () -> {
                 subMenu.outputToggle = true;
