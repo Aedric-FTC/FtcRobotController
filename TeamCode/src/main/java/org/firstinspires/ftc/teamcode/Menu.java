@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad2;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /// NOTE: If your robot's code utilizes the d-pad, consider wrapping the menu methods in an if statement for 'if (Menu.menuMode)', then put your TeleOp code in an else statement so that it only runs when not in the menu<br>
@@ -38,115 +36,117 @@ import java.util.Map;
 /// Handles the value changing code and returns a new double value. Can be replaced with item.getIntValue();
 public class Menu
 {
+    static Map<Integer, Menu> menuRegistry = new HashMap<>();
+    private final List<Menu> children = new ArrayList<>();
     /// When creating an instance of this class, place (this) within the parentheses:
     /// ```java
     /// Menu menu = new Menu(this);
     /// ```
-    public Menu(OpMode OpMode)
+    public Menu(OpMode OpMode, GamepadButton menuButton, String menuName)
     {
         opMode = OpMode;
-        menuCounter = 1;
-        currentSubMenu = 0;
+        this.menuCounter = 1;
+        globalMenuNumber ++;
+        this.menuIndex = globalMenuNumber;
+        menuRegistry.put(this.menuIndex, this);
+
+
+        toggleMenu = new ButtonOperation(opMode.gamepad1, menuButton, () -> {
+            for (Menu child : children)
+            {
+                if (child.outputToggle)
+                {
+                    child.outputToggle = false;
+                    child.inMenu = false;
+                    child.runOnMenuExit();
+                    child.menuExit();
+                    return;
+                }
+            }
+            outputToggle = !outputToggle;
+            if (outputToggle)
+            {
+                runOnMenuEnter();
+                menuEnter();
+            }
+            else {
+                runOnMenuExit();
+                menuExit();
+            }
+        });
+        closeMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.B, () -> {
+            outputToggle = true;
+            inMenu = true;
+            runOnMenuEnter();
+            menuEnter();
+        });
+        this.menuButton = menuButton.name();
+        this.menuName = menuName;
+        numberOfMenuItems = 0;
+    }
+    private Menu(OpMode OpMode, String menuName)
+    {
+        opMode = OpMode;
+        this.menuCounter = 1;
+        globalMenuNumber ++;
+        this.menuIndex = globalMenuNumber;
+        menuRegistry.put(this.menuIndex, this);
+        this.menuName = menuName;
+        numberOfMenuItems = 0;
     }
     public OpMode opMode;
-
+    public String menuButton;
     public boolean inMenu;
     public int menuCounter;
     boolean menuWasIncremented;
     boolean menuWasDecremented;
-    public boolean lastInput;
     public boolean outputToggle;
-    public int globalMenuNumber;
-    int currentSubMenu;
-    int itemSubMenu;
+    public static int globalMenuNumber;
     public int numberOfMenuItems;
+    public int menuIndex;
+    public String menuName;
+    public static boolean inAMenu;
+    public String subMenuName;
     public final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
 
     public interface menuChange { void run(); }
-    private static menuChange menuEnter = () -> {};
-    private static menuChange menuExit = () -> {};
-    public static void onMenuEnter(menuChange menuChange)  { menuEnter = menuChange; }
-    public static void onMenuExit(menuChange menuChange)  { menuExit = menuChange; }
-    public static void runOnMenuEnter() { menuEnter.run(); }
-    public static void runOnMenuExit() { menuExit.run(); }
+    private menuChange menuEnter = () -> {};
+    private menuChange menuExit = () -> {};
+    public void onMenuEnter(menuChange menuChange)  { menuEnter = menuChange; }
+    public void onMenuExit(menuChange menuChange)  { menuExit = menuChange; }
+    public void runOnMenuEnter() { menuEnter.run(); }
+    public void runOnMenuExit() { menuExit.run(); }
+    ButtonOperation toggleMenu;
+    ButtonOperation closeMenu;
 
-    /// Turns menu on when START is pressed (place at start of loop() method)
     public void create()
     {
         boolean output;
-        if (opMode.gamepad1.start && !lastInput)
-        {
-            outputToggle = !outputToggle;
-            if (outputToggle)
-            {
-                runOnMenuEnter();
-            }
-            else {
-                runOnMenuExit();
-                menuExit();
-            }
-        }
-
-        lastInput = opMode.gamepad1.start;
+        if (this.subMenuName == null) toggleMenu.run();
 
         output = outputToggle;
+        inMenu = output;
+
 
         if (inMenu)
         {
             setMenuCounter(numberOfMenuItems);
-            opMode.telemetry.addLine("Press START to exit the menu");
+            closeMenu.run();
+            opMode.telemetry.addLine("Press " + this.menuButton + " to exit the menu");
             opMode.telemetry.addLine();
             opMode.telemetry.addLine("D-Pad up/down to scroll");
             opMode.telemetry.addLine("D-Pad right/left to change values");
             opMode.telemetry.addLine();
         }
-        else {
-            opMode.telemetry.addLine("Press START to open menu");
+        else if (!inAMenu && this.subMenuName == null){
+            opMode.telemetry.addLine("Press " + this.menuButton + " to enter the " + this.menuName + " menu");
         }
 
-        inMenu = output;
-        //menuMode = output;
-    }
-    public void create(GamepadButton menuButton, int gamepadNumber)
-    {
-        Gamepad gp;
-        if (gamepadNumber == 1) gp = gamepad1; else gp = gamepad2;
-        boolean buttonIsDown;
-        if (menuButton != null) buttonIsDown = menuButton.isPressed(gp);
-        else buttonIsDown = false;
-        boolean output;
-        if (buttonIsDown && !lastInput)
+        inAMenu = false;
+        for (Menu menu : menuRegistry.values())
         {
-            outputToggle = !outputToggle;
-            if (outputToggle)
-            {
-                runOnMenuEnter();
-            }
-            else {
-                runOnMenuExit();
-                menuExit();
-            }
+            if (menu.inMenu) { inAMenu = true; break; }
         }
-
-        lastInput = opMode.gamepad1.start;
-
-        output = outputToggle;
-
-        if (inMenu)
-        {
-            setMenuCounter(numberOfMenuItems);
-            opMode.telemetry.addLine("Press START to exit the menu");
-            opMode.telemetry.addLine();
-            opMode.telemetry.addLine("D-Pad up/down to scroll");
-            opMode.telemetry.addLine("D-Pad right/left to change values");
-            opMode.telemetry.addLine();
-        }
-        else {
-            opMode.telemetry.addLine("Press START to open menu");
-        }
-
-        inMenu = output;
-        //menuMode = output;
     }
     static int counterIncrement;
     static int counterDecrement;
@@ -162,14 +162,28 @@ public class Menu
             menuCounter = (menuCounter - counterDecrement > 0) ? (menuCounter - counterDecrement) : itemCount;
         }
     }
+    private void menuEnter()
+    {
+        for (Menu other : menuRegistry.values())
+        {
+            if (other != this && other.outputToggle)
+            {
+                other.outputToggle = false;
+                other.inMenu = false;
+                other.runOnMenuExit();
+                other.menuExit();
+            }
+        }
+    }
     private void menuExit()
     {
         for (int i = 1; i <= numberOfMenuItems; i++)
         {
-            if (!thisItem(i).isBoolean) {
-                RobotJson.save(thisItem(i).itemName, thisItem(i).itemValue);
+            MenuItem thisItem = thisItem(i);
+            if (!thisItem.isBoolean) {
+                RobotJson.save(thisItem.itemName, thisItem.itemValue);
             } else {
-                RobotJson.save(thisItem(i).itemName, thisItem(i).booleanInputValue);
+                RobotJson.save(thisItem.itemName, thisItem.booleanInputValue);
             }
         }
     }
@@ -209,7 +223,7 @@ public class Menu
             this.increment = increment;
             this.min = min;
             this.max = max;
-            this.itemSubMenu = 0;
+            this.itemSubMenu = menuIndex;
             itemRegistry.put(this.itemNumber, this);
         }
         public MenuItem(String displayName, boolean inputValue)
@@ -219,7 +233,7 @@ public class Menu
             this.itemName = displayName;
             this.booleanInputValue = inputValue;
             this.isBoolean = true;
-            this.itemSubMenu = 0;
+            this.itemSubMenu = menuIndex;
             itemRegistry.put(this.itemNumber, this);
         }
         public MenuItem(String displayName)
@@ -227,13 +241,14 @@ public class Menu
             numberOfMenuItems ++;
             this.itemNumber = numberOfMenuItems;
             this.itemName = displayName;
+            this.itemSubMenu = menuIndex;
             itemRegistry.put(this.itemNumber, this);
         }
         /// @return The new double value of your menu item
         /// IMPORTANT: This method can only be used once in your loop
         public double getDoubleValue()
         {
-            if (inMenu && currentSubMenu == this.itemSubMenu)
+            if (inMenu)
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -264,7 +279,7 @@ public class Menu
         /// IMPORTANT: This method can only be used once in your loop
         public int getIntValue()
         {
-            if (inMenu && currentSubMenu == this.itemSubMenu)
+            if (inMenu)
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -294,7 +309,7 @@ public class Menu
         /// IMPORTANT: This method can only be used once in your loop
         public float getFloatValue()
         {
-            if (inMenu && currentSubMenu == this.itemSubMenu)
+            if (inMenu)
             {
                 if (this.itemNumber == menuCounter)
                 {
@@ -322,9 +337,9 @@ public class Menu
         }
         public boolean getBooleanValue()
         {
-            if (inMenu)// && currentSubMenu.equals(this.itemSubMenu))
+            if (inMenu)
             {
-                if (this.itemNumber == menuCounter && this.itemSubMenu == currentSubMenu)
+                if (this.itemNumber == menuCounter)
                 {
                     opMode.telemetry.addData(">  " + this.itemName, this.booleanInputValue);
                     if ((opMode.gamepad1.dpad_right || opMode.gamepad1.dpad_left) && (!this.wasIncremented && !this.wasDecremented))
@@ -334,7 +349,7 @@ public class Menu
                     this.wasIncremented = opMode.gamepad1.dpad_right;
                     this.wasDecremented = opMode.gamepad1.dpad_left;
                 }
-                else if (this.itemSubMenu == currentSubMenu)
+                else
                 {
                     opMode.telemetry.addData(this.itemName, this.booleanInputValue);
                 }
@@ -343,20 +358,49 @@ public class Menu
         }
     }
     public class SubMenu {
-        Menu sub = new Menu(opMode);
-        Menu superMenu = thisMenu();
+        Menu subMenu;
+        Menu superMenu;
         Menu.MenuItem subItem;
-        public void create(String displayName)
+        ButtonOperation openSubMenu;
+        ButtonOperation closeSubMenu;
+        public SubMenu(String subMenuName)
         {
-            sub.create(null, 1);
-            subItem = superMenu.new MenuItem(displayName);
-            if (subItem.itemNumber == menuCounter && subItem.itemSubMenu == currentSubMenu)
+            superMenu = thisMenu();
+            subMenu = new Menu(opMode, subMenuName);
+            subMenu.subMenuName = subMenuName;
+            superMenu.children.add(subMenu);
+            subItem = superMenu.new MenuItem(subMenu.subMenuName);
+            openSubMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.A, () -> {
+                subMenu.outputToggle = true;
+                subMenu.inMenu = true;
+                subMenu.runOnMenuEnter();
+                subMenu.menuEnter();
+            });
+            closeSubMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.B, () -> {
+                superMenu.outputToggle = true;
+                superMenu.inMenu = true;
+                superMenu.runOnMenuEnter();
+                superMenu.menuEnter();
+            });
+        }
+        public void create()
+        {
+            subMenu.create();
+            subItem.itemNumber = numberOfMenuItems;
+            if (superMenu.inMenu)
             {
-                opMode.telemetry.addLine(">  " + subItem.itemName);
+                if (subItem.itemNumber == menuCounter)
+                {
+                    opMode.telemetry.addLine(">  " + subItem.itemName);
+                    openSubMenu.run();
+                } else
+                {
+                    opMode.telemetry.addLine(subItem.itemName);
+                }
             }
-            else if (subItem.itemSubMenu == currentSubMenu)
+            else if (subMenu.inMenu)
             {
-                opMode.telemetry.addLine(subItem.itemName);
+                closeSubMenu.run();
             }
         }
     }

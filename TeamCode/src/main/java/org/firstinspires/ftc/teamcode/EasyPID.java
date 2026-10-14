@@ -8,13 +8,15 @@ public class EasyPID {
     public double kD = RobotJson.load("kD").getAsDouble();
     private double integral, lastError;
     private long lastTime = System.nanoTime();
+    public OpMode opMode;
     Menu tuningMenu;
     Menu.MenuItem menuKP;
     Menu.MenuItem menuKI;
     Menu.MenuItem menuKD;
 
     public EasyPID(OpMode opMode) {
-        tuningMenu = new Menu(opMode);
+        this.opMode = opMode;
+        tuningMenu = new Menu(opMode, GamepadButton.Y, "PID Tuning");
         menuKP = tuningMenu.new MenuItem("kP", this.kP, 0.05, 0, 5);
         menuKI = tuningMenu.new MenuItem("kI", this.kI, 0.05, 0, 5);
         menuKD = tuningMenu.new MenuItem("kD", this.kD, 0.05, 0, 5);
@@ -22,7 +24,7 @@ public class EasyPID {
 
     public double update(double target, double current, boolean useLiveTuningMenu) {
         if (useLiveTuningMenu) {
-            tuningMenu.create(GamepadButton.Y, 1);
+            tuningMenu.create();
             kP = menuKP.getDoubleValue();
             kI = menuKI.getDoubleValue();
             kD = menuKD.getDoubleValue();

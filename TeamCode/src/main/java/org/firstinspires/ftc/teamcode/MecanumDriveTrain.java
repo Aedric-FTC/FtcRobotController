@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 public class MecanumDriveTrain {
     private DcMotor frontLeft;
@@ -133,9 +134,9 @@ public class MecanumDriveTrain {
     }
     boolean isReversed = false;
     ButtonOperation reverseIt;
-    public void reverse(GamepadButton button)
+    public void reverse(GamepadButton button, Gamepad gamepad)
     {
-        reverseIt = new ButtonOperation(opMode, button, 1, () -> this.isReversed = !this.isReversed);
+        reverseIt = new ButtonOperation(gamepad, button, () -> this.isReversed = !this.isReversed);
         this.reverseModifier = this.isReversed ? -1 : 1;
     }
     public enum DIRECTION {

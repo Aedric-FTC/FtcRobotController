@@ -18,38 +18,58 @@ public class TestOp2 extends OpMode {
     PWMLight light;
     Menu mainMenu;
     DcMotor motor;
-    EasyPID pid = new EasyPID(this);
+    EasyPID pid;
+    Menu.SubMenu subMenu;
+    Menu.MenuItem subItemTest;
 
     @Override
     public void init()
     {
-        mecDrive = new MecanumDriveTrain(this, "fL", "fR",
-                "bL", "bR", false);
-        mainMenu = new Menu(this);
+        mainMenu = new Menu(this, GamepadButton.START, "Main");
         menuDriveSpeed = mainMenu.new MenuItem("Drive Speed", driveSpeed, 5, 0, 100);
-        light = new PWMLight("light", hardwareMap);
         testBoolean = mainMenu.new MenuItem("Test Boolean", testBool);
         testInteger = mainMenu.new MenuItem("Test Integer", testInt, 5, 0, 100);
         testFloat = mainMenu.new MenuItem("Test Float", testFlt, 5, 0, 100);
-        motor = SafeHardware.get(DcMotor.class, "motor", this);
-    }
 
+        testMenu2 = new Menu(this, GamepadButton.X, "Test 2");
+        testItem2 = testMenu2.new MenuItem("test item 2", test2val, 5, 0, 100);
+        testItem3 = testMenu2.new MenuItem("test item 3", test3val, 5, 0, 100);
+
+        subMenu = mainMenu.new SubMenu("Test SubMenu");
+        subItemTest = subMenu.subMenu.new MenuItem("SubMenu Double", subTestVal, 5, 0, 100);
+
+
+        mecDrive = new MecanumDriveTrain(this, "fL", "fR",
+                "bL", "bR", false);
+        light = new PWMLight("light", hardwareMap);
+        motor = SafeHardware.get(DcMotor.class, "motor", this);
+        pid = new EasyPID(this);
+    }
+    Menu testMenu2;
+    Menu.MenuItem testItem2;
+    Menu.MenuItem testItem3;
+    double test2val;
+    double test3val;
+    double subTestVal;
     @Override
     public void loop()
     {
         mainMenu.create();
-        if (mainMenu.inMenu) {
+        testMenu2.create();
+        pid.update(10, 0, true);
+        if (Menu.inAMenu)
+            light.blink(500, PWMLight.Color.YELLOW);
+        else {
             light.setColor(PWMLight.Color.GREEN);
             mecDrive.drive(driveSpeed);
-            telemetry.addData("left", gamepad1.left_bumper);
-            telemetry.addData("right", gamepad1.right_bumper);
         }
-        else {
-            light.blink(500, PWMLight.Color.YELLOW);
-            driveSpeed = menuDriveSpeed.getDoubleValue();
-            testBool = testBoolean.getBooleanValue();
-            testInt = testInteger.getIntValue();
-            testFlt = testFloat.getFloatValue();
-        }
+        driveSpeed = menuDriveSpeed.getDoubleValue();
+        testBool = testBoolean.getBooleanValue();
+        testInt = testInteger.getIntValue();
+        testFlt = testFloat.getFloatValue();
+        test2val = testItem2.getDoubleValue();
+        test3val = testItem3.getDoubleValue();
+        subMenu.create();
+        telemetry.addData("sub menu place", subMenu.subItem.itemNumber);
     }
 }
