@@ -38,6 +38,7 @@ public class Menu
 {
     static Map<Integer, Menu> menuRegistry = new HashMap<>();
     private final List<Menu> children = new ArrayList<>();
+    //region Menu Constructors
     /// When creating an instance of this class, place (this) within the parentheses:
     /// ```java
     /// Menu menu = new Menu(this);
@@ -62,7 +63,7 @@ public class Menu
                 }
             }
             outputToggle = !outputToggle;
-            if (outputToggle)
+            if (outputToggle && this.subMenuName == null)
             {
                 runOnMenuEnter();
                 menuEnter();
@@ -94,6 +95,9 @@ public class Menu
         numberOfMenuItems = 0;
         runClose = false;
     }
+    //endregion
+
+    //region Variables
     public OpMode opMode;
     public String menuButton;
     public boolean inMenu;
@@ -119,6 +123,7 @@ public class Menu
     public void runOnMenuExit() { menuExit.run(); }
     ButtonOperation toggleMenu;
     ButtonOperation closeMenu;
+    //endregion
 
     public void create()
     {
@@ -198,6 +203,7 @@ public class Menu
     }
 
     public class MenuItem {
+        //region Variables
         boolean wasIncremented;
         boolean wasDecremented;
         public String itemName;
@@ -209,6 +215,8 @@ public class Menu
         public boolean booleanInputValue;
         public boolean isBoolean;
         public int itemSubMenu;
+        //endregion
+        //region Constructors
         /// Creates a menu item
         /// @param displayName The displayed name of your item
         /// @param inputValue The variable that you want to modify
@@ -245,8 +253,8 @@ public class Menu
             this.itemSubMenu = menuIndex;
             itemRegistry.put(this.itemNumber, this);
         }
+        //endregion
         /// @return The new double value of your menu item
-        /// IMPORTANT: This method can only be used once in your loop
         public double getDoubleValue()
         {
             if (inMenu)
@@ -277,7 +285,6 @@ public class Menu
         }
 
         /// @return The new integer value of your menu item
-        /// IMPORTANT: This method can only be used once in your loop
         public int getIntValue()
         {
             if (inMenu)
@@ -307,7 +314,6 @@ public class Menu
             return this.itemValue.intValue();
         }
         /// @return The new double value of your menu item
-        /// IMPORTANT: This method can only be used once in your loop
         public float getFloatValue()
         {
             if (inMenu)
@@ -336,6 +342,7 @@ public class Menu
             }
             return this.itemValue.floatValue();
         }
+        ///@return The new boolean value of your menu item
         public boolean getBooleanValue()
         {
             if (inMenu)
@@ -359,11 +366,13 @@ public class Menu
         }
     }
     public class SubMenu {
+        //region Variables
         Menu subMenu;
         Menu superMenu;
         Menu.MenuItem subItem;
         ButtonOperation openSubMenu;
         ButtonOperation closeSubMenu;
+        //endregion
         public SubMenu(String subMenuName)
         {
             superMenu = thisMenu();

@@ -56,6 +56,7 @@ public class TestOp2 extends OpMode {
     {
         mainMenu.create();
         testMenu2.create();
+        subMenu.create();
         pid.update(10, 0, true);
         if (Menu.inAMenu)
             light.blink(500, PWMLight.Color.YELLOW);
@@ -69,7 +70,7 @@ public class TestOp2 extends OpMode {
         testFlt = testFloat.getFloatValue();
         test2val = testItem2.getDoubleValue();
         test3val = testItem3.getDoubleValue();
-        subMenu.create();
-        telemetry.addData("sub menu place", subMenu.subItem.itemNumber);
+        subTestVal = subItemTest.getDoubleValue();
+        //telemetry.addData("sub menu place", subMenu.subItem.itemNumber);
     }
 }
