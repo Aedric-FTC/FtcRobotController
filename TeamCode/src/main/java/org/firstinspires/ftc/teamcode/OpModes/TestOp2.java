@@ -1,8 +1,16 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.aedricLib.EasyPID;
+import org.firstinspires.ftc.teamcode.aedricLib.GamepadButton;
+import org.firstinspires.ftc.teamcode.aedricLib.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.aedricLib.Menu;
+import org.firstinspires.ftc.teamcode.aedricLib.PWMLight;
+import org.firstinspires.ftc.teamcode.aedricLib.RobotJson;
+import org.firstinspires.ftc.teamcode.aedricLib.SafeHardware;
 
 @TeleOp
 public class TestOp2 extends OpMode {
@@ -71,6 +79,6 @@ public class TestOp2 extends OpMode {
         test2val = testItem2.getDoubleValue();
         test3val = testItem3.getDoubleValue();
         subTestVal = subItemTest.getDoubleValue();
-        //telemetry.addData("sub menu place", subMenu.subItem.itemNumber);
+        telemetry.addData("sub menu place", subMenu.subItem.itemNumber);
     }
 }

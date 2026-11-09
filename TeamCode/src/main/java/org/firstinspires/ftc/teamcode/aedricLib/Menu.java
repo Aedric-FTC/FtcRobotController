@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.aedricLib;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -367,9 +367,9 @@ public class Menu
     }
     public class SubMenu {
         //region Variables
-        Menu subMenu;
+        public Menu subMenu;
         Menu superMenu;
-        Menu.MenuItem subItem;
+        public Menu.MenuItem subItem;
         ButtonOperation openSubMenu;
         ButtonOperation closeSubMenu;
         //endregion

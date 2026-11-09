@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.aedricLib;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BooleanSupplier;
 
 public class ButtonComboOperation {
     Boolean[] button;
