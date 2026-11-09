@@ -9,3 +9,6 @@ pluginManagement {
 include ':FtcRobotController'
 include ':TeamCode'
 include ':AedricLib'
+include ':wiring-plugin'
+include ':graphicHardware'
+include ':graphicHardwareTool'

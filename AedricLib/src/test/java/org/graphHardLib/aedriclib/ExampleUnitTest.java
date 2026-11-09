@@ -1,4 +1,4 @@
-package com.example.aedriclib;
+package org.graphHardLib.aedriclib;
 
 import org.junit.Test;
 
