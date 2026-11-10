@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
@@ -15,15 +17,25 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 public class MainWindow extends JFrame {
     public final JLayeredPane layeredPane = new JLayeredPane();
     public final JLabel ctrlHub = new JLabel();
     public final JLabel topBar = new JLabel();
+    public final JLabel rightSwap = new JLabel("➡");
+    public final JLabel leftSwap = new JLabel("⬅");
+    public JLabel preset1;
+    public JLabel preset2;
+    public JLabel preset3;
+    public JLabel preset4;
+    public JLabel preset5;
     public final Color bgColor = new Color(50,50,50);
     public final Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+    public final Border presetBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
     public final double sizeMultiplier = 1.5;
+    public String loadedHub = "ctrl";
 
     public MainWindow() {
         super("Hardware Config");
@@ -63,14 +75,99 @@ public class MainWindow extends JFrame {
 
         new Label(this, Side.LEFT, "MOTOR 0", 80);
         new Label(this, Side.LEFT, "ENCODER 0", 80);
-        new Label(this, Side.LEFT, "MOTOR 0", 89);
-        new Label(this, Side.LEFT, "ENCODER 0", 89);
+        new Label(this, Side.LEFT, "MOTOR 1", 89);
+        new Label(this, Side.LEFT, "ENCODER 1", 89);
+        new Label(this, Side.LEFT, "MOTOR 2", 98);
+        new Label(this, Side.LEFT, "ENCODER 2", 98);
+        new Label(this, Side.LEFT, "MOTOR 3", 107);
+        new Label(this, Side.LEFT, "ENCODER 3", 107);
 
+        new Label(this, Side.BOTTOM, "SERVO 0", 0);
+        new Label(this, Side.BOTTOM, "SERVO 1", 0);
+        new Label(this, Side.BOTTOM, "SERVO 2", 0);
+        new Label(this, Side.BOTTOM, "SERVO 3", 0);
+        new Label(this, Side.BOTTOM, "SERVO 4", 0);
+        new Label(this, Side.BOTTOM, "SERVO 5", 0);
 
-        ctrlHub.setIcon(loadIcon("/ControlHub.png", (int)(415 * sizeMultiplier), (int)(300 * sizeMultiplier)));
+        if (loadedHub.equals("ctrl")) {
+            ctrlHub.setIcon(loadIcon("/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
+        } else {
+            ctrlHub.setIcon(loadIcon("/ExpansionHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
+        }
         ctrlHub.setBounds(centeredX(), centeredY(), (int)(415 * sizeMultiplier), (int)(300 * sizeMultiplier));
         layeredPane.add(ctrlHub, 0);
+
+        rightSwap.setBounds(1200, 340, 40, 40);
+        rightSwap.setBackground(new Color(75,75,75));
+        rightSwap.setOpaque(true);
+        rightSwap.setHorizontalAlignment(SwingConstants.CENTER);
+        rightSwap.setVerticalAlignment(SwingConstants.CENTER);
+        rightSwap.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        rightSwap.setForeground(Color.WHITE);
+        rightSwap.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                ctrlHub.setIcon(loadIcon("/ExpansionHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
+                rightSwap.setVisible(false);
+                leftSwap.setVisible(true);
+                loadedHub = "exp";
+            }
+        });
+        layeredPane.add(rightSwap, 2);
+
+        leftSwap.setVisible(false);
+        leftSwap.setBounds(40, 340, 40, 40);
+        leftSwap.setBackground(new Color(75,75,75));
+        leftSwap.setOpaque(true);
+        leftSwap.setHorizontalAlignment(SwingConstants.CENTER);
+        leftSwap.setVerticalAlignment(SwingConstants.CENTER);
+        leftSwap.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        leftSwap.setForeground(Color.WHITE);
+        leftSwap.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                ctrlHub.setIcon(loadIcon("/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
+                leftSwap.setVisible(false);
+                rightSwap.setVisible(true);
+                loadedHub = "ctrl";
+            }
+        });
+        layeredPane.add(leftSwap, 2);
+
+        preset1 = createPreset(1);
+        preset2 = createPreset(2);
+        preset3 = createPreset(3);
+        preset4 = createPreset(4);
+        preset5 = createPreset(5);
+
+        layeredPane.add(preset1, 0);
+        layeredPane.add(preset2, 0);
+        layeredPane.add(preset3, 0);
+        layeredPane.add(preset4, 0);
+        layeredPane.add(preset5, 0);
+
         add(layeredPane);
+    }
+    private JLabel createPreset(int number)
+    {
+        JLabel label = new JLabel(Integer.toString(number));
+        label.setBounds(400 + ((number - 1) * 70), 20, 60, 60);
+        label.setOpaque(true);
+        label.setBackground(Color.DARK_GRAY);
+        label.setForeground(Color.WHITE);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
+        label.setBorder(presetBorder);
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+        });
+        return label;
     }
 
     int centeredX() { return (int)((1280 - (415 * sizeMultiplier)) / 2); }
@@ -122,7 +219,9 @@ public class MainWindow extends JFrame {
 class Label {
     public static int labelCountR;
     public static int labelCountL;
+    public static int labelCountB;
     public String portLabel;
+    public static int bYOffset;
     public Label(MainWindow w, Side side, String portLabel, int extraYOffset)
     {
         if (side == Side.RIGHT)
@@ -139,6 +238,16 @@ class Label {
             w.layeredPane.add(w.textBox(1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + extraYOffset), 2);
             w.drawLine(new Coordinate(1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + 18 + extraYOffset),
                     new Coordinate(1280 - w.labelX() + 60, w.labelY() + ((labelCountL - 1) * 25) + 18 + extraYOffset));
+            this.portLabel = portLabel;
+        }
+        else
+        {
+            labelCountB++;
+            bYOffset++;
+            if (bYOffset == 4) bYOffset = 1;
+            w.layeredPane.add(w.textBox(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150, w.labelY() - ((labelCountB - 1) * 20) + extraYOffset + 500), 2);
+            w.drawLine(new Coordinate(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150 - 2, w.labelY() - ((labelCountB - 1) * 20) + 16 + extraYOffset + 500),
+                    new Coordinate(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150 - 2, w.labelY() + 16 + extraYOffset + 330));
             this.portLabel = portLabel;
         }
     }
