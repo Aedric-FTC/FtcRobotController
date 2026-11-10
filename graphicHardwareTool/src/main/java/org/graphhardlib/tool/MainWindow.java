@@ -26,6 +26,7 @@ public class MainWindow extends JFrame {
     public final JLabel topBar = new JLabel();
     public final JLabel rightSwap = new JLabel("➡");
     public final JLabel leftSwap = new JLabel("⬅");
+    public final JLabel presetLabel = new JLabel("Profiles:");
     public JLabel preset1;
     public JLabel preset2;
     public JLabel preset3;
@@ -97,12 +98,12 @@ public class MainWindow extends JFrame {
         ctrlHub.setBounds(centeredX(), centeredY(), (int)(415 * sizeMultiplier), (int)(300 * sizeMultiplier));
         layeredPane.add(ctrlHub, 0);
 
-        rightSwap.setBounds(1200, 340, 40, 40);
+        rightSwap.setBounds(1180, 360, 60, 60);
         rightSwap.setBackground(new Color(75,75,75));
         rightSwap.setOpaque(true);
         rightSwap.setHorizontalAlignment(SwingConstants.CENTER);
         rightSwap.setVerticalAlignment(SwingConstants.CENTER);
-        rightSwap.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        rightSwap.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 45));
         rightSwap.setForeground(Color.WHITE);
         rightSwap.addMouseListener(new MouseAdapter() {
             @Override
@@ -117,12 +118,12 @@ public class MainWindow extends JFrame {
         layeredPane.add(rightSwap, 2);
 
         leftSwap.setVisible(false);
-        leftSwap.setBounds(40, 340, 40, 40);
+        leftSwap.setBounds(40, 360, 60, 60);
         leftSwap.setBackground(new Color(75,75,75));
         leftSwap.setOpaque(true);
         leftSwap.setHorizontalAlignment(SwingConstants.CENTER);
         leftSwap.setVerticalAlignment(SwingConstants.CENTER);
-        leftSwap.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 40));
+        leftSwap.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 45));
         leftSwap.setForeground(Color.WHITE);
         leftSwap.addMouseListener(new MouseAdapter() {
             @Override
@@ -141,12 +142,19 @@ public class MainWindow extends JFrame {
         preset3 = createPreset(3);
         preset4 = createPreset(4);
         preset5 = createPreset(5);
+        presetLabel.setBounds(275, 20, 100, 60);
+        presetLabel.setBackground(Color.DARK_GRAY);
+        presetLabel.setForeground(Color.WHITE);
+        presetLabel.setVerticalAlignment(SwingConstants.CENTER);
+        presetLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        presetLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
 
         layeredPane.add(preset1, 0);
         layeredPane.add(preset2, 0);
         layeredPane.add(preset3, 0);
         layeredPane.add(preset4, 0);
         layeredPane.add(preset5, 0);
+        layeredPane.add(presetLabel, 0);
 
         add(layeredPane);
     }
