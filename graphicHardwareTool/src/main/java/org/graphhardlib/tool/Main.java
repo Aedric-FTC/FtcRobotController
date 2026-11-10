@@ -1,6 +1,7 @@
-package org.graphHardLib.graphichardwaretool;
+package org.graphhardlib.tool;
 
 import java.awt.GraphicsEnvironment;
+
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -10,6 +11,6 @@ public class Main {
             System.err.println("Requires a display.");
             return;
         }
-        //SwingUtilities.invokeLater(() -> new MainWindow().setVisible(true));
+        SwingUtilities.invokeLater(() -> new MainWindow().setVisible(true));
     }
 }

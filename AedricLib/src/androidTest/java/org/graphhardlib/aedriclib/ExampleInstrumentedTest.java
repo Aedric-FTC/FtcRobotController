@@ -1,4 +1,4 @@
-package org.graphHardLib.aedriclib;
+package org.graphhardlib.aedriclib;
 
 import android.content.Context;
 
