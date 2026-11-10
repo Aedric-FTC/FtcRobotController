@@ -9,6 +9,8 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -37,6 +39,7 @@ public class MainWindow extends JFrame {
     public final Border presetBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
     public final double sizeMultiplier = 1.5;
     public String loadedHub = "ctrl";
+    JSONSaver saver = new JSONSaver();
 
     public MainWindow() {
         super("Hardware Config");
@@ -89,6 +92,8 @@ public class MainWindow extends JFrame {
         new Label(this, Side.BOTTOM, "SERVO 3", 0);
         new Label(this, Side.BOTTOM, "SERVO 4", 0);
         new Label(this, Side.BOTTOM, "SERVO 5", 0);
+
+        JSONSaver.load("SERVO 0");
 
         if (loadedHub.equals("ctrl")) {
             ctrlHub.setIcon(loadIcon("/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
@@ -194,12 +199,12 @@ public class MainWindow extends JFrame {
         return new ImageIcon(scaled);
     }
 
-    public JTextField textBox(int x, int y)
+    public JTextField textBox(String name, int x, int y)
     {
         JTextField field = new JTextField();
         field.setBounds(x, y, 100, 16);
         field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        field.setText("Device Name");
+        field.setText(JSONSaver.load(name).getAsString());
         field.setBorder(border);
         field.setBackground(bgColor);
         field.setForeground(Color.WHITE);
@@ -232,10 +237,11 @@ class Label {
     public static int bYOffset;
     public Label(MainWindow w, Side side, String portLabel, int extraYOffset)
     {
+        Map<String, String> portLabels = new HashMap<>();
         if (side == Side.RIGHT)
         {
             labelCountR++;
-            w.layeredPane.add(w.textBox(w.labelX(), w.labelY() + ((labelCountR - 1) * 21) + extraYOffset), 2);
+            w.layeredPane.add(w.textBox(portLabel, w.labelX(), w.labelY() + ((labelCountR - 1) * 21) + extraYOffset), 2);
             w.drawLine(new Coordinate(w.labelX() - 90, w.labelY() + ((labelCountR - 1) * 21) + 18 + extraYOffset),
                     new Coordinate(w.labelX() + 100, w.labelY() + ((labelCountR - 1) * 21) + 18 + extraYOffset));
             this.portLabel = portLabel;
@@ -243,7 +249,7 @@ class Label {
         else if (side == Side.LEFT)
         {
             labelCountL++;
-            w.layeredPane.add(w.textBox(1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + extraYOffset), 2);
+            w.layeredPane.add(w.textBox(portLabel, 1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + extraYOffset), 2);
             w.drawLine(new Coordinate(1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + 18 + extraYOffset),
                     new Coordinate(1280 - w.labelX() + 60, w.labelY() + ((labelCountL - 1) * 25) + 18 + extraYOffset));
             this.portLabel = portLabel;
@@ -253,11 +259,12 @@ class Label {
             labelCountB++;
             bYOffset++;
             if (bYOffset == 4) bYOffset = 1;
-            w.layeredPane.add(w.textBox(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150, w.labelY() - ((labelCountB - 1) * 20) + extraYOffset + 500), 2);
+            w.layeredPane.add(w.textBox(portLabel, 1280 - w.labelX() + ((labelCountB - 1) * 43) + 150, w.labelY() - ((labelCountB - 1) * 20) + extraYOffset + 500), 2);
             w.drawLine(new Coordinate(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150 - 2, w.labelY() - ((labelCountB - 1) * 20) + 16 + extraYOffset + 500),
                     new Coordinate(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150 - 2, w.labelY() + 16 + extraYOffset + 330));
             this.portLabel = portLabel;
         }
+        portLabels.put(portLabel, "Device Name");
     }
 }
 

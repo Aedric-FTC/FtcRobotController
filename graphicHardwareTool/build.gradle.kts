@@ -7,6 +7,7 @@ java {
 }
 dependencies {
     implementation(project(":graphicHardware"))
+    implementation("com.google.code.gson:gson:2.15.0")
 }
 tasks.jar {
     manifest { attributes["Main-Class"] = "org."}
