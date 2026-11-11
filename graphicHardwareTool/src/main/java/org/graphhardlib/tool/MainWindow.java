@@ -9,11 +9,14 @@ import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
@@ -24,22 +27,25 @@ import javax.swing.border.Border;
 
 public class MainWindow extends JFrame {
     public final JLayeredPane layeredPane = new JLayeredPane();
+    public final JLabel saveButton = new JLabel();
     public final JLabel ctrlHub = new JLabel();
     public final JLabel topBar = new JLabel();
     public final JLabel rightSwap = new JLabel("➡");
     public final JLabel leftSwap = new JLabel("⬅");
-    public final JLabel presetLabel = new JLabel("Profiles:");
-    public JLabel preset1;
-    public JLabel preset2;
-    public JLabel preset3;
-    public JLabel preset4;
-    public JLabel preset5;
+    public final JLabel profileLabel = new JLabel("Profiles:");
+    public JLabel profile1;
+    public JLabel profile2;
+    public JLabel profile3;
+    public JLabel profile4;
+    public JLabel profile5;
     public final Color bgColor = new Color(50,50,50);
     public final Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     public final Border presetBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
     public final double sizeMultiplier = 1.5;
     public static Map<String, JTextField> boxes = new HashMap<>();
     public String loadedHub = "ctrl";
+    public int loadedProfile = 1;
+    private final List<JComponent> labelComponents = new ArrayList<>();
 
     public MainWindow() {
         super("Hardware Config");
@@ -59,9 +65,22 @@ public class MainWindow extends JFrame {
         topBar.setOpaque(true);
         layeredPane.add(topBar, 1);
 
-        createLabels();
+        createLabels(loadedHub);
 
-        JSONSaver.save("TestMap", boxes);
+        saveButton.setBounds(1000, 650, 150, 50);
+        saveButton.setBackground(Color.BLUE);
+        saveButton.setOpaque(true);
+        saveButton.setText("Save");
+        saveButton.setFont(new Font("Sans Serif", Font.PLAIN, 50));
+        saveButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent)
+            {
+                super.mouseClicked(mouseEvent);
+                JSONSaver.save(loadedHub, loadedProfile, boxes);
+            }
+        });
+        layeredPane.add(saveButton);
 
         if (loadedHub.equals("ctrl")) {
             ctrlHub.setIcon(loadIcon("/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
@@ -86,6 +105,8 @@ public class MainWindow extends JFrame {
                 rightSwap.setVisible(false);
                 leftSwap.setVisible(true);
                 loadedHub = "exp";
+                boxes.clear();
+                createLabels(loadedHub);
             }
         });
         layeredPane.add(rightSwap, 2);
@@ -106,28 +127,30 @@ public class MainWindow extends JFrame {
                 leftSwap.setVisible(false);
                 rightSwap.setVisible(true);
                 loadedHub = "ctrl";
+                boxes.clear();
+                createLabels(loadedHub);
             }
         });
         layeredPane.add(leftSwap, 2);
 
-        preset1 = createPreset(1);
-        preset2 = createPreset(2);
-        preset3 = createPreset(3);
-        preset4 = createPreset(4);
-        preset5 = createPreset(5);
-        presetLabel.setBounds(275, 20, 100, 60);
-        presetLabel.setBackground(Color.DARK_GRAY);
-        presetLabel.setForeground(Color.WHITE);
-        presetLabel.setVerticalAlignment(SwingConstants.CENTER);
-        presetLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        presetLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
+        profile1 = createPreset(1);
+        profile2 = createPreset(2);
+        profile3 = createPreset(3);
+        profile4 = createPreset(4);
+        profile5 = createPreset(5);
+        profileLabel.setBounds(275, 20, 100, 60);
+        profileLabel.setBackground(Color.DARK_GRAY);
+        profileLabel.setForeground(Color.WHITE);
+        profileLabel.setVerticalAlignment(SwingConstants.CENTER);
+        profileLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        profileLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
 
-        layeredPane.add(preset1, 0);
-        layeredPane.add(preset2, 0);
-        layeredPane.add(preset3, 0);
-        layeredPane.add(preset4, 0);
-        layeredPane.add(preset5, 0);
-        layeredPane.add(presetLabel, 0);
+        layeredPane.add(profile1, 0);
+        layeredPane.add(profile2, 0);
+        layeredPane.add(profile3, 0);
+        layeredPane.add(profile4, 0);
+        layeredPane.add(profile5, 0);
+        layeredPane.add(profileLabel, 0);
 
         add(layeredPane);
     }
@@ -146,6 +169,8 @@ public class MainWindow extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
+                loadedProfile = number;
+                createLabels(loadedHub);
             }
         });
         return label;
@@ -172,11 +197,12 @@ public class MainWindow extends JFrame {
         JTextField field = new JTextField();
         field.setBounds(x, y, 100, 16);
         field.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        field.setText(JSONSaver.load(name).getAsString());
+        field.setText(JSONSaver.load(loadedHub, loadedProfile, name).getAsString());
         field.setBorder(border);
         field.setBackground(bgColor);
         field.setForeground(Color.WHITE);
         boxes.put(name, field);
+        labelComponents.add(field);
         return field;
     }
 
@@ -195,42 +221,50 @@ public class MainWindow extends JFrame {
         linePanel.setOpaque(false);
         linePanel.setBounds(0, 0, 1280, 720);
         layeredPane.add(linePanel, JLayeredPane.PALETTE_LAYER);
+        labelComponents.add(linePanel);
     }
-    void createLabels()
+    void createLabels(String hub)
     {
-        new Label(this, Side.RIGHT, "UART 2", 0);
-        new Label(this, Side.RIGHT, "UART 4", 0);
-        new Label(this, Side.RIGHT, "RS485 6", 0);
-        new Label(this, Side.RIGHT, "RS485 8", 0);
+        for (JComponent c : labelComponents) {
+            layeredPane.remove(c);
+        }
+        labelComponents.clear();
+        boxes.clear();
+        Label.reset();
 
-        new Label(this, Side.RIGHT, "I2C 3", 6);
-        new Label(this, Side.RIGHT, "I2C 2", 6);
-        new Label(this, Side.RIGHT, "I2C 1", 6);
-        new Label(this, Side.RIGHT, "I2C 0", 6);
+        new Label(this, hub, Side.RIGHT, "UART 2", 0);
+        new Label(this, hub, Side.RIGHT, "UART 4", 0);
+        new Label(this, hub, Side.RIGHT, "RS485 6", 0);
+        new Label(this, hub, Side.RIGHT, "RS485 8", 0);
 
-        new Label(this, Side.RIGHT, "DIGITAL 6-7", 13);
-        new Label(this, Side.RIGHT, "DIGITAL 4-5", 13);
-        new Label(this, Side.RIGHT, "DIGITAL 2-3", 13);
-        new Label(this, Side.RIGHT, "DIGITAL 0-1", 13);
+        new Label(this, hub, Side.RIGHT, "I2C 3", 6);
+        new Label(this, hub, Side.RIGHT, "I2C 2", 6);
+        new Label(this, hub, Side.RIGHT, "I2C 1", 6);
+        new Label(this, hub, Side.RIGHT, "I2C 0", 6);
 
-        new Label(this, Side.RIGHT, "ANALOG 2-3", 20);
-        new Label(this, Side.RIGHT, "ANALOG 0-1", 20);
+        new Label(this, hub, Side.RIGHT, "DIGITAL 6-7", 13);
+        new Label(this, hub, Side.RIGHT, "DIGITAL 4-5", 13);
+        new Label(this, hub, Side.RIGHT, "DIGITAL 2-3", 13);
+        new Label(this, hub, Side.RIGHT, "DIGITAL 0-1", 13);
 
-        new Label(this, Side.LEFT, "MOTOR 0", 80);
-        new Label(this, Side.LEFT, "ENCODER 0", 80);
-        new Label(this, Side.LEFT, "MOTOR 1", 89);
-        new Label(this, Side.LEFT, "ENCODER 1", 89);
-        new Label(this, Side.LEFT, "MOTOR 2", 98);
-        new Label(this, Side.LEFT, "ENCODER 2", 98);
-        new Label(this, Side.LEFT, "MOTOR 3", 107);
-        new Label(this, Side.LEFT, "ENCODER 3", 107);
+        new Label(this, hub, Side.RIGHT, "ANALOG 2-3", 20);
+        new Label(this, hub, Side.RIGHT, "ANALOG 0-1", 20);
 
-        new Label(this, Side.BOTTOM, "SERVO 0", 0);
-        new Label(this, Side.BOTTOM, "SERVO 1", 0);
-        new Label(this, Side.BOTTOM, "SERVO 2", 0);
-        new Label(this, Side.BOTTOM, "SERVO 3", 0);
-        new Label(this, Side.BOTTOM, "SERVO 4", 0);
-        new Label(this, Side.BOTTOM, "SERVO 5", 0);
+        new Label(this, hub, Side.LEFT, "MOTOR 0", 80);
+        new Label(this, hub, Side.LEFT, "ENCODER 0", 80);
+        new Label(this, hub, Side.LEFT, "MOTOR 1", 89);
+        new Label(this, hub, Side.LEFT, "ENCODER 1", 89);
+        new Label(this, hub, Side.LEFT, "MOTOR 2", 98);
+        new Label(this, hub, Side.LEFT, "ENCODER 2", 98);
+        new Label(this, hub, Side.LEFT, "MOTOR 3", 107);
+        new Label(this, hub, Side.LEFT, "ENCODER 3", 107);
+
+        new Label(this, hub, Side.BOTTOM, "SERVO 0", 0);
+        new Label(this, hub, Side.BOTTOM, "SERVO 1", 0);
+        new Label(this, hub, Side.BOTTOM, "SERVO 2", 0);
+        new Label(this, hub, Side.BOTTOM, "SERVO 3", 0);
+        new Label(this, hub, Side.BOTTOM, "SERVO 4", 0);
+        new Label(this, hub, Side.BOTTOM, "SERVO 5", 0);
     }
 }
 
@@ -238,38 +272,44 @@ class Label {
     public static int labelCountR;
     public static int labelCountL;
     public static int labelCountB;
-    public String portLabel;
+    public String fullLabel;
     public static int bYOffset;
-    public Label(MainWindow w, Side side, String portLabel, int extraYOffset)
+    public Label(MainWindow w, String hub, Side side, String fullLabel, int extraYOffset)
     {
         Map<String, String> portLabels = new HashMap<>();
         if (side == Side.RIGHT)
         {
             labelCountR++;
-            w.layeredPane.add(w.textBox(portLabel, w.labelX(), w.labelY() + ((labelCountR - 1) * 21) + extraYOffset), 2);
+            w.layeredPane.add(w.textBox(fullLabel, w.labelX(), w.labelY() + ((labelCountR - 1) * 21) + extraYOffset), 2);
             w.drawLine(new Coordinate(w.labelX() - 90, w.labelY() + ((labelCountR - 1) * 21) + 18 + extraYOffset),
                     new Coordinate(w.labelX() + 100, w.labelY() + ((labelCountR - 1) * 21) + 18 + extraYOffset));
-            this.portLabel = portLabel;
+            this.fullLabel = fullLabel;
         }
         else if (side == Side.LEFT)
         {
             labelCountL++;
-            w.layeredPane.add(w.textBox(portLabel, 1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + extraYOffset), 2);
+            w.layeredPane.add(w.textBox(fullLabel, 1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + extraYOffset), 2);
             w.drawLine(new Coordinate(1280 - w.labelX() - 110, w.labelY() + ((labelCountL - 1) * 25) + 18 + extraYOffset),
                     new Coordinate(1280 - w.labelX() + 60, w.labelY() + ((labelCountL - 1) * 25) + 18 + extraYOffset));
-            this.portLabel = portLabel;
+            this.fullLabel = fullLabel;
         }
         else
         {
             labelCountB++;
             bYOffset++;
             if (bYOffset == 4) bYOffset = 1;
-            w.layeredPane.add(w.textBox(portLabel, 1280 - w.labelX() + ((labelCountB - 1) * 43) + 150, w.labelY() - ((labelCountB - 1) * 20) + extraYOffset + 500), 2);
+            w.layeredPane.add(w.textBox(fullLabel, 1280 - w.labelX() + ((labelCountB - 1) * 43) + 150, w.labelY() - ((labelCountB - 1) * 20) + extraYOffset + 500), 2);
             w.drawLine(new Coordinate(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150 - 2, w.labelY() - ((labelCountB - 1) * 20) + 16 + extraYOffset + 500),
                     new Coordinate(1280 - w.labelX() + ((labelCountB - 1) * 43) + 150 - 2, w.labelY() + 16 + extraYOffset + 330));
-            this.portLabel = portLabel;
+            this.fullLabel = fullLabel;
         }
-        portLabels.put(portLabel, "Device Name");
+        portLabels.put(this.fullLabel, "Device Name");
+    }
+    public static void reset() {
+        labelCountR = 0;
+        labelCountL = 0;
+        labelCountB = 0;
+        bYOffset = 0;
     }
 }
 

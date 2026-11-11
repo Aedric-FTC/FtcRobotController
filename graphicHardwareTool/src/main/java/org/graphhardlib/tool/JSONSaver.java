@@ -15,12 +15,9 @@ import java.util.Map;
 import javax.swing.JTextField;
 
 public class JSONSaver {
-    public JSONSaver() {
-        SaveData = new JsonObject();
-    }
     public static JsonObject SaveData = new JsonObject();
     static Gson gson;
-    public static final String FILE_PATH = "/home/linacchorton/StudioProjects/FtcRobotController/graphicHardwareTool/src/main/java/org/graphhardlib/tool/Profiles.json";
+    public static final String FILE_PATH = "D:\\Aedric\\Documents\\GitHub\\FtcRobotController\\graphicHardwareTool\\src\\main\\java\\org\\graphhardlib\\tool\\saved\\profile";
     private static void writeToDisk()
     {
         gson = new GsonBuilder().setPrettyPrinting().create();
@@ -63,14 +60,14 @@ public class JSONSaver {
         SaveData.addProperty(name, value);
         writeToDisk();
     }
-    public static void save(String name, Map<String, JTextField> inputData)
+    public static void save(String hub, int profile, Map<String, JTextField> inputData)
     {
         HashMap<String, String> data = new HashMap<>();
         for (Map.Entry<String, JTextField> entry : inputData.entrySet()) {
             data.put(entry.getKey(), entry.getValue().getText());
         }
         gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter writer = new FileWriter(FILE_PATH))
+        try (FileWriter writer = new FileWriter(FILE_PATH + profile + "\\" +  hub + ".json"))
         {
             gson.toJson(data, writer);
         }
@@ -80,18 +77,19 @@ public class JSONSaver {
         }
     }
     static JsonElement jsonElement;
-    public static JsonElement load(String name)
+    public static JsonElement load(String hub, int profile, String name)
     {
         gson = new Gson();
-        try (FileReader reader = new FileReader(FILE_PATH)){
+        try (FileReader reader = new FileReader(FILE_PATH + profile + "\\" +  hub + ".json")) {
             SaveData = gson.fromJson(reader, JsonObject.class);
             if (SaveData != null && SaveData.has(name)) {
                 jsonElement = SaveData.get(name).getAsJsonPrimitive();
             }
             else if (SaveData != null){
                 SaveData.addProperty(name, "Device");
-                writeToDisk();
-                jsonElement = SaveData.get(name);
+                //writeToDisk();
+                System.out.println(profile + name);
+                jsonElement = SaveData.get(profile + name);
             }
         } catch (Exception e) {
             e.printStackTrace();
