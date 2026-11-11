@@ -50,10 +50,11 @@ public class MainWindow extends JFrame {
     public JLabel profile5;
     public final Color bgColor = new Color(50,50,50);
     public final Border border = BorderFactory.createMatteBorder(0,0,1,0,Color.LIGHT_GRAY);
-    public final Border profileBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
     public final double sizeMultiplier = 1.5;
     public static Map<String, JTextField> boxes = new HashMap<>();
     private final List<JComponent> labelComponents = new ArrayList<>();
+    boolean swapBorders = false;
+    public JLabel[] profiles = new JLabel[]{null,null,null,null,null,null};
 
     public MainWindow() {
         super("Hardware Config");
@@ -77,10 +78,21 @@ public class MainWindow extends JFrame {
         saveButton.setBounds(1000, 650, 100, 35);
         saveButton.setBackground(new Color(0,100,200));
         saveButton.setForeground(Color.WHITE);
-        saveButton.setBorder(BorderFactory.createLoweredBevelBorder());
+        saveButton.setBorder(BorderFactory.createRaisedBevelBorder());
         saveButton.setOpaque(true);
         saveButton.setFont(new Font("Sans Serif", Font.PLAIN, 25));
         saveButton.setFocusable(false);
+        saveButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                saveButton.setBorder(BorderFactory.createLoweredBevelBorder());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                saveButton.setBorder(BorderFactory.createRaisedBevelBorder());
+            }
+        });
         saveButton.addActionListener((e) -> JSONSaver.save(loadedHub, loadedProfile, boxes));
         layeredPane.add(saveButton, JLayeredPane.PALETTE_LAYER);
 
@@ -88,10 +100,21 @@ public class MainWindow extends JFrame {
         resetButton.setBounds(1120, 650, 100, 35);
         resetButton.setBackground(new Color(100,100,100));
         resetButton.setForeground(Color.WHITE);
-        resetButton.setBorder(BorderFactory.createLoweredBevelBorder());
+        resetButton.setBorder(BorderFactory.createRaisedBevelBorder());
         resetButton.setOpaque(true);
         resetButton.setFont(new Font("Sans Serif", Font.PLAIN, 25));
         resetButton.setFocusable(false);
+        resetButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                resetButton.setBorder(BorderFactory.createLoweredBevelBorder());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                resetButton.setBorder(BorderFactory.createRaisedBevelBorder());
+            }
+        });
         resetButton.addActionListener((e) ->
         {
             willReset[0] = JOptionPane.showOptionDialog(resetDialog, "Reset all values in " + loadedHub + " hub of profile " + loadedProfile + "?", "Reset", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Reset", "Cancel"}, "Cancel");
@@ -106,10 +129,22 @@ public class MainWindow extends JFrame {
         switchButton.setBounds(60, 650, 220, 35);
         switchButton.setBackground(new Color(100,100,100));
         switchButton.setForeground(Color.WHITE);
-        switchButton.setBorder(BorderFactory.createLoweredBevelBorder());
+        switchButton.setBorder(BorderFactory.createRaisedBevelBorder());
         switchButton.setOpaque(true);
         switchButton.setFont(new Font("Sans Serif", Font.PLAIN, 18));
         switchButton.setFocusable(false);
+        switchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        switchButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                switchButton.setBorder(BorderFactory.createLoweredBevelBorder());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                switchButton.setBorder(BorderFactory.createRaisedBevelBorder());
+            }
+        });
         switchButton.addActionListener((e) ->
         {
             ctrlHub.setIcon(loadIcon((loadedHub.equals("ctrl")) ? "/ExpansionHub.png" : "/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
@@ -141,6 +176,8 @@ public class MainWindow extends JFrame {
         profileLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         profileLabel.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 20));
 
+        profiles[loadedProfile].setBorder(BorderFactory.createLoweredBevelBorder());
+
         currentProfile.setBounds((1280/2) - (100/2), 100, 100, 35);
         currentProfile.setText("Profile " + loadedProfile);
         currentProfile.setForeground(Color.WHITE);
@@ -171,7 +208,8 @@ public class MainWindow extends JFrame {
         label.setVerticalAlignment(SwingConstants.CENTER);
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 30));
-        label.setBorder(profileBorder);
+        label.setBorder(BorderFactory.createRaisedBevelBorder());
+        profiles[number] = label;
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -180,6 +218,8 @@ public class MainWindow extends JFrame {
                 createLabels(loadedHub);
                 currentProfile.setText("Profile " + loadedProfile);
                 JSONSaver.save("Current Profile", loadedProfile);
+                resetBorders();
+                label.setBorder(BorderFactory.createLoweredBevelBorder());
             }
         });
         return label;
@@ -189,6 +229,14 @@ public class MainWindow extends JFrame {
     int centeredY() { return (int)((720 - (300 * sizeMultiplier)) / 2); }
     int labelX() { return centeredX() + (int)(415 * sizeMultiplier) + 10; }
     int labelY() { return centeredY() + 57; }
+
+    void resetBorders() {
+            profile1.setBorder(BorderFactory.createRaisedBevelBorder());
+            profile2.setBorder(BorderFactory.createRaisedBevelBorder());
+            profile3.setBorder(BorderFactory.createRaisedBevelBorder());
+            profile4.setBorder(BorderFactory.createRaisedBevelBorder());
+            profile5.setBorder(BorderFactory.createRaisedBevelBorder());
+    }
 
     private static ImageIcon loadIcon(String path, int w, int h) {
         URL url = MainWindow.class.getResource(path);
