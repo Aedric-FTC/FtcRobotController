@@ -156,12 +156,12 @@ public class MainWindow extends JFrame {
             resetDialog.setVisible(true);
             if (optionPane.getValue() != null) {
                 if (optionPane.getValue().equals("Reset")) {
-                    willReset[0] = JOptionPane.YES_OPTION;   // Maps to 0
+                    willReset[0] = JOptionPane.YES_OPTION;
                 } else if (optionPane.getValue().equals("Cancel")) {
-                    willReset[0] = JOptionPane.NO_OPTION;    // Maps to 1
+                    willReset[0] = JOptionPane.NO_OPTION;
                 }
             } else {
-                willReset[0] = JOptionPane.CLOSED_OPTION;   // User clicked the X button (-1)
+                willReset[0] = JOptionPane.CLOSED_OPTION;
             }
             if (willReset[0] == 0)
             {
@@ -319,17 +319,17 @@ public class MainWindow extends JFrame {
         field.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                onTextChanged(); // Triggered when text is typed or pasted
+                onTextChanged();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                onTextChanged(); // Triggered when text is deleted or cut
+                onTextChanged();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                onTextChanged(); // Triggered on attribute/style changes (rare in plain JTextField)
+                onTextChanged();
             }
 
             private void onTextChanged() {
@@ -351,12 +351,12 @@ public class MainWindow extends JFrame {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setColor(new Color(0, 220, 180));
-                g2d.setStroke(new BasicStroke(2.0f)); // Line thickness
-                g2d.drawLine(startPos.x, startPos.y, endPos.x, endPos.y);       // (x1, y1, x2, y2)
+                g2d.setStroke(new BasicStroke(2.0f));
+                g2d.drawLine(startPos.x, startPos.y, endPos.x, endPos.y);
             }
             @Override
             public boolean contains(int x, int y) {
-                return false; // never intercept mouse events
+                return false;
             }
         };
         linePanel.setOpaque(false);
@@ -377,8 +377,6 @@ public class MainWindow extends JFrame {
         Label.labelCountB = 0;
         Label.bYOffset = 0;
 
-        //new Label(this, Side.RIGHT, "UART 2", 0);
-        //new Label(this, Side.RIGHT, "UART 4", 0);
         new Label(this, Side.RIGHT, "RS485 6", 0);
         new Label(this, Side.RIGHT, "RS485 8", 0);
 
