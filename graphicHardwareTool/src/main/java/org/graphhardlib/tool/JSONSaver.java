@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 
 import java.io.File;
 import java.io.FileReader;
@@ -18,10 +19,29 @@ public class JSONSaver {
     public static JsonObject SaveData = new JsonObject();
     static Gson gson;
     public static final String FILE_PATH = "D:\\Aedric\\Documents\\GitHub\\FtcRobotController\\graphicHardwareTool\\src\\main\\java\\org\\graphhardlib\\tool\\saved\\profile";
+    public static final String SETTINGS_PATH = "D:\\Aedric\\Documents\\GitHub\\FtcRobotController\\graphicHardwareTool\\src\\main\\java\\org\\graphhardlib\\tool\\saved\\GlobalSettings.json";
+    static
+    {
+        File file = new File(SETTINGS_PATH);
+        if (file.exists())
+        {
+            try (FileReader reader = new FileReader(file))
+            {
+                JsonObject existing = new Gson().fromJson(reader, JsonObject.class);
+                if (existing != null)
+                {
+                    SaveData = existing;
+                }
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
     private static void writeToDisk()
     {
         gson = new GsonBuilder().setPrettyPrinting().create();
-        try (FileWriter writer = new FileWriter(FILE_PATH))
+        try (FileWriter writer = new FileWriter(SETTINGS_PATH))
         {
             gson.toJson(SaveData, writer);
         }
@@ -76,25 +96,33 @@ public class JSONSaver {
             e.printStackTrace();
         }
     }
-    static JsonElement jsonElement;
-    public static JsonElement load(String hub, int profile, String name)
+    static JsonElement loadGlobal(String name)
     {
-        gson = new Gson();
-        try (FileReader reader = new FileReader(FILE_PATH + profile + "\\" +  hub + ".json")) {
-            SaveData = gson.fromJson(reader, JsonObject.class);
-            if (SaveData != null && SaveData.has(name)) {
-                jsonElement = SaveData.get(name).getAsJsonPrimitive();
+        Gson reader = new Gson();
+        try (FileReader fileReader = new FileReader(SETTINGS_PATH)) {
+            JsonObject profileData = reader.fromJson(fileReader, JsonObject.class);
+            if (profileData != null && profileData.has(name)) {
+                return profileData.get(name);
             }
-            else if (SaveData != null){
-                SaveData.addProperty(name, "Device");
-                //writeToDisk();
-                System.out.println(profile + name);
-                jsonElement = SaveData.get(profile + name);
-            }
+            return null; // your old default, without touching SaveData
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        return jsonElement;
+    }
+    public static JsonElement load(String hub, int profile, String name)
+    {
+        Gson reader = new Gson();
+        try (FileReader fileReader = new FileReader(FILE_PATH + profile + "\\" + hub + ".json")) {
+            JsonObject profileData = reader.fromJson(fileReader, JsonObject.class);
+            if (profileData != null && profileData.has(name)) {
+                return profileData.get(name);
+            }
+            return new JsonPrimitive("Device"); // your old default, without touching SaveData
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     public static void wipe()
     {
