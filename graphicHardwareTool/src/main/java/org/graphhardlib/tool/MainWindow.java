@@ -218,6 +218,14 @@ public class MainWindow extends JFrame {
         profile3 = createPreset(3);
         profile4 = createPreset(4);
         profile5 = createPreset(5);
+        switch (loadedProfile)
+        {
+            case 1: profile1.setEnabled(false); profile1.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); break;
+            case 2: profile2.setEnabled(false); profile2.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); break;
+            case 3: profile3.setEnabled(false); profile3.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); break;
+            case 4: profile4.setEnabled(false); profile4.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); break;
+            case 5: profile5.setEnabled(false); profile5.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR)); break;
+        }
         profileLabel.setBounds(300, 20, 160, 60);
         profileLabel.setBackground(Color.DARK_GRAY);
         profileLabel.setForeground(Color.WHITE);
@@ -270,12 +278,10 @@ public class MainWindow extends JFrame {
                 createLabels();
                 currentProfile.setText("Profile " + loadedProfile);
                 JSONSaver.save("Current Profile", loadedProfile, JSONSaver.HUB_PATH, loadedProfile);
-                profile1.setBorder(BorderFactory.createRaisedBevelBorder());
-                profile2.setBorder(BorderFactory.createRaisedBevelBorder());
-                profile3.setBorder(BorderFactory.createRaisedBevelBorder());
-                profile4.setBorder(BorderFactory.createRaisedBevelBorder());
-                profile5.setBorder(BorderFactory.createRaisedBevelBorder());
+                resetProfiles();
                 label.setBorder(BorderFactory.createLoweredBevelBorder());
+                label.setEnabled(false);
+                label.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
         });
         return label;
@@ -287,6 +293,24 @@ public class MainWindow extends JFrame {
         saveButton.setBackground(new Color(100,100,100));
         saveButton.setEnabled(false);
         saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+    }
+    void resetProfiles()
+    {
+        profile1.setBorder(BorderFactory.createRaisedBevelBorder());
+        profile2.setBorder(BorderFactory.createRaisedBevelBorder());
+        profile3.setBorder(BorderFactory.createRaisedBevelBorder());
+        profile4.setBorder(BorderFactory.createRaisedBevelBorder());
+        profile5.setBorder(BorderFactory.createRaisedBevelBorder());
+        profile1.setEnabled(true);
+        profile2.setEnabled(true);
+        profile3.setEnabled(true);
+        profile4.setEnabled(true);
+        profile5.setEnabled(true);
+        profile1.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profile2.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profile3.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profile4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        profile5.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     int centeredX() { return (int)((1280 - (415 * sizeMultiplier)) / 2); }
