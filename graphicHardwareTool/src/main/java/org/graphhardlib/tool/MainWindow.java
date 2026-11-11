@@ -38,8 +38,8 @@ public class MainWindow extends JFrame {
     public final Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
     public final Border presetBorder = BorderFactory.createLineBorder(Color.WHITE, 2);
     public final double sizeMultiplier = 1.5;
+    public static Map<String, JTextField> boxes = new HashMap<>();
     public String loadedHub = "ctrl";
-    JSONSaver saver = new JSONSaver();
 
     public MainWindow() {
         super("Hardware Config");
@@ -59,41 +59,9 @@ public class MainWindow extends JFrame {
         topBar.setOpaque(true);
         layeredPane.add(topBar, 1);
 
-        new Label(this, Side.RIGHT, "UART 2", 0);
-        new Label(this, Side.RIGHT, "UART 4", 0);
-        new Label(this, Side.RIGHT, "RS485 6", 0);
-        new Label(this, Side.RIGHT, "RS485 8", 0);
+        createLabels();
 
-        new Label(this, Side.RIGHT, "I2C 3", 6);
-        new Label(this, Side.RIGHT, "I2C 2", 6);
-        new Label(this, Side.RIGHT, "I2C 1", 6);
-        new Label(this, Side.RIGHT, "I2C 0", 6);
-
-        new Label(this, Side.RIGHT, "DIGITAL 6-7", 13);
-        new Label(this, Side.RIGHT, "DIGITAL 4-5", 13);
-        new Label(this, Side.RIGHT, "DIGITAL 2-3", 13);
-        new Label(this, Side.RIGHT, "DIGITAL 0-1", 13);
-
-        new Label(this, Side.RIGHT, "ANALOG 2-3", 20);
-        new Label(this, Side.RIGHT, "ANALOG 0-1", 20);
-
-        new Label(this, Side.LEFT, "MOTOR 0", 80);
-        new Label(this, Side.LEFT, "ENCODER 0", 80);
-        new Label(this, Side.LEFT, "MOTOR 1", 89);
-        new Label(this, Side.LEFT, "ENCODER 1", 89);
-        new Label(this, Side.LEFT, "MOTOR 2", 98);
-        new Label(this, Side.LEFT, "ENCODER 2", 98);
-        new Label(this, Side.LEFT, "MOTOR 3", 107);
-        new Label(this, Side.LEFT, "ENCODER 3", 107);
-
-        new Label(this, Side.BOTTOM, "SERVO 0", 0);
-        new Label(this, Side.BOTTOM, "SERVO 1", 0);
-        new Label(this, Side.BOTTOM, "SERVO 2", 0);
-        new Label(this, Side.BOTTOM, "SERVO 3", 0);
-        new Label(this, Side.BOTTOM, "SERVO 4", 0);
-        new Label(this, Side.BOTTOM, "SERVO 5", 0);
-
-        JSONSaver.load("SERVO 0");
+        JSONSaver.save("TestMap", boxes);
 
         if (loadedHub.equals("ctrl")) {
             ctrlHub.setIcon(loadIcon("/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
@@ -208,6 +176,7 @@ public class MainWindow extends JFrame {
         field.setBorder(border);
         field.setBackground(bgColor);
         field.setForeground(Color.WHITE);
+        boxes.put(name, field);
         return field;
     }
 
@@ -226,6 +195,42 @@ public class MainWindow extends JFrame {
         linePanel.setOpaque(false);
         linePanel.setBounds(0, 0, 1280, 720);
         layeredPane.add(linePanel, JLayeredPane.PALETTE_LAYER);
+    }
+    void createLabels()
+    {
+        new Label(this, Side.RIGHT, "UART 2", 0);
+        new Label(this, Side.RIGHT, "UART 4", 0);
+        new Label(this, Side.RIGHT, "RS485 6", 0);
+        new Label(this, Side.RIGHT, "RS485 8", 0);
+
+        new Label(this, Side.RIGHT, "I2C 3", 6);
+        new Label(this, Side.RIGHT, "I2C 2", 6);
+        new Label(this, Side.RIGHT, "I2C 1", 6);
+        new Label(this, Side.RIGHT, "I2C 0", 6);
+
+        new Label(this, Side.RIGHT, "DIGITAL 6-7", 13);
+        new Label(this, Side.RIGHT, "DIGITAL 4-5", 13);
+        new Label(this, Side.RIGHT, "DIGITAL 2-3", 13);
+        new Label(this, Side.RIGHT, "DIGITAL 0-1", 13);
+
+        new Label(this, Side.RIGHT, "ANALOG 2-3", 20);
+        new Label(this, Side.RIGHT, "ANALOG 0-1", 20);
+
+        new Label(this, Side.LEFT, "MOTOR 0", 80);
+        new Label(this, Side.LEFT, "ENCODER 0", 80);
+        new Label(this, Side.LEFT, "MOTOR 1", 89);
+        new Label(this, Side.LEFT, "ENCODER 1", 89);
+        new Label(this, Side.LEFT, "MOTOR 2", 98);
+        new Label(this, Side.LEFT, "ENCODER 2", 98);
+        new Label(this, Side.LEFT, "MOTOR 3", 107);
+        new Label(this, Side.LEFT, "ENCODER 3", 107);
+
+        new Label(this, Side.BOTTOM, "SERVO 0", 0);
+        new Label(this, Side.BOTTOM, "SERVO 1", 0);
+        new Label(this, Side.BOTTOM, "SERVO 2", 0);
+        new Label(this, Side.BOTTOM, "SERVO 3", 0);
+        new Label(this, Side.BOTTOM, "SERVO 4", 0);
+        new Label(this, Side.BOTTOM, "SERVO 5", 0);
     }
 }
 
