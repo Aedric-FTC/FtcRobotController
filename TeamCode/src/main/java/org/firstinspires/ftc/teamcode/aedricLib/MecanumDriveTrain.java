@@ -5,16 +5,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.Robot;
+
 public class MecanumDriveTrain {
     private DcMotor frontLeft;
     private DcMotor frontRight;
     private DcMotor backLeft;
     private DcMotor backRight;
     OpMode opMode;
-    public MecanumDriveTrain(OpMode opMode, String frontLeftMotor, String frontRightMotor,
+    public MecanumDriveTrain(Robot robot, String frontLeftMotor, String frontRightMotor,
                              String backLeftMotor, String backRightMotor, boolean hasEncoder)
     {
-        this.opMode = opMode;
+        this.opMode = robot.opMode;
 
         if (this.opMode.hardwareMap.dcMotor.contains(frontLeftMotor)) {
             this.frontLeft = this.opMode.hardwareMap.get(DcMotor.class, frontLeftMotor);

@@ -37,7 +37,7 @@ import java.util.Map;
 public class Menu
 {
     static Map<Integer, Menu> menuRegistry = new HashMap<>();
-    private final List<Menu> children = new ArrayList<>();
+    public final List<Menu> children = new ArrayList<>();
     //region Menu Constructors
     /// When creating an instance of this class, place (this) within the parentheses:
     /// ```java
@@ -84,7 +84,7 @@ public class Menu
         numberOfMenuItems = 0;
         runClose = true;
     }
-    private Menu(OpMode OpMode, String menuName)
+    public Menu(OpMode OpMode, String menuName)
     {
         opMode = OpMode;
         this.menuCounter = 1;
@@ -113,10 +113,12 @@ public class Menu
     public String subMenuName;
     public boolean runClose;
     public final Map<Integer, MenuItem> itemRegistry = new HashMap<>();
+    public final Map<String, MenuItem> itemNameRegistry = new HashMap<>();
+    public final Map<String, Menu> subMenuRegistry = new HashMap<>();
 
     public interface menuChange { void run(); }
-    private menuChange menuEnter = () -> {};
-    private menuChange menuExit = () -> {};
+    public menuChange menuEnter = () -> {};
+    public menuChange menuExit = () -> {};
     public void onMenuEnter(menuChange menuChange)  { menuEnter = menuChange; }
     public void onMenuExit(menuChange menuChange)  { menuExit = menuChange; }
     public void runOnMenuEnter() { menuEnter.run(); }
@@ -168,7 +170,7 @@ public class Menu
             menuCounter = (menuCounter - counterDecrement > 0) ? (menuCounter - counterDecrement) : itemCount;
         }
     }
-    private void menuEnter()
+    void menuEnter()
     {
         for (Menu other : menuRegistry.values())
         {
@@ -185,7 +187,7 @@ public class Menu
     {
         for (int i = 1; i <= numberOfMenuItems; i++)
         {
-            MenuItem thisItem = thisItem(i);
+            MenuItem thisItem = itemFromReg(i);
             if (!thisItem.isBoolean) {
                 RobotJson.save(thisItem.itemName, thisItem.itemValue);
             } else {
@@ -193,226 +195,20 @@ public class Menu
             }
         }
     }
-    public MenuItem thisItem(int itemID)
-    {
-        return itemRegistry.get(itemID);
-    }
+    public MenuItem itemFromReg(int itemID) { return itemRegistry.get(itemID); }
+    public MenuItem getItem(String itemName) { return itemNameRegistry.get(itemName); }
+    public Menu getSubMenu(String subMenuName) { return subMenuRegistry.get(subMenuName); }
+    public void addNumericalItem(String itemName, Number inputValue, int increment, Number min, Number max)
+    { new MenuItem(this, itemName, inputValue, increment, min, max);}
+    public void addBooleanItem(String itemName, boolean inputValue)
+    { new MenuItem(this, itemName, inputValue); }
+    public void addLine(String itemName)
+    { new MenuItem(this, itemName); }
+    public void addSubMenu(String subMenuName)
+    { new SubMenu(this, subMenuName); }
     public Menu thisMenu()
     {
         return this;
     }
 
-    public class MenuItem {
-        //region Variables
-        boolean wasIncremented;
-        boolean wasDecremented;
-        public String itemName;
-        public Number itemValue;
-        public Number increment;
-        public Number min;
-        public Number max;
-        public int itemNumber;
-        public boolean booleanInputValue;
-        public boolean isBoolean;
-        public int itemSubMenu;
-        //endregion
-        //region Constructors
-        /// Creates a menu item
-        /// @param displayName The displayed name of your item
-        /// @param inputValue The variable that you want to modify
-        /// @param increment The amount by which your variable's value will change when using the left/right d-pad buttons
-        /// @param min The minimum value your variable will be allowed to reach
-        /// @param max The maximum value your variable will be allowed to reach
-        public MenuItem(String displayName, Number inputValue, Number increment, Number min, Number max)
-        {
-            numberOfMenuItems ++;
-            this.itemNumber = numberOfMenuItems;
-            this.itemName = displayName;
-            this.itemValue = inputValue;
-            this.increment = increment;
-            this.min = min;
-            this.max = max;
-            this.itemSubMenu = menuIndex;
-            itemRegistry.put(this.itemNumber, this);
-        }
-        public MenuItem(String displayName, boolean inputValue)
-        {
-            numberOfMenuItems ++;
-            this.itemNumber = numberOfMenuItems;
-            this.itemName = displayName;
-            this.booleanInputValue = inputValue;
-            this.isBoolean = true;
-            this.itemSubMenu = menuIndex;
-            itemRegistry.put(this.itemNumber, this);
-        }
-        public MenuItem(String displayName)
-        {
-            numberOfMenuItems ++;
-            this.itemNumber = numberOfMenuItems;
-            this.itemName = displayName;
-            this.itemSubMenu = menuIndex;
-            itemRegistry.put(this.itemNumber, this);
-        }
-        //endregion
-        /// @return The new double value of your menu item
-        public double getDoubleValue()
-        {
-            if (inMenu)
-            {
-                if (this.itemNumber == menuCounter)
-                {
-                    opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
-                    if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
-                    {
-                        this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
-                    }
-
-                    this.wasIncremented = opMode.gamepad1.dpad_right;
-
-                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
-                    {
-                        this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
-                    }
-
-                    wasDecremented = opMode.gamepad1.dpad_left;
-                }
-                else
-                {
-                    opMode.telemetry.addData(this.itemName, this.itemValue);
-                }
-            }
-            return this.itemValue.doubleValue();
-        }
-
-        /// @return The new integer value of your menu item
-        public int getIntValue()
-        {
-            if (inMenu)
-            {
-                if (this.itemNumber == menuCounter)
-                {
-                    opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
-                    if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
-                    {
-                        this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
-                    }
-
-                    this.wasIncremented = opMode.gamepad1.dpad_right;
-
-                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
-                    {
-                        this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
-                    }
-
-                    wasDecremented = opMode.gamepad1.dpad_left;
-                }
-                else
-                {
-                    opMode.telemetry.addData(this.itemName, this.itemValue);
-                }
-            }
-            return this.itemValue.intValue();
-        }
-        /// @return The new double value of your menu item
-        public float getFloatValue()
-        {
-            if (inMenu)
-            {
-                if (this.itemNumber == menuCounter)
-                {
-                    opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
-                    if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
-                    {
-                        this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
-                    }
-
-                    this.wasIncremented = opMode.gamepad1.dpad_right;
-
-                    if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
-                    {
-                        this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
-                    }
-
-                    wasDecremented = opMode.gamepad1.dpad_left;
-                }
-                else
-                {
-                    opMode.telemetry.addData(this.itemName, this.itemValue);
-                }
-            }
-            return this.itemValue.floatValue();
-        }
-        ///@return The new boolean value of your menu item
-        public boolean getBooleanValue()
-        {
-            if (inMenu)
-            {
-                if (this.itemNumber == menuCounter)
-                {
-                    opMode.telemetry.addData(">  " + this.itemName, this.booleanInputValue);
-                    if ((opMode.gamepad1.dpad_right || opMode.gamepad1.dpad_left) && (!this.wasIncremented && !this.wasDecremented))
-                    {
-                        this.booleanInputValue = !this.booleanInputValue;
-                    }
-                    this.wasIncremented = opMode.gamepad1.dpad_right;
-                    this.wasDecremented = opMode.gamepad1.dpad_left;
-                }
-                else
-                {
-                    opMode.telemetry.addData(this.itemName, this.booleanInputValue);
-                }
-            }
-            return this.booleanInputValue;
-        }
-    }
-    public class SubMenu {
-        //region Variables
-        public Menu subMenu;
-        Menu superMenu;
-        public Menu.MenuItem subItem;
-        ButtonOperation openSubMenu;
-        ButtonOperation closeSubMenu;
-        //endregion
-        public SubMenu(String subMenuName)
-        {
-            superMenu = thisMenu();
-            subMenu = new Menu(opMode, subMenuName);
-            subMenu.subMenuName = subMenuName;
-            superMenu.children.add(subMenu);
-            subMenu.runClose = false;
-            subItem = superMenu.new MenuItem(subMenu.subMenuName);
-            openSubMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.A, () -> {
-                subMenu.outputToggle = true;
-                subMenu.inMenu = true;
-                subMenu.runOnMenuEnter();
-                subMenu.menuEnter();
-            });
-            closeSubMenu = new ButtonOperation(opMode.gamepad1, GamepadButton.B, () -> {
-                superMenu.outputToggle = true;
-                superMenu.inMenu = true;
-                superMenu.runOnMenuEnter();
-                superMenu.menuEnter();
-            });
-        }
-        public void create()
-        {
-            subMenu.create();
-            subItem.itemNumber = numberOfMenuItems;
-            if (superMenu.inMenu)
-            {
-                if (subItem.itemNumber == menuCounter)
-                {
-                    opMode.telemetry.addLine(">  " + subItem.itemName);
-                    openSubMenu.run();
-                } else
-                {
-                    opMode.telemetry.addLine(subItem.itemName);
-                }
-            }
-            else if (subMenu.inMenu)
-            {
-                closeSubMenu.run();
-            }
-        }
-    }
 }

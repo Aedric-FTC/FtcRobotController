@@ -10,16 +10,16 @@ public class EasyPID {
     private long lastTime = System.nanoTime();
     public OpMode opMode;
     Menu tuningMenu;
-    Menu.MenuItem menuKP;
-    Menu.MenuItem menuKI;
-    Menu.MenuItem menuKD;
+    MenuItem menuKP;
+    MenuItem menuKI;
+    MenuItem menuKD;
 
     public EasyPID(OpMode opMode) {
         this.opMode = opMode;
         tuningMenu = new Menu(opMode, GamepadButton.Y, "PID Tuning");
-        menuKP = tuningMenu.new MenuItem("kP", this.kP, 0.05, 0, 5);
-        menuKI = tuningMenu.new MenuItem("kI", this.kI, 0.05, 0, 5);
-        menuKD = tuningMenu.new MenuItem("kD", this.kD, 0.05, 0, 5);
+        menuKP = new MenuItem(tuningMenu, "kP", this.kP, 0.05, 0, 5);
+        menuKI = new MenuItem(tuningMenu, "kI", this.kI, 0.05, 0, 5);
+        menuKD = new MenuItem(tuningMenu, "kD", this.kD, 0.05, 0, 5);
     }
 
     public double update(double target, double current, boolean useLiveTuningMenu) {
