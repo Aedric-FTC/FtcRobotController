@@ -17,7 +17,6 @@ public class DemoMotor {
 
     public void spin(boolean gamepadButton)
     {
-        if (gamepadButton) demoMotor.setPower(1);
-        else demoMotor.setPower(0);
+        demoMotor.setPower(gamepadButton ? 1 : 0);
     }
 }

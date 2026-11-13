@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -6,10 +6,11 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.aedricLib.GamepadButton;
 import org.firstinspires.ftc.teamcode.aedricLib.Menu;
 
-public class DemoOpMode extends OpMode {
+public class DemoTeleOp extends OpMode {
     Robot robot;
     Menu menu;
     double demoNumber;
+    int demoNumber2;
     boolean demoBoolean;
     @Override
     public void init()
@@ -21,6 +22,8 @@ public class DemoOpMode extends OpMode {
         menu.addBooleanItem("Demo Boolean", demoBoolean);
         menu.addLine("Demo Plain Line");
         menu.addSubMenu("Demo SubMenu");
+        menu.getSubMenu("Demo SubMenu").addNumericalItem(
+                "Demo Number 2", demoNumber2, 5, 0, 100);
     }
 
     @Override
@@ -41,6 +44,8 @@ public class DemoOpMode extends OpMode {
             menu.getItem("Demo Plain Line").displayLine();
             // Render SubMenus with the same .create() method as a normal menu
             menu.getSubMenu("Demo SubMenu").create();
+            // Only render a SubMenu item after its respective SubMenu has been created
+            menu.getSubMenu("Demo SubMenu").getItem("Demo Number 2");
         }
     }
 }

@@ -6,7 +6,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 dependencies {
-    implementation(project(":graphicHardware"))
     implementation("com.google.code.gson:gson:2.15.0")
 }
 tasks.jar {
