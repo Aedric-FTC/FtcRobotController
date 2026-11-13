@@ -2,6 +2,7 @@ package org.graphhardlib.tool;
 
 import static org.graphhardlib.tool.JSONSaver.DEVICE_PATH;
 import static org.graphhardlib.tool.JSONSaver.save;
+import static org.graphhardlib.tool.MainWindow.saveButton;
 
 import com.google.gson.Gson;
 
@@ -49,13 +50,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 public class MainWindow extends JFrame {
-    public String loadedHub = "ctrl";
+    public String loadedHub = JSONSaver.loadGlobal("Current Hub").getAsString();
     public static int loadedProfile = JSONSaver.loadGlobal("Current Profile").getAsInt();
     public final JLayeredPane layeredPane = new JLayeredPane();
     public final JLabel ctrlHub = new JLabel();
     public final JLabel topBar = new JLabel();
-    public JButton saveButton = new JButton("Save");
-    public JButton resetButton = new JButton("Reset");
+    public static JButton saveButton = new JButton("Save");
+    public static JButton resetButton = new JButton("Reset");
     public JButton switchButton = new JButton((loadedHub.equals("ctrl")) ? "Switch to Expansion Hub" : "Switch to Control Hub");
     public JOptionPane optionPane = new JOptionPane(
             "Reset all values in " + loadedHub + " hub of profile " + loadedProfile + "?",
@@ -78,7 +79,6 @@ public class MainWindow extends JFrame {
     public static Map<String, JTextField> boxes = new HashMap<>();
     public static Map<String, JComboBox<String>> dropDowns = new LinkedHashMap<>();
     private final List<JComponent> labelComponents = new ArrayList<>();
-    boolean swapBorders = false;
     public JLabel[] profiles = new JLabel[]{null,null,null,null,null,null};
     public static final String[] motors = {"Unspecified Motor", "goBILDA 5201 Series", "goBILDA 5202/3/4 Series", "Matrix 12V Motor", "NeveRest 3.7 v1 Gearmotor", "NeveRest 20 Gearmotor", "NeveRest 40 Gearmotor", "NeveRest 60 Gearmotor", "NeveRest Orbital 20 Gearmotor", "REV Robotics 20:1 HD Hex Motor", "REV Robotics 40:1 HD Hex Motor", "REV Robotics Core Hex Motor", "REV Robotics UltraPlanetary HD HexMotor", "Studica Maverick", "Tetrix Motor"};
     public static final String[] servos = {"Nothing", "Continuous Rotation Servo", "Full Range Servo", "REV Blinkin LED Driver", "REV SPARKmini Controller", "Servo"};
@@ -88,6 +88,7 @@ public class MainWindow extends JFrame {
 
     public MainWindow() {
         super("Hardware Config");
+        GlobalTime.startTimers();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setBackground(Color.DARK_GRAY);
@@ -198,7 +199,7 @@ public class MainWindow extends JFrame {
             ctrlHub.setIcon(loadIcon((loadedHub.equals("ctrl")) ? "/ExpansionHub.png" : "/ControlHub.png", (int) (415 * sizeMultiplier), (int) (300 * sizeMultiplier)));
             loadedHub = (loadedHub.equals("ctrl")) ? "exp" : "ctrl";
             switchButton.setText((loadedHub.equals("ctrl")) ? "Switch to Expansion Hub" : "Switch to Control Hub");
-            JSONSaver.save("Current Hub", loadedHub, JSONSaver.HUB_PATH, loadedProfile, false);
+            JSONSaver.save("Current Hub", loadedHub, JSONSaver.SETTINGS_PATH, loadedProfile, false);
             boxes.clear();
             dropDowns.clear();
             createLabels();
@@ -287,6 +288,7 @@ public class MainWindow extends JFrame {
         saveButton.setBackground(new Color(100,100,100));
         saveButton.setEnabled(false);
         saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        GlobalTime.makeBlue = false;
     }
 
     int centeredX() { return (int)((1280 - (415 * sizeMultiplier)) / 2); }
@@ -336,6 +338,7 @@ public class MainWindow extends JFrame {
                 saveButton.setBackground(new Color(0,100,200));
                 saveButton.setEnabled(true);
                 saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                GlobalTime.makeBlue = true;
             }
         });
         boxes.put(name, field);
@@ -522,6 +525,12 @@ class Dropdown {
             }
         });
         MainWindow.dropDowns.put(fullLabel, box);
+        box.addItemListener(e -> {
+            saveButton.setBackground(new Color(0,100,200));
+            saveButton.setEnabled(true);
+            saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            GlobalTime.makeBlue = true;
+        });
         if (!display) box.setVisible(false);
     }
     public JComboBox<String> getBox()
