@@ -196,7 +196,7 @@ public class Menu
         }
     }
     public MenuItem itemFromReg(int itemID) { return itemRegistry.get(itemID); }
-    public MenuItem getItem(String itemName) { return itemNameRegistry.get(itemName); }
+    public MenuItem getItem(String itemName) { return itemNameRegistry.get(itemName.toLowerCase()); }
     public Menu getSubMenu(String subMenuName) { return subMenuRegistry.get(subMenuName); }
     public void addNumericalItem(String itemName, Number inputValue, int increment, Number min, Number max)
     { new MenuItem(this, itemName, inputValue, increment, min, max);}

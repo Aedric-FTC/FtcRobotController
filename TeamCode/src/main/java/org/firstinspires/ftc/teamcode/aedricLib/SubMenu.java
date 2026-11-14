@@ -4,7 +4,7 @@ public class SubMenu {
     //region Variables
     public Menu subMenu;
     Menu superMenu;
-    public MenuItem subItem;
+    MenuItem subMenuItem;
     ButtonOperation openSubMenu;
     ButtonOperation closeSubMenu;
     //endregion
@@ -15,7 +15,7 @@ public class SubMenu {
         subMenu.subMenuName = subMenuName;
         superMenu.children.add(subMenu);
         subMenu.runClose = false;
-        subItem = new MenuItem(superMenu, subMenu.subMenuName);
+        subMenu.addLine(subMenu.subMenuName);
         openSubMenu = new ButtonOperation(this.superMenu.opMode.gamepad1, GamepadButton.A, () -> {
             subMenu.outputToggle = true;
             subMenu.inMenu = true;
@@ -29,25 +29,23 @@ public class SubMenu {
             superMenu.menuEnter();
         });
         this.superMenu.subMenuRegistry.put(subMenuName, subMenu);
+        subMenuItem = subMenu.getItem(subMenuName);
     }
     public void create()
     {
-        subMenu.create();
-        subItem.itemNumber = this.superMenu.numberOfMenuItems;
+        //subMenu.create();
+        subMenuItem.displayLine();
+        //subMenu.getItem(this.subMenu.subMenuName).itemNumber = this.superMenu.numberOfMenuItems;
         if (superMenu.inMenu)
         {
-            if (subItem.itemNumber == this.superMenu.menuCounter)
+            if (subMenuItem.itemNumber == this.superMenu.menuCounter)
             {
-                this.superMenu.opMode.telemetry.addLine(">  " + subItem.itemName);
-                openSubMenu.run();
-            } else
-            {
-                this.superMenu.opMode.telemetry.addLine(subItem.itemName);
+                if (superMenu.opMode.gamepad1.a) openSubMenu.run();
             }
         }
         else if (subMenu.inMenu)
         {
-            closeSubMenu.run();
+            if (superMenu.opMode.gamepad1.b) closeSubMenu.run();
         }
     }
 }

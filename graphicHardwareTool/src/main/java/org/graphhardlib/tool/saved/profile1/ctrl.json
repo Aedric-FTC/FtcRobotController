@@ -1,5 +1,5 @@
 {
-  "SERVO 5": "",
+  "SERVO 5": "demoLight",
   "SERVO 4": "",
   "SERVO 3": "",
   "SERVO 2": "",
@@ -23,6 +23,6 @@
   "MOTOR 0": "",
   "I2C 1": "",
   "DIGITAL 0-1": "",
-  "MOTOR 3": "",
+  "MOTOR 3": "demoMotor",
   "RS485 6": ""
 }

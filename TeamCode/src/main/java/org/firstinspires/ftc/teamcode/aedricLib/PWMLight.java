@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Robot;
+
 public class PWMLight {
     Servo light;
     final double RED_VALUE = 0.277;
@@ -13,11 +15,11 @@ public class PWMLight {
     final double BLUE_VALUE = 0.611;
     final double PURPLE_VALUE = 0.722;
     final double WHITE_VALUE = 1.000;
-    public PWMLight(String lightName, HardwareMap hardwareMap)
+    public PWMLight(Robot robot, String lightName)
     {
-        if (hardwareMap.servo.contains(lightName))
+        if (robot.opMode.hardwareMap.servo.contains(lightName))
         {
-            this.light = hardwareMap.get(Servo.class, lightName);
+            this.light = robot.opMode.hardwareMap.get(Servo.class, lightName);
         }
     }
     double colorValue = 0;
@@ -34,12 +36,11 @@ public class PWMLight {
             case WHITE: this.colorValue = WHITE_VALUE; break;
             case OFF: this.colorValue = 0; break;
         }
-        this.light.setPosition(this.colorValue);
+        if (this.light != null) this.light.setPosition(this.colorValue);
     }
-    private ElapsedTime flashTimer = new ElapsedTime();
+    private final ElapsedTime flashTimer = new ElapsedTime();
     boolean lightIsOn;
-    boolean dontMessWithMe;
-    public void blink(double interval, Color color)
+    public void blink(double intervalMS, Color color)
     {
         switch (color)
         {
@@ -52,17 +53,17 @@ public class PWMLight {
             case WHITE: this.colorValue = WHITE_VALUE; break;
             case OFF: this.colorValue = 0; break;
         }
-        if (flashTimer.milliseconds() >= interval)
+        if (flashTimer.milliseconds() >= intervalMS)
         {
             lightIsOn = !lightIsOn;
-            this.light.setPosition(lightIsOn ? this.colorValue : 0);
+            if (this.light != null) this.light.setPosition(lightIsOn ? this.colorValue : 0);
             flashTimer.reset();
         }
     }
     /// @param pwmColorValue Any double value 0-1
     public void setColor(double pwmColorValue)
     {
-        this.light.setPosition(pwmColorValue);
+        if (this.light != null) this.light.setPosition(pwmColorValue);
     }
     public enum Color
     {

@@ -36,7 +36,7 @@ public class MenuItem {
         this.max = max;
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
-        this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
+        this.enclosingMenu.itemNameRegistry.put(this.itemName.toLowerCase(), this);
     }
     public MenuItem(Menu enclosingMenu, String displayName, boolean inputValue)
     {
@@ -48,7 +48,7 @@ public class MenuItem {
         this.isBoolean = true;
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
-        this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
+        this.enclosingMenu.itemNameRegistry.put(this.itemName.toLowerCase(), this);
     }
     public MenuItem(Menu enclosingMenu, String displayName)
     {
@@ -58,7 +58,7 @@ public class MenuItem {
         this.itemName = displayName;
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
-        this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
+        this.enclosingMenu.itemNameRegistry.put(this.itemName.toLowerCase(), this);
     }
     //endregion
     /// @return The new double value of your menu item
@@ -172,5 +172,14 @@ public class MenuItem {
         return this.booleanInputValue;
     }
     public void displayLine()
-    { if (this.enclosingMenu.inMenu) this.enclosingMenu.opMode.telemetry.addLine(this.itemName); }
+    {
+        if (this.itemNumber == this.enclosingMenu.menuCounter)
+        {
+            this.enclosingMenu.opMode.telemetry.addLine(">  " + this.itemName);
+        }
+        else
+        {
+            this.enclosingMenu.opMode.telemetry.addLine(this.itemName);
+        }
+    }
 }
