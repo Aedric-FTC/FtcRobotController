@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.aedricLib.GamepadButton;
 import org.firstinspires.ftc.teamcode.aedricLib.Menu;
+import org.firstinspires.ftc.teamcode.aedricLib.RobotJson;
 
+@TeleOp
 public class DemoTeleOp extends OpMode {
     Robot robot;
     Menu menu;
-    double demoNumber;
-    int demoNumber2;
-    boolean demoBoolean;
+    double demoNumber = RobotJson.load("Demo Number").getAsDouble();
+    int demoNumber2 = RobotJson.load("Demo Number 2").getAsInt();
+    boolean demoBoolean = RobotJson.load("Demo Boolean").getAsBoolean();
     @Override
     public void init()
     {

@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SubSystems.DemoMotor;
 import org.firstinspires.ftc.teamcode.aedricLib.MecanumDriveTrain;
 import org.firstinspires.ftc.teamcode.aedricLib.Menu;
+import org.firstinspires.ftc.teamcode.aedricLib.SafeHardware;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -15,9 +16,7 @@ import java.util.Map;
 public class Robot {
     public final OpMode opMode;
     public final HardwareMap hardwareMap;
-    public final Telemetry telemetry;
-    public final Map<String, Class<?>> systemRegistry = new HashMap<>();
-    public final Map<String, Object> instanceRegistry = new HashMap<>();
+    //public final Telemetry telemetry;
     public final MecanumDriveTrain mecanumDriveTrain;
     public final DemoMotor demoMotor;
     /*
@@ -28,7 +27,7 @@ public class Robot {
     {
         this.opMode = opMode;
         this.hardwareMap = this.opMode.hardwareMap;
-        this.telemetry = this.opMode.telemetry;
+        //this.telemetry = this.opMode.telemetry;
         this.mecanumDriveTrain = new MecanumDriveTrain(this,
                 "flMotor", "frMotor",
                 "blMotor", "brMotor",

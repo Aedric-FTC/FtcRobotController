@@ -1,21 +1,21 @@
 package org.firstinspires.ftc.teamcode.aedricLib;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.opMode;
 
 public class MenuItem {
     //region Variables
     Menu enclosingMenu;
     boolean wasIncremented;
     boolean wasDecremented;
-    public String itemName;
-    public Number itemValue;
-    public Number increment;
-    public Number min;
-    public Number max;
+    String itemName;
+    Number itemValue;
+    Number increment;
+    Number min;
+    Number max;
     public int itemNumber;
-    public boolean booleanInputValue;
-    public boolean isBoolean;
-    public int itemSubMenu;
+    boolean booleanInputValue;
+    boolean isBoolean;
+    int itemSubMenu;
+    boolean isFirstLoop = true;
     //endregion
     //region Constructors
     /// Creates a menu item
@@ -68,24 +68,24 @@ public class MenuItem {
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
             {
-                opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
-                if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
+                this.enclosingMenu.opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
+                if (this.enclosingMenu.opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
                 {
                     this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
                 }
 
-                this.wasIncremented = opMode.gamepad1.dpad_right;
+                this.wasIncremented = this.enclosingMenu.opMode.gamepad1.dpad_right;
 
-                if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
+                if (this.enclosingMenu.opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
                 {
                     this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
                 }
 
-                wasDecremented = opMode.gamepad1.dpad_left;
+                wasDecremented = this.enclosingMenu.opMode.gamepad1.dpad_left;
             }
             else
             {
-                opMode.telemetry.addData(this.itemName, this.itemValue);
+                this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.itemValue);
             }
         }
         return this.itemValue.doubleValue();
@@ -98,24 +98,24 @@ public class MenuItem {
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
             {
-                opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
-                if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
+                this.enclosingMenu.opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
+                if (this.enclosingMenu.opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
                 {
                     this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
                 }
 
-                this.wasIncremented = opMode.gamepad1.dpad_right;
+                this.wasIncremented = this.enclosingMenu.opMode.gamepad1.dpad_right;
 
-                if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
+                if (this.enclosingMenu.opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
                 {
                     this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
                 }
 
-                wasDecremented = opMode.gamepad1.dpad_left;
+                wasDecremented = this.enclosingMenu.opMode.gamepad1.dpad_left;
             }
             else
             {
-                opMode.telemetry.addData(this.itemName, this.itemValue);
+                this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.itemValue);
             }
         }
         return this.itemValue.intValue();
@@ -127,24 +127,24 @@ public class MenuItem {
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
             {
-                opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
-                if (opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
+                this.enclosingMenu.opMode.telemetry.addData(">  " + this.itemName, this.itemValue);
+                if (this.enclosingMenu.opMode.gamepad1.dpad_right && this.itemValue.doubleValue() + this.increment.doubleValue() <= this.max.doubleValue() && !wasIncremented)
                 {
                     this.itemValue = this.itemValue.doubleValue() + this.increment.doubleValue();
                 }
 
-                this.wasIncremented = opMode.gamepad1.dpad_right;
+                this.wasIncremented = this.enclosingMenu.opMode.gamepad1.dpad_right;
 
-                if (opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
+                if (this.enclosingMenu.opMode.gamepad1.dpad_left && this.itemValue.doubleValue() - this.increment.doubleValue() >= this.min.doubleValue() - 1 && !wasDecremented)
                 {
                     this.itemValue = this.itemValue.doubleValue() - this.increment.doubleValue();
                 }
 
-                wasDecremented = opMode.gamepad1.dpad_left;
+                wasDecremented = this.enclosingMenu.opMode.gamepad1.dpad_left;
             }
             else
             {
-                opMode.telemetry.addData(this.itemName, this.itemValue);
+                this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.itemValue);
             }
         }
         return this.itemValue.floatValue();
@@ -156,21 +156,21 @@ public class MenuItem {
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
             {
-                opMode.telemetry.addData(">  " + this.itemName, this.booleanInputValue);
-                if ((opMode.gamepad1.dpad_right || opMode.gamepad1.dpad_left) && (!this.wasIncremented && !this.wasDecremented))
+                this.enclosingMenu.opMode.telemetry.addData(">  " + this.itemName, this.booleanInputValue);
+                if ((this.enclosingMenu.opMode.gamepad1.dpad_right || this.enclosingMenu.opMode.gamepad1.dpad_left) && (!this.wasIncremented && !this.wasDecremented))
                 {
                     this.booleanInputValue = !this.booleanInputValue;
                 }
-                this.wasIncremented = opMode.gamepad1.dpad_right;
-                this.wasDecremented = opMode.gamepad1.dpad_left;
+                this.wasIncremented = this.enclosingMenu.opMode.gamepad1.dpad_right;
+                this.wasDecremented = this.enclosingMenu.opMode.gamepad1.dpad_left;
             }
             else
             {
-                opMode.telemetry.addData(this.itemName, this.booleanInputValue);
+                this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.booleanInputValue);
             }
         }
         return this.booleanInputValue;
     }
     public void displayLine()
-    { if (this.enclosingMenu.inMenu) opMode.telemetry.addLine(this.itemName); }
+    { if (this.enclosingMenu.inMenu) this.enclosingMenu.opMode.telemetry.addLine(this.itemName); }
 }
