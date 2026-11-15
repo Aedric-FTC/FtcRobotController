@@ -37,6 +37,7 @@ public class MenuItem {
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
         this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
+        this.isFirstLoop = true;
     }
     public MenuItem(Menu enclosingMenu, String displayName, boolean inputValue)
     {
@@ -49,6 +50,7 @@ public class MenuItem {
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
         this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
+        this.isFirstLoop = true;
     }
     public MenuItem(Menu enclosingMenu, String displayName)
     {
@@ -59,6 +61,7 @@ public class MenuItem {
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
         this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
+        this.isFirstLoop = true;
     }
     //endregion
     /// @return The new double value of your menu item
