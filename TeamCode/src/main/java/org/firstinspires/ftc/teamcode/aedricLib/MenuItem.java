@@ -36,7 +36,7 @@ public class MenuItem {
         this.max = max;
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
-        this.enclosingMenu.itemNameRegistry.put(this.itemName.toLowerCase(), this);
+        this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
     }
     public MenuItem(Menu enclosingMenu, String displayName, boolean inputValue)
     {
@@ -48,7 +48,7 @@ public class MenuItem {
         this.isBoolean = true;
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
-        this.enclosingMenu.itemNameRegistry.put(this.itemName.toLowerCase(), this);
+        this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
     }
     public MenuItem(Menu enclosingMenu, String displayName)
     {
@@ -58,12 +58,13 @@ public class MenuItem {
         this.itemName = displayName;
         this.itemSubMenu = this.enclosingMenu.menuIndex;
         this.enclosingMenu.itemRegistry.put(this.itemNumber, this);
-        this.enclosingMenu.itemNameRegistry.put(this.itemName.toLowerCase(), this);
+        this.enclosingMenu.itemNameRegistry.put(this.itemName, this);
     }
     //endregion
     /// @return The new double value of your menu item
     public double getDoubleValue()
     {
+        if (isFirstLoop) { isFirstLoop = false; return RobotJson.load(this.itemName).getAsDouble(); }
         if (this.enclosingMenu.inMenu)
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
@@ -88,12 +89,14 @@ public class MenuItem {
                 this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.itemValue);
             }
         }
-        return this.itemValue.doubleValue();
+        if (!isFirstLoop || RobotJson.load(this.itemName) == null) return this.itemValue.doubleValue();
+        return 0;
     }
 
     /// @return The new integer value of your menu item
     public int getIntValue()
     {
+        if (isFirstLoop) { isFirstLoop = false; return RobotJson.load(this.itemName).getAsInt(); }
         if (this.enclosingMenu.inMenu)
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
@@ -118,11 +121,13 @@ public class MenuItem {
                 this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.itemValue);
             }
         }
-        return this.itemValue.intValue();
+        if (!isFirstLoop || RobotJson.load(this.itemName) == null) return this.itemValue.intValue();
+        return 0;
     }
     /// @return The new double value of your menu item
     public float getFloatValue()
     {
+        if (isFirstLoop) { isFirstLoop = false; return RobotJson.load(this.itemName).getAsFloat(); }
         if (this.enclosingMenu.inMenu)
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
@@ -147,11 +152,13 @@ public class MenuItem {
                 this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.itemValue);
             }
         }
-        return this.itemValue.floatValue();
+        if (!isFirstLoop || RobotJson.load(this.itemName) == null) return this.itemValue.floatValue();
+        return 0;
     }
     ///@return The new boolean value of your menu item
     public boolean getBooleanValue()
     {
+        if (isFirstLoop) { isFirstLoop = false; return RobotJson.load(this.itemName).getAsBoolean(); }
         if (this.enclosingMenu.inMenu)
         {
             if (this.itemNumber == this.enclosingMenu.menuCounter)
@@ -169,7 +176,8 @@ public class MenuItem {
                 this.enclosingMenu.opMode.telemetry.addData(this.itemName, this.booleanInputValue);
             }
         }
-        return this.booleanInputValue;
+        if (!isFirstLoop || RobotJson.load(this.itemName) == null) return this.booleanInputValue;
+        return false;
     }
     public void displayLine()
     {

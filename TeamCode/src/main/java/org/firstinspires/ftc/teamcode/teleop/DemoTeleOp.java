@@ -13,13 +13,14 @@ import org.firstinspires.ftc.teamcode.aedricLib.RobotJson;
 public class DemoTeleOp extends OpMode {
     Robot robot;
     Menu menu;
-    double demoNumber = RobotJson.load("Demo Number").getAsDouble();
-    boolean demoBoolean = RobotJson.load("Demo Boolean").getAsBoolean();
+    double demoNumber;
+    boolean demoBoolean;
     @Override
     public void init()
     {
         // Always instantiate a Robot class to be able to use the SubSystems within
         robot = new Robot(this);
+
         menu = new Menu(this, GamepadButton.START, "Demo Menu");
         menu.addNumericalItem("Demo Number", demoNumber, 5, 0, 100);
         menu.addBooleanItem("Demo Boolean", demoBoolean);
@@ -31,6 +32,7 @@ public class DemoTeleOp extends OpMode {
     {
         // Always .create() any menus immediately at the start of your loop
         menu.create();
+        // You can place normal systems in this if statement so menu controls don't interfere with them
         if (!Menu.inAMenu) {
             // Call SubSystem methods from the Robot class like this
             robot.demoMotor.spin(gamepad1.right_bumper);

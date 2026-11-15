@@ -20,6 +20,7 @@ public class Robot {
     {
         this.opMode = opMode;
         this.hardwareMap = this.opMode.hardwareMap;
+        // Change the drivetrain motor names to match your hardware map
         this.mecanumDriveTrain = new MecanumDriveTrain(this,
                 "flMotor", "frMotor",
                 "blMotor", "brMotor",
