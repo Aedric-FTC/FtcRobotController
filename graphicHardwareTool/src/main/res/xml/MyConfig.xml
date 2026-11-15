@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<Robot type="FirstSdkRobot" version="1">
+    <!-- Address 1 is typically the primary Control Hub -->
+    <LynxModule name="Control Hub" firmwareVersion="2.5.2" address="1">
+
+        <!-- ==================== MOTORS (Ports 0-3) ==================== -->
+        <NeorheticMotor name="motor0" port="0" />
+        <NeorheticMotor name="motor1" port="1" />
+        <NeorheticMotor name="motor2" port="2" />
+        <NeorheticMotor name="motor3" port="3" />
+
+        <!-- ==================== SERVOS (Ports 0-5) ==================== -->
+        <!-- Note: Continuous Rotation Servos use <ContinuousRotationServo name="..." port="..." /> -->
+        <Servo name="servo0" port="0" />
+        <Servo name="servo1" port="1" />
+        <Servo name="servo2" port="2" />
+        <Servo name="servo3" port="3" />
+        <Servo name="servo4" port="4" />
+        <Servo name="servo5" port="5" />
+
+        <!-- ==================== I2C BUSES (Ports 0-3) ==================== -->
+        <!-- Bus 0: Commonly hosts the internal Control Hub IMU -->
+        <LynxEmbeddedImu name="imu" port="0" bus="0" />
+
+        <!-- Bus 1: Example external color/distance sensor -->
+        <RevColorSensorV3 name="color_sensor" port="0" bus="1" />
+
+        <!-- Bus 2: Example external 2M distance sensor -->
+        <Rev2mDistanceSensor name="distance_sensor" port="0" bus="2" />
+
+        <!-- Bus 3: Example generic I2C device -->
+        <I2cDeviceSynch name="generic_i2c" port="0" bus="3" />
+
+        <!-- ==================== DIGITAL IO (Ports 0-7) ==================== -->
+        <!-- These pair up on physical ports (0/1, 2/3, 4/5, 6/7) -->
+        <DigitalDevice name="digital0" port="0" />
+        <DigitalDevice name="digital1" port="1" />
+        <DigitalDevice name="digital2" port="2" />
+        <DigitalDevice name="digital3" port="3" />
+        <DigitalDevice name="digital4" port="4" />
+        <DigitalDevice name="digital5" port="5" />
+        <DigitalDevice name="digital6" port="6" />
+        <DigitalDevice name="digital7" port="7" />
+
+        <!-- ==================== ANALOG INPUT (Ports 0-3) ==================== -->
+        <AnalogInput name="analog0" port="0" />
+        <AnalogInput name="analog1" port="1" />
+        <AnalogInput name="analog2" port="2" />
+        <AnalogInput name="analog3" port="3" />
+
+    </LynxModule>
+</Robot>

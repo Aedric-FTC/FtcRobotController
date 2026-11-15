@@ -1,0 +1,147 @@
+package org.firstinspires.ftc.teamcode.aedricLib;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import org.firstinspires.ftc.teamcode.Robot;
+
+public class MecanumDriveTrain {
+    private DcMotor frontLeft;
+    private DcMotor frontRight;
+    private DcMotor backLeft;
+    private DcMotor backRight;
+    OpMode opMode;
+    public MecanumDriveTrain(Robot robot, String frontLeftMotor, String frontRightMotor,
+                             String backLeftMotor, String backRightMotor, boolean hasEncoder)
+    {
+        this.opMode = robot.opMode;
+
+        if (this.opMode.hardwareMap.dcMotor.contains(frontLeftMotor)) {
+            this.frontLeft = this.opMode.hardwareMap.get(DcMotor.class, frontLeftMotor);
+            this.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            this.frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            if (hasEncoder)
+            {
+                this.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", frontLeftMotor);
+
+        if (this.opMode.hardwareMap.dcMotor.contains(frontRightMotor)) {
+            this.frontRight = this.opMode.hardwareMap.get(DcMotor.class, frontRightMotor);
+            this.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if (hasEncoder)
+            {
+                this.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", frontRightMotor);
+
+        if (this.opMode.hardwareMap.dcMotor.contains(backLeftMotor)) {
+            this.backLeft = this.opMode.hardwareMap.get(DcMotor.class, backLeftMotor);
+            this.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            this.backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            if (hasEncoder)
+            {
+                this.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", backLeftMotor);
+
+        if (this.opMode.hardwareMap.dcMotor.contains(backRightMotor)) {
+            this.backRight = this.opMode.hardwareMap.get(DcMotor.class, backRightMotor);
+            this.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            if (hasEncoder)
+            {
+                this.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+        }
+        else opMode.telemetry.addData("Drivetrain motor could not be found in hardware map: ", backRightMotor);
+    }
+
+    double flPower;
+    double frPower;
+    double blPower;
+    double brPower;
+    double forward;
+    double strafe;
+    double rotate;
+    double reverseModifier = 1;
+    double maxPower = 1;
+    public boolean canDrive = true;
+    DIRECTION currentDirection = DIRECTION.STOPPED;
+    DIRECTION blockedDirection = DIRECTION.NONE;
+    public void drive(double powerPercentage)
+    {
+        if (powerPercentage < -100 || powerPercentage > 100)
+        {
+            throw new IllegalArgumentException("Power percentage must be between -100 and 100!");
+        }
+
+        powerPercentage /= 100;
+
+        this.forward = -opMode.gamepad1.left_stick_y;
+        this.strafe = opMode.gamepad1.left_stick_x;
+        this.rotate = opMode.gamepad1.right_stick_x;
+
+        this.flPower = this.forward + this.strafe + this.rotate;
+        this.frPower = this.forward - this.strafe - this.rotate;
+        this.blPower = this.forward - this.strafe + this.rotate;
+        this.brPower = this.forward + this.strafe - this.rotate;
+
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.flPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.frPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.blPower));
+        this.maxPower = Math.max(this.maxPower, Math.abs(this.brPower));
+
+        this.flPower *= (powerPercentage/this.maxPower);
+        this.frPower *= (powerPercentage/this.maxPower);
+        this.blPower *= (powerPercentage/this.maxPower);
+        this.brPower *= (powerPercentage/this.maxPower);
+
+        currentDirection = getNetDirection();
+
+        canDrive = (currentDirection != blockedDirection);
+
+        if (canDrive) {
+        if (this.frontLeft != null) {this.frontLeft.setPower(this.flPower);}
+        if (this.frontRight != null) {this.frontRight.setPower(this.frPower);}
+        if (this.backLeft != null) {this.backLeft.setPower(this.blPower);}
+        if (this.backRight != null) {this.backRight.setPower(this.brPower);}
+        }
+    }
+    private char signOf(double power)
+    {
+        if (power > 0) return '+';
+        if (power < 0) return '-';
+        return '0';
+    }
+    public DIRECTION getNetDirection()
+    {
+        String key = "" + signOf(flPower) + signOf(frPower) + signOf(blPower) + signOf(brPower);
+
+        switch (key)
+        {
+            case "++++": return DIRECTION.FORWARDS;
+            case "----": return DIRECTION.BACKWARDS;
+            case "-++-": return DIRECTION.LEFT;
+            case "+--+": return DIRECTION.RIGHT;
+            case "-+-+": return DIRECTION.SPIN_LEFT;
+            case "+-+-": return DIRECTION.SPIN_RIGHT;
+            case "0000": return DIRECTION.STOPPED;
+            default:     return DIRECTION.NONE;
+        }
+    }
+    boolean isReversed = false;
+    ButtonOperation reverseIt;
+    public void reverse(GamepadButton button, Gamepad gamepad)
+    {
+        reverseIt = new ButtonOperation(gamepad, button, () -> this.isReversed = !this.isReversed);
+        this.reverseModifier = this.isReversed ? -1 : 1;
+    }
+    public enum DIRECTION {
+        FORWARDS, BACKWARDS, LEFT, RIGHT, SPIN_LEFT, SPIN_RIGHT, STOPPED, NONE
+    }
+}

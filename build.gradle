@@ -9,11 +9,21 @@ buildscript {
         mavenCentral()
         google()
     }
-    dependencies {
-        // Note for FTC Teams: Do not modify this yourself.
-        classpath 'com.android.tools.build:gradle:8.7.0'
-    }
 }
+
+plugins {
+    // Note for FTC Teams: Do not modify this yourself.
+    id 'com.android.application' version '8.13.2' apply false
+    id 'com.android.library' version '8.13.2' apply false
+}
+
+plugins {
+    id 'java-library'
+    id 'maven-publish' // Required for JitPack
+}
+
+group = 'com.github.Aedric-FTC'
+version = '1.0-SNAPSHOT'
 
 // This is now required because aapt2 has to be downloaded from the
 // google() repository beginning with version 3.2 of the Android Gradle Plugin
@@ -21,9 +31,15 @@ allprojects {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://jitpack.io' }
+        flatDir { dirs "${rootDir}/libs" }
     }
 }
+
+
 
 repositories {
     mavenCentral()
 }
+
+
