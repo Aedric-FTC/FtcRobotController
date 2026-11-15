@@ -48,6 +48,7 @@ public class DemoTeleOp extends OpMode {
             demoBoolean = menu.getItem("Demo Boolean").getBooleanValue();
             // Render plain lines of text by using the .getItem().displayLine() methods
             menu.getItem("Demo Plain Line").displayLine();
+            telemetry.addData("", menu.menuCounter);
         }
     }
 }
